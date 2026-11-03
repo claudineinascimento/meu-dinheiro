@@ -63,12 +63,18 @@ jobs:
       - run: npm ci
       - run: npx cap sync android
       - name: Chave de assinatura
+        id: chave
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
-          if [ -z "$KEYSTORE_BASE64" ]; then echo "Falta o segredo KEYSTORE_BASE64"; exit 1; fi
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::APK não gerado: faltam os segredos KEYSTORE_BASE64 e KEYSTORE_PASSWORD (veja docs/desenvolvimento.md)."
+            echo "ok=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
           echo "$KEYSTORE_BASE64" | base64 -d > android/app/meu-dinheiro.keystore
+          echo "ok=true" >> "$GITHUB_OUTPUT"
       - name: Compilar APK
+        if: steps.chave.outputs.ok == 'true'
         working-directory: android
         env:
           VERSION_CODE: ${{ github.run_number }}
@@ -78,10 +84,12 @@ jobs:
           ./gradlew assembleRelease --no-daemon
           cp app/build/outputs/apk/release/app-release.apk ../meu-dinheiro.apk
       - uses: actions/upload-artifact@v4
+        if: steps.chave.outputs.ok == 'true'
         with:
           name: meu-dinheiro-apk
           path: meu-dinheiro.apk
       - uses: softprops/action-gh-release@v2
+        if: steps.chave.outputs.ok == 'true'
         with:
           tag_name: v1.${{ github.run_number }}
           name: Meu Dinheiro 1.${{ github.run_number }}
