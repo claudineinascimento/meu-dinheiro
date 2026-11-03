@@ -950,11 +950,11 @@ function formPessoa(id){
 function carregarExemplo(){
   const h=hoje(), m0=ymOf(h)+'-'; const k=key=>(S.categorias.find(c=>c.nome===key)||{}).id;
   const cc=(S.contas.find(c=>c.tipo==='corrente')||contasAtivas()[0]).id;
-  const L=(desc,cn,tipo,v,dia,nat,st)=>put('lancamentos',{tipo,valor:v,data:m0+pad(dia),contaId:cc,categoriaId:k(cn),descricao:desc,natureza:tipo==='despesa'?nat:null,status:st||(m0+pad(dia)<=h?'pago':'pendente'),exemplo:true},true);
-  L('Salário','Salário','receita',650000,5);L('Freela de design','Renda extra / freela','receita',80000,18);
-  L('Aluguel','Moradia','despesa',180000,5,'fixo');L('Luz e internet','Contas de casa','despesa',32000,10,'fixo');L('Mercado do mês','Mercado','despesa',95000,8,'variavel');
-  L('Combustível','Transporte','despesa',28000,12,'variavel');L('Plano de saúde','Saúde','despesa',42000,15,'fixo');L('Delivery','Restaurantes e delivery','despesa',18500,14,'variavel');
-  L('Streaming e música','Assinaturas','despesa',7490,20,'fixo');L('Cinema','Lazer','despesa',9600,16,'variavel');L('Academia','Cuidados pessoais','despesa',11990,25,'fixo');
+  const L=(desc,cn,tipo,v,off,nat)=>{const d=addDays(h,off);put('lancamentos',{tipo,valor:v,data:d,contaId:cc,categoriaId:k(cn),descricao:desc,natureza:tipo==='despesa'?nat:null,status:d<=h?'pago':'pendente',exemplo:true},true)};
+  L('Salário','Salário','receita',650000,-2);L('Freela de design','Renda extra / freela','receita',80000,12);
+  L('Aluguel','Moradia','despesa',180000,-1,'fixo');L('Luz e internet','Contas de casa','despesa',32000,4,'fixo');L('Mercado do mês','Mercado','despesa',95000,-1,'variavel');
+  L('Combustível','Transporte','despesa',28000,0,'variavel');L('Plano de saúde','Saúde','despesa',42000,5,'fixo');L('Delivery','Restaurantes e delivery','despesa',18500,-1,'variavel');
+  L('Streaming e música','Assinaturas','despesa',7490,8,'fixo');L('Cinema','Lazer','despesa',9600,-2,'variavel');L('Academia','Cuidados pessoais','despesa',11990,10,'fixo');
   const venc0=addMonths(m0+'10',-3);
   put('emprestimos',{direcao:'devo',contraparte:'Banco (exemplo)',principal:600000,taxa:1.9,nParcelas:12,valorParcela:calcParcela(600000,12,1.9),dataInicio:addMonths(venc0,-1),contaId:cc,finalidade:'Reforma',exemplo:true,
     parcelas:Array.from({length:12},(_,i)=>({n:i+1,venc:addMonths(venc0,i),valor:calcParcela(600000,12,1.9)})).map(p=>p.n<=3?Object.assign(p,{pagoEm:p.venc,valorPago:p.valor}):p)},true);

@@ -15,7 +15,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  testes:
+    name: Testes automáticos
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+
   site:
+    needs: testes
     name: Site (PWA) no GitHub Pages
     runs-on: ubuntu-latest
     environment:
@@ -34,6 +48,7 @@ jobs:
 
   apk:
     name: APK Android
+    needs: testes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
