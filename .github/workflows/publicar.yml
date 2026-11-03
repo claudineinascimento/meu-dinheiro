@@ -66,20 +66,28 @@ jobs:
         id: chave
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
           if [ -z "$KEYSTORE_BASE64" ]; then
             echo "::warning::APK não gerado: faltam os segredos KEYSTORE_BASE64 e KEYSTORE_PASSWORD (veja docs/desenvolvimento.md)."
             echo "ok=false" >> "$GITHUB_OUTPUT"; exit 0
           fi
-          echo "$KEYSTORE_BASE64" | base64 -d > android/app/meu-dinheiro.keystore
+          if [ -z "$KEYSTORE_PASSWORD" ]; then
+            echo "::error::O segredo KEYSTORE_PASSWORD está vazio ou foi criado com outro nome."; exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | tr -d ' \r\n' | base64 -d > android/app/meu-dinheiro.keystore || { echo "::error::KEYSTORE_BASE64 não é um base64 válido. Copie o arquivo KEYSTORE_BASE64.txt inteiro."; exit 1; }
+          PW="$(printf '%s' "$KEYSTORE_PASSWORD" | tr -d '\r\n')"
+          keytool -list -keystore android/app/meu-dinheiro.keystore -storepass "$PW" -alias meudinheiro >/dev/null 2>&1 || { echo "::error::A senha em KEYSTORE_PASSWORD não abre a chave. Confira se copiou o arquivo KEYSTORE_PASSWORD.txt sem espaços extras."; exit 1; }
+          echo "::add-mask::$PW"
+          echo "KEYSTORE_PASSWORD_LIMPA=$PW" >> "$GITHUB_ENV"
           echo "ok=true" >> "$GITHUB_OUTPUT"
       - name: Compilar APK
         if: steps.chave.outputs.ok == 'true'
         working-directory: android
         env:
           VERSION_CODE: ${{ github.run_number }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
+          export KEYSTORE_PASSWORD="$KEYSTORE_PASSWORD_LIMPA"
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon
           cp app/build/outputs/apk/release/app-release.apk ../meu-dinheiro.apk
