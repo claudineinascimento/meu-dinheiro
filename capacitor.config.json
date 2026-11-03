@@ -1,0 +1,6 @@
+{
+  "appId": "br.com.claudinei.meudinheiro",
+  "appName": "Meu Dinheiro",
+  "webDir": "www",
+  "android": { "backgroundColor": "#F2F5F5" }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "meu-dinheiro",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Meu Dinheiro - controle financeiro pessoal. Desenvolvido por Claudinei Nascimento.",
+  "scripts": {
+    "sync": "cap sync android"
+  },
+  "dependencies": {
+    "@aparajita/capacitor-biometric-auth": "^9.1.2",
+    "@capacitor/android": "^7.6.10",
+    "@capacitor/core": "^7.6.10",
+    "@capacitor/filesystem": "^7.1.9",
+    "@capacitor/share": "^7.0.4"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.6.10"
+  }
+}
