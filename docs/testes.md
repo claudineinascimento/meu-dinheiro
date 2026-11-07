@@ -8,7 +8,7 @@ Os testes simulam uma pessoa usando o app de verdade num navegador Chromium (Pla
 | `testes/pwa.test.js` | 13 | Instalação, funcionamento offline, backup em arquivo, atalho, digital por WebAuthn |
 | `testes/android.test.js` | 9 | Caminhos do APK com plugins do Android simulados |
 
-Apoio: `testes/servidor.js` (servidores locais), `testes/mock.js` (banco simulado), `testes/rodar.js` (roda tudo).
+Apoio: `testes/servidor.js` (servidores locais), `testes/mock.js` (banco simulado), `testes/rodar.js` (roda tudo), `testes/capturas.js` (gera as capturas de tela de `docs/img` com `npm run capturas`; não é um teste).
 
 ## Jornada do usuário final (`usuario-final.test.js`)
 
@@ -62,3 +62,5 @@ Simula `window.Capacitor` com os plugins do Android: não registra service worke
 ## Último resultado
 
 135 de 135 verificações passaram em 07/11/2026.
+
+No GitHub, os testes rodam em cada pull request e em cada push na `main`, antes de publicar o site e gerar o APK.

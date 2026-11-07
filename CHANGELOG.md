@@ -24,6 +24,17 @@
 - Não havia como editar uma aplicação depois de criada.
 - Saldo inicial negativo ao criar aplicação era aceito.
 
+### Publicação e documentação
+
+- O APK passa a mostrar a versão do `package.json` (1.1.0) em vez do número da execução. O Release se chama *Meu Dinheiro 1.1.0* (tag `v1.1.0`) e traz o texto desta seção do histórico.
+- Um Release novo só é criado quando a versão muda. Pushes sem mudar a versão atualizam o site e deixam o APK como artefato.
+- Pull requests rodam os testes e geram um APK assinado para testar antes do merge.
+- Cada APK vem com o arquivo `.sha256` para conferir o download.
+- `.gitignore` reforçado para nunca enviar a chave de assinatura, senhas ou APKs ao repositório.
+- README reescrito com instalação do APK e do PWA, funcionalidades, segurança, backup e capturas de tela.
+- Capturas de tela refeitas para a versão 1.1, com telas novas (olho, aviso de backup, painel de investimentos, código de recuperação e *Esqueci o PIN*), geradas por `npm run capturas`.
+- Licença MIT.
+
 ## 1.0 (novembro de 2026)
 
 Primeira versão publicada.

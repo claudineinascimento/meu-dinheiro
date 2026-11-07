@@ -74,15 +74,19 @@ No APK, o service worker não é registrado: os arquivos já estão dentro do ap
 - `android/`: projeto Android gerado pelo Capacitor, com ícones adaptativos e tela de abertura do app.
 - Plugins: `@capacitor/filesystem` e `@capacitor/share` (backup), `@aparajita/capacitor-biometric-auth` (digital).
 - O app acessa os plugins por `window.Capacitor.Plugins`, sem bundler.
-- Versão do APK: `versionCode` = número da execução do GitHub Actions, `versionName` = `1.<número>`.
+- Versão do APK: `versionName` = campo `version` do `package.json` (ex.: `1.1.0`); `versionCode` = número da execução do GitHub Actions, que sempre cresce e permite instalar por cima da versão anterior.
+- Assinatura: sempre a mesma chave (`meu-dinheiro.keystore`, alias `meudinheiro`), guardada só nos *Secrets* do GitHub. Trocar a chave obriga quem já instalou a desinstalar, perdendo os dados.
 
 ## Publicação
 
-O fluxo `.github/workflows/publicar.yml` roda a cada push na `main`:
+O fluxo `.github/workflows/publicar.yml`:
 
 ```
-testes (135 verificações) ──► site no GitHub Pages (pasta www)
-                         └─► APK assinado ──► Release "Meu Dinheiro 1.N" com meu-dinheiro.apk
+push na main ─► testes (135 verificações) ─┬─► site no GitHub Pages (pasta www)
+                                           └─► APK assinado ─► Release "Meu Dinheiro X.Y.Z"
+                                                              (só se a tag vX.Y.Z ainda não existe)
+
+pull request ─► testes ─► APK assinado ─► artefato para baixar e testar (nada é publicado)
 ```
 
-Se algum teste falhar, nada é publicado.
+Se algum teste falhar, nada é publicado. Detalhes em [desenvolvimento.md](desenvolvimento.md#publicar-uma-nova-versão).

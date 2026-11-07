@@ -1,8 +1,32 @@
+# Dependências
 node_modules/
-android/app/meu-dinheiro.keystore
-android/app/build/
+
+# Android: arquivos gerados pela compilação
 android/build/
+android/app/build/
 android/.gradle/
+android/.idea/
 android/local.properties
 android/capacitor-cordova-android-plugins/build/
+android/app/release/
+*.apk
+*.aab
+*.apk.sha256
+
+# Chave de assinatura e senhas: NUNCA vão para o repositório.
+# No GitHub Actions elas vêm dos Secrets KEYSTORE_BASE64 e KEYSTORE_PASSWORD (veja docs/desenvolvimento.md).
+*.keystore
+*.jks
+KEYSTORE_*.txt
+chave-android/
+keystore.properties
 .kspw
+.env
+.env.*
+
+# Sistema e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

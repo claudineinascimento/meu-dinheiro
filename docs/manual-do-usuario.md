@@ -6,14 +6,20 @@ Este manual mostra como usar cada tela do Meu Dinheiro. O app tem cinco áreas n
 
 1. Instale o app (veja o [README](../README.md#instalar)).
 2. Em **Mais › Contas e cartões**, ajuste as contas. O app já cria *Conta corrente* e *Carteira*. Informe em cada uma o saldo de hoje. Num cartão de crédito, informe a fatura atual como número negativo, por exemplo `-350,00`.
-3. Em **Mais › Segurança**, crie um PIN e, se quiser, ative a digital.
+3. Em **Mais › Segurança**, crie um PIN, **anote o código de recuperação** fora do celular e, se quiser, ative a digital.
 4. Toque em **+** e faça o primeiro lançamento.
+5. Em **Mais › Backup**, faça o primeiro backup. O app avisa na tela Início quando o backup atrasa.
+
+### Atualizar o app
+
+- **APK**: baixe o `meu-dinheiro.apk` da versão nova e abra o arquivo. O Android instala por cima e **os dados continuam**. Não desinstale antes, porque desinstalar apaga os dados do app.
+- **PWA (site instalado)**: atualiza sozinho. Com internet, o app sempre abre a versão mais nova; sem internet, abre a última que guardou.
 
 Quer ver o app funcionando antes? Na tela Início, toque em **Ver exemplo**. Os dados de exemplo saem com **Apagar exemplos**.
 
 ## 2. Início
 
-<img src="img/inicio.png" width="260" alt="Tela Início">
+<img src="img/inicio.png" width="230" alt="Tela Início"> <img src="img/olho.png" width="230" alt="Saldo oculto pelo olho"> <img src="img/aviso-backup.png" width="230" alt="Aviso de backup atrasado">
 
 | Bloco | O que mostra |
 | --- | --- |
@@ -32,7 +38,7 @@ O olho fica salvo no aparelho: se você esconder o saldo, ele continua escondido
 
 ## 3. Lançar uma receita ou despesa
 
-<img src="img/novo-lancamento.png" width="260" alt="Novo lançamento">
+<img src="img/novo-lancamento.png" width="230" alt="Novo lançamento">
 
 1. Toque em **+**.
 2. Escolha **Despesa**, **Receita** ou **Transferência**.
@@ -57,7 +63,7 @@ Move dinheiro entre suas contas sem contar como receita nem despesa. Use também
 
 ## 4. Lançamentos
 
-<img src="img/lancamentos.png" width="260" alt="Lista de lançamentos">
+<img src="img/lancamentos.png" width="230" alt="Lista de lançamentos">
 
 - A lista mostra o mês escolhido, agrupada por dia, com o saldo de cada dia.
 - **Filtros**: Todos, Despesas, Receitas, Pendentes, Fixos, Transferências.
@@ -69,7 +75,7 @@ Lançamentos criados por um empréstimo ou investimento aparecem com uma etiquet
 
 ## 5. Empréstimos
 
-<img src="img/emprestimos.png" width="260" alt="Empréstimos"> <img src="img/emprestimo-parcelas.png" width="260" alt="Parcelas do empréstimo">
+<img src="img/emprestimos.png" width="230" alt="Empréstimos"> <img src="img/emprestimo-parcelas.png" width="230" alt="Parcelas do empréstimo">
 
 O app separa duas listas:
 
@@ -91,6 +97,8 @@ Abra o empréstimo e toque em **Pagar** (ou **Receber**) na parcela. Confira val
 Parcelas vencidas e não pagas ficam marcadas como **Atrasada**. Em **Mais › Pessoas**, cada pessoa mostra quanto te deve e quanto você deve a ela.
 
 ## 6. Investimentos
+
+<img src="img/investimentos.png" width="230" alt="Investimentos"> <img src="img/investimentos-painel.png" width="230" alt="Painel de investimentos">
 
 Em **Mais › Investimentos**:
 
@@ -123,7 +131,7 @@ Aportes não contam como gasto do mês. É dinheiro guardado. O resgate não pod
 
 ## 8. Segurança
 
-<img src="img/bloqueio.png" width="260" alt="Tela de bloqueio">
+<img src="img/seguranca.png" width="230" alt="Tela Segurança"> <img src="img/codigo-recuperacao.png" width="230" alt="Código de recuperação"> <img src="img/bloqueio.png" width="230" alt="Tela de bloqueio">
 
 Em **Mais › Segurança**:
 
@@ -138,6 +146,8 @@ Após 5 PINs errados, o app pausa as tentativas por 30 segundos. A pausa dobra a
 
 Esqueceu o PIN? Na tela de bloqueio, toque em **Esqueci o PIN** e escolha uma opção:
 
+<img src="img/esqueci-pin.png" width="230" alt="Esqueci o PIN">
+
 | Opção | O que acontece |
 | --- | --- |
 | Usar a digital | Se a digital estiver ativa no aparelho, confirme e crie um PIN novo. |
@@ -148,6 +158,8 @@ Esqueceu o PIN? Na tela de bloqueio, toque em **Esqueci o PIN** e escolha uma op
 Erros no código ou na resposta contam como PIN errado e também levam à pausa. Detalhes em [Segurança e privacidade](seguranca.md).
 
 ## 9. Backup, planilha e troca de celular
+
+<img src="img/backup.png" width="230" alt="Backup e exportação">
 
 Em **Mais › Backup e exportação**:
 
@@ -162,7 +174,7 @@ Para trocar de celular ou de versão do app: baixe o backup no aparelho antigo e
 
 O botão no canto superior direito alterna entre **automático** (segue o celular), **claro** e **escuro**. Também dá para escolher em **Mais › Tema**.
 
-<img src="img/inicio-escuro.png" width="260" alt="Tema escuro">
+<img src="img/inicio-escuro.png" width="230" alt="Tema escuro">
 
 ## Perguntas frequentes
 

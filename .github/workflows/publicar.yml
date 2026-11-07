@@ -3,6 +3,9 @@ name: Publicar app
 on:
   push:
     branches: [main]
+  # Em pull requests: roda os testes e gera o APK para conferir (sem publicar nada).
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +14,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: publicar
+  group: publicar-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -31,6 +34,7 @@ jobs:
   site:
     needs: testes
     name: Site (PWA) no GitHub Pages
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -62,6 +66,22 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx cap sync android
+      - name: Versão
+        id: versao
+        run: |
+          VERSAO="$(node -p "require('./package.json').version")"
+          echo "versao=$VERSAO" >> "$GITHUB_OUTPUT"
+          # Publica um Release só na main e só quando a versão do package.json ainda não tem tag.
+          PUBLICAR=false
+          if [ "$GITHUB_REF" = "refs/heads/main" ] && [ "$GITHUB_EVENT_NAME" != "pull_request" ]; then
+            if git ls-remote --exit-code --tags origin "refs/tags/v$VERSAO" >/dev/null 2>&1; then
+              echo "::notice::A versão $VERSAO já foi publicada (tag v$VERSAO). Para um novo Release, aumente \"version\" no package.json."
+            else
+              PUBLICAR=true
+            fi
+          fi
+          echo "publicar=$PUBLICAR" >> "$GITHUB_OUTPUT"
+          echo "Versão $VERSAO, build ${{ github.run_number }}, publicar=$PUBLICAR"
       - name: Chave de assinatura
         id: chave
         env:
@@ -86,23 +106,42 @@ jobs:
         working-directory: android
         env:
           VERSION_CODE: ${{ github.run_number }}
+          VERSION_NAME: ${{ steps.versao.outputs.versao }}
         run: |
           export KEYSTORE_PASSWORD="$KEYSTORE_PASSWORD_LIMPA"
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon
           cp app/build/outputs/apk/release/app-release.apk ../meu-dinheiro.apk
+          "$ANDROID_HOME"/build-tools/*/apksigner verify --print-certs ../meu-dinheiro.apk | grep -i 'certificate DN' || true
+          sha256sum ../meu-dinheiro.apk | tee ../meu-dinheiro.apk.sha256
       - uses: actions/upload-artifact@v4
         if: steps.chave.outputs.ok == 'true'
         with:
-          name: meu-dinheiro-apk
-          path: meu-dinheiro.apk
+          name: meu-dinheiro-${{ steps.versao.outputs.versao }}-apk
+          path: |
+            meu-dinheiro.apk
+            meu-dinheiro.apk.sha256
+      - name: Notas da versão
+        if: steps.chave.outputs.ok == 'true' && steps.versao.outputs.publicar == 'true'
+        env:
+          VERSAO: ${{ steps.versao.outputs.versao }}
+        run: |
+          {
+            echo "Baixe **meu-dinheiro.apk** no celular Android e abra o arquivo para instalar. Quem já tem o app instalado só atualiza: os dados continuam."
+            echo
+            # Trecho do CHANGELOG.md desta versão (do título "## X.Y" até o próximo "## ").
+            awk -v v="${VERSAO%.0}" 'index($0,"## "v" ")==1{f=1;next} /^## /{if(f)exit} f' CHANGELOG.md
+            echo
+            echo "Desenvolvido por Claudinei Nascimento."
+          } > notas.md
+          cat notas.md
       - uses: softprops/action-gh-release@v2
-        if: steps.chave.outputs.ok == 'true'
+        if: steps.chave.outputs.ok == 'true' && steps.versao.outputs.publicar == 'true'
         with:
-          tag_name: v1.${{ github.run_number }}
-          name: Meu Dinheiro 1.${{ github.run_number }}
-          body: |
-            Baixe **meu-dinheiro.apk** no celular Android e abra o arquivo para instalar.
-            Desenvolvido por Claudinei Nascimento.
-          files: meu-dinheiro.apk
+          tag_name: v${{ steps.versao.outputs.versao }}
+          name: Meu Dinheiro ${{ steps.versao.outputs.versao }}
+          body_path: notas.md
+          files: |
+            meu-dinheiro.apk
+            meu-dinheiro.apk.sha256
           make_latest: true

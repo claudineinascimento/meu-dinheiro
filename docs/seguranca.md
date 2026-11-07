@@ -34,6 +34,8 @@ A digital é ativada **por aparelho** e fica registrada só nele. O PIN continua
 
 ## Esqueci o PIN
 
+<img src="img/esqueci-pin.png" width="230" alt="Opções de Esqueci o PIN"> <img src="img/codigo-recuperacao.png" width="230" alt="Código de recuperação">
+
 Até a versão 1.0, *Esqueci o PIN* tirava o PIN só com a palavra `REDEFINIR`, o que deixava qualquer pessoa entrar. Agora é preciso provar quem é:
 
 | Forma | Como é guardada | Observação |
@@ -49,6 +51,12 @@ Erros no código e na resposta contam nas mesmas tentativas do PIN, com a mesma 
 
 O PIN protege contra quem pega o celular **já desbloqueado** e abre o app: um curioso, um filho, alguém no trabalho. Ele não substitui a segurança do próprio celular. Quem tiver acesso técnico ao armazenamento do aparelho (ferramentas de desenvolvedor, root) consegue ler os dados, porque eles não são criptografados no aparelho.
 
+Para proteção forte:
+
+1. Use bloqueio de tela no celular (senha, digital ou rosto).
+2. Mantenha o celular atualizado.
+3. Guarde os arquivos de backup em local protegido. Eles contêm todos os seus dados financeiros, sem criptografia.
+
 ## Ocultar valores
 
 O botão de **olho** esconde o saldo (Início e Contas) e, separadamente, o total investido (Início e Investimentos), trocando os valores por `R$ ••••`. A escolha fica salva no aparelho. Serve para abrir o app perto de outras pessoas; não é uma proteção como o PIN.
@@ -57,15 +65,15 @@ O botão de **olho** esconde o saldo (Início e Contas) e, separadamente, o tota
 
 O app guarda neste aparelho a data e a hora do último backup completo que deu certo. Na tela Início, mostra *Backup em dia* ou um aviso quando passa do prazo (7, 15 ou 30 dias, escolhido em **Mais › Backup**). O aviso pode ser adiado por 3 dias, escondido até o próximo prazo ou desligado.
 
-Para proteção forte:
-
-1. Use bloqueio de tela no celular (senha, digital ou rosto).
-2. Mantenha o celular atualizado.
-3. Guarde os arquivos de backup em local protegido. Eles contêm todos os seus dados financeiros, sem criptografia.
-
 ## Assinatura do APK
 
 O APK é assinado com uma chave própria do app. Ela garante que só versões geradas por este projeto instalam por cima da versão atual. A chave fica fora do repositório, nos segredos do GitHub `KEYSTORE_BASE64` e `KEYSTORE_PASSWORD`, com uma cópia guardada pelo dono do projeto. Perder a chave obriga a desinstalar o app (depois de fazer backup) para instalar uma nova versão.
+
+- O `.gitignore` bloqueia `*.keystore`, `*.jks` e `KEYSTORE_*.txt`, para a chave não ir parar no repositório por engano.
+- No GitHub Actions, a chave é montada só durante a compilação, a senha é mascarada nos logs e o passo confere se a senha abre a chave antes de compilar.
+- Pull requests de *forks* não recebem os segredos e não geram APK assinado.
+- Cada Release traz `meu-dinheiro.apk.sha256` para conferir se o arquivo baixado é o original.
+- Baixe o APK só da página de [Releases](https://github.com/claudineinascimento/meu-dinheiro/releases) deste repositório.
 
 ## Permissões do APK
 
