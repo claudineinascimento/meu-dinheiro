@@ -36,18 +36,21 @@ if(!nativo&&'serviceWorker' in navigator){window.addEventListener('load',functio
   --shadow:0 1px 2px rgba(16,36,46,.06),0 4px 16px rgba(16,36,46,.06);
   --overlay:rgba(10,22,28,.45);
   --r:14px; --r-sm:10px;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300; --s7:#6250d6; --s8:#e34948;
   --fs-xs:.75rem; --fs-sm:.8125rem; --fs-md:.9375rem; --fs-lg:1.125rem; --fs-xl:1.5rem; --fs-xxl:2rem;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0B1418; --surface:#132127; --surface-2:#1A2B32; --ink:#E5EDEE; --muted:#93A6AD; --line:#253840;
   --brand:#2F9C84; --brand-2:#3FB49A; --brand-ink:#04140F; --brand-soft:#16352E;
   --pos:#4CC79A; --pos-soft:#14352A; --neg:#F08672; --neg-soft:#3A1F1A; --warn:#E3B55E; --warn-soft:#3A2E15;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25); --overlay:rgba(0,0,0,.6); color-scheme:dark}}
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25); --overlay:rgba(0,0,0,.6); color-scheme:dark;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767}}
 :root[data-theme="dark"]{
   --bg:#0B1418; --surface:#132127; --surface-2:#1A2B32; --ink:#E5EDEE; --muted:#93A6AD; --line:#253840;
   --brand:#2F9C84; --brand-2:#3FB49A; --brand-ink:#04140F; --brand-soft:#16352E;
   --pos:#4CC79A; --pos-soft:#14352A; --neg:#F08672; --neg-soft:#3A1F1A; --warn:#E3B55E; --warn-soft:#3A2E15;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25); --overlay:rgba(0,0,0,.6); color-scheme:dark}
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25); --overlay:rgba(0,0,0,.6); color-scheme:dark;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767}
 *{box-sizing:border-box}
 html,body{background:var(--bg)}
 body{font-family:var(--font);font-size:var(--fs-md);color:var(--ink);line-height:1.45;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
@@ -227,6 +230,38 @@ details.faq ul{padding-left:18px}
 .key .ico{width:26px;height:26px}
 .linkbtn{border:0;background:none;color:var(--brand-2);font-weight:600;cursor:pointer;font-size:var(--fs-sm);padding:6px}
 .pinfield{letter-spacing:.4em;font-size:var(--fs-lg);text-align:center}
+.codefield{letter-spacing:.12em;font-size:var(--fs-lg);text-align:center;text-transform:uppercase}
+
+/* Olho (ocultar valores) */
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.eye{color:inherit;flex:none}
+.hero .eye:hover{background:color-mix(in srgb,var(--brand-ink) 16%,transparent)}
+.inv-card{flex-direction:row;align-items:center;gap:8px}
+.inv-link{flex:1;display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;text-align:left;cursor:pointer;min-width:0}
+
+/* Recuperação de PIN */
+.lock-opts{width:100%;max-width:380px;display:flex;flex-direction:column;gap:12px}
+.lock-opts .row:disabled{opacity:.5;cursor:default}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.3rem;font-weight:600;letter-spacing:.08em;text-align:center;padding:14px 8px;border-radius:var(--r-sm);background:var(--surface);border:1.5px dashed var(--brand-2);user-select:all;word-break:break-all}
+
+/* Backup */
+.bk{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--line);font-size:var(--fs-sm);color:var(--muted)}
+.bk>.ico{color:var(--pos)}
+
+/* Painel de investimentos */
+.stack{display:flex;gap:2px;height:14px;border-radius:4px;overflow:hidden;background:var(--surface-2)}
+.stack i{display:block;height:100%;min-width:3px}
+.leg{display:flex;flex-direction:column}
+.leg>div{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:var(--fs-sm);min-width:0}
+.leg>div:last-child{border-bottom:0}
+.leg .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sw{width:10px;height:10px;border-radius:3px;flex:none}
+.evo{display:flex;align-items:flex-end;gap:4px;height:128px;border-bottom:1px solid var(--line)}
+.evo button{flex:1;height:100%;display:flex;align-items:flex-end;border:0;background:none;padding:0;cursor:pointer;min-width:0}
+.evo button i{display:block;width:100%;background:var(--s1);border-radius:4px 4px 0 0;min-height:2px;opacity:.5}
+.evo button:hover i,.evo button[aria-pressed="true"] i{opacity:1}
+.evo-x{display:flex;gap:4px;font-size:.625rem;color:var(--muted);margin-top:4px}
+.evo-x span{flex:1;text-align:center;min-width:0;overflow:hidden;text-transform:capitalize}
 </style>
 
 <header class="top"><div class="top-in">
@@ -304,7 +339,11 @@ const P={
  finger:'<path d="M12 4a7 7 0 0 0-7 7v2"/><path d="M19 11a7 7 0 0 0-3.5-6"/><path d="M9 11a3 3 0 0 1 6 0v2c0 2.5-.6 4.8-1.8 6.8"/><path d="M12 11v2.5c0 2.6-.7 5-2 7"/><path d="M19 14.5c-.2 2-.8 3.8-1.6 5.5"/><path d="M5.5 16.5c.4 1 .5 2 .4 3"/>',
  backspace:'<path d="M9 5h11v14H9l-6-7z"/><path d="M13 10l4 4M17 10l-4 4"/>',
  lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
- shield:'<path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/>'
+ shield:'<path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/>',
+ eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+ eyeOff:'<path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-2.6 3.5M6.6 6.6C3.8 8.3 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M3 3l18 18"/>',
+ key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/>',
+ pie:'<path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/>'
 };
 const ic=(n,c)=>`<svg class="ico${c?' '+c:''}" viewBox="0 0 24 24" aria-hidden="true">${P[n]||P.dots}</svg>`;
 
@@ -350,7 +389,13 @@ const TIPO_INV={reserva:'Reserva de emergência',rendafixa:'Renda fixa (CDB, LCI
 
 /* ---------- Estado e armazenamento ---------- */
 const S={contas:[],categorias:[],lancamentos:[],pessoas:[],emprestimos:[],investimentos:[]};
-const UI={view:'inicio',mes:ymOf(hoje()),filtro:'todos',busca:'',empAba:'devo',loaded:false};
+const UI={view:'inicio',mes:ymOf(hoje()),filtro:'todos',busca:'',empAba:'devo',loaded:false,evoSel:null};
+/* Olho: ocultar o saldo e o valor investido (preferência guardada no aparelho) */
+let ocSaldo=lsGet('md_oc_saldo')==='1', ocInv=lsGet('md_oc_inv')==='1';
+const OCULTO='R$ ••••';
+const brlS=c=>ocSaldo?OCULTO:brl(c), brlI=c=>ocInv?OCULTO:brl(c);
+function olho(k){const on=k==='inv'?ocInv:ocSaldo;const alvo=k==='inv'?'o valor investido':'o saldo';return `<button type="button" class="iconbtn eye" data-act="olho" data-v="${k}" aria-pressed="${on}" aria-label="${on?'Mostrar ':'Ocultar '}${alvo}" title="${on?'Mostrar ':'Ocultar '}${alvo}">${ic(on?'eyeOff':'eye')}</button>`}
+function alternarOlho(k){if(k==='inv'){ocInv=!ocInv;lsSet('md_oc_inv',ocInv?'1':'0')}else{ocSaldo=!ocSaldo;lsSet('md_oc_saldo',ocSaldo?'1':'0')}render()}
 let mode='loading', base=null, downloads=null;
 const chains={}; let seq=0;
 
@@ -405,7 +450,7 @@ async function boot(){
   applyTheme(); render();
   bioSuportado().then(v=>{bioOk=v;if(lockState==='locked')renderLock()});
   document.addEventListener('pause',()=>{hiddenAt=Date.now()});
-  document.addEventListener('resume',()=>{if(lockState==='open'&&temPin()&&hiddenAt&&Date.now()-hiddenAt>=Number(SEG.autoLock||0)*60000)bloquear()});
+  document.addEventListener('resume',()=>{if(lockState==='open'&&temPin()&&hiddenAt&&!emPausaLivre()&&Date.now()-hiddenAt>=Number(SEG.autoLock||0)*60000)bloquear()});
   try{const c=JSON.parse(lsGet('md_seg_cache'));if(c&&c.pinHash){SEG=c;lockState='locked';renderLock()}}catch(e){}
   setTimeout(()=>{if(!segLoaded&&lockState==='checking'){lockState='open';renderLock()}},12000);
   const c=window.claude;
@@ -459,6 +504,13 @@ function empInfo(e){
   return {saldo:sum(abertas,p=>p.valor),pagas,total:ps.length,atrasadas,atrasado:sum(atrasadas,p=>p.valor),proxima,quitado:ps.length>0&&!abertas.length};
 }
 function saldoInv(i){return sum(i.movimentos||[],m=>m.tipo==='resgate'?-m.valor:m.valor)}
+/* aplicado = saldo inicial + aportes; o saldo é aplicado + rendimentos − resgates */
+function invStats(i){let ap=0,res=0,rend=0;for(const m of i.movimentos||[]){if(m.tipo==='resgate')res+=m.valor;else if(m.tipo==='rendimento')rend+=m.valor;else ap+=m.valor}return {ap,res,rend,saldo:ap+rend-res}}
+const pctFmt=x=>(x*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
+/* média mensal das despesas essenciais nos últimos 3 meses com lançamentos */
+function mediaEssencial(){const h=ymOf(hoje())+'-01';let tot=0,n=0;for(let k=0;k<3;k++){const ym=addMonths(h,-k).slice(0,7);const v=sum(S.lancamentos.filter(l=>l.tipo==='despesa'&&contaNoResultado(l)&&l.data&&ymOf(l.data)===ym&&(cat(l.categoriaId)||{}).grupo==='essencial'),l=>l.valor);if(v){tot+=v;n++}}return n?Math.round(tot/n):0}
+/* saldo investido no fim de cada um dos últimos n meses */
+function evolucaoInv(n){const h=ymOf(hoje())+'-01';const out=[];for(let k=n-1;k>=0;k--){const ym=addMonths(h,-k).slice(0,7);const fim=ym+'-31';let v=0;S.investimentos.forEach(i=>(i.movimentos||[]).forEach(m=>{if(m.data&&m.data<=fim)v+=m.tipo==='resgate'?-m.valor:m.valor}));out.push({ym,v})}return out}
 function calcParcela(P,n,taxa){if(!n)return 0;const i=(taxa||0)/100;if(!i)return Math.round(P/n);return Math.round(P*i/(1-Math.pow(1+i,-n)))}
 
 /* ---------- Tema ---------- */
@@ -508,10 +560,22 @@ function lancRow(l){
 }
 function empty(icon,title,text,btn){return `<div class="empty"><span class="cat-ico">${ic(icon,'lg')}</span><b>${title}</b><span class="small">${text}</span>${btn||''}</div>`}
 function signature(){return `<div class="signature"><span>Meu Dinheiro · controle financeiro pessoal</span><span>Desenvolvido por <b>Claudinei Nascimento</b></span></div>`}
-function modeBanner(){
-  if(mode==='local')return `<div class="banner">${ic('alert')}<div>Seus dados ficam salvos só neste aparelho. Faça backup em <b>Mais › Backup</b> com frequência.</div></div>`;
-  return '';
+/* Lembrete de backup: data do último backup, aviso quando atrasa, pode ser adiado ou desligado */
+const DIA=86400000;
+function bkPref(){let p=null;try{p=JSON.parse(lsGet('md_bk_pref'))}catch(e){}return Object.assign({mostrar:true,dias:7,adiarAte:0},p||{})}
+function bkSetPref(o){lsSet('md_bk_pref',JSON.stringify(Object.assign(bkPref(),o)))}
+function bkUltimo(){const n=Number(lsGet('md_bk_em'));return n>0?n:0}
+function haDias(ts){const a=new Date(ts),b=new Date();const d=Math.round((new Date(b.getFullYear(),b.getMonth(),b.getDate())-new Date(a.getFullYear(),a.getMonth(),a.getDate()))/DIA);return d<=0?'hoje':d===1?'ontem':`há ${d} dias`}
+const dataHora=ts=>new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(ts));
+const bkAtrasado=()=>{const u=bkUltimo();return !u||Date.now()-u>bkPref().dias*DIA};
+function backupAviso(semDados){
+  const p=bkPref(); if(!p.mostrar||semDados||Date.now()<p.adiarAte)return '';
+  const u=bkUltimo();
+  if(bkAtrasado())return `<div class="banner">${ic('alert')}<div><b>${u?'Seu backup está atrasado':'Você ainda não fez backup'}</b><br>${u?`O último foi ${haDias(u)}. `:''}${mode==='local'?'Seus dados ficam salvos só neste aparelho: se ele for perdido ou o app for apagado, os dados vão junto.':'Guarde uma cópia dos seus dados fora do app.'}
+    <div class="banner-act"><button class="btn sm primary" data-act="exp-json">${ic('download','sm')} Fazer backup agora</button><button class="btn sm ghost" data-act="bk-adiar">Lembrar em 3 dias</button></div></div></div>`;
+  return `<div class="bk">${ic('shield','sm')}<span style="flex:1;min-width:0">Backup em dia · último ${haDias(u)}</span><button class="iconbtn" data-act="bk-ocultar" aria-label="Ocultar até o próximo backup" title="Ocultar até o próximo backup">${ic('x','sm')}</button></div>`;
 }
+function registrarBackup(){lsSet('md_bk_em',String(Date.now()));bkSetPref({adiarAte:0})}
 function exemploBanner(){
   if(!S.lancamentos.some(l=>l.exemplo)&&!S.emprestimos.some(e=>e.exemplo))return '';
   return `<div class="banner info">${ic('info')}<div>Você está vendo dados de exemplo. Apague quando quiser começar com os seus.<div class="banner-act"><button class="btn sm danger" data-act="apagar-exemplo">${ic('trash','sm')} Apagar exemplos</button></div></div></div>`;
@@ -529,19 +593,19 @@ function vInicio(){
   venc.sort((a,b)=>a.data<b.data?-1:1);
   const devo=S.emprestimos.filter(e=>e.direcao==='devo'), medevem=S.emprestimos.filter(e=>e.direcao==='medevem');
   const tDevo=sum(devo,e=>empInfo(e).saldo), tMe=sum(medevem,e=>empInfo(e).saldo), atrasoMe=sum(medevem,e=>empInfo(e).atrasado);
-  const inv=sum(S.investimentos,saldoInv);
+  const inv=sum(S.investimentos,saldoInv), rendTot=sum(S.investimentos,i=>invStats(i).rend);
   const porCat={}; r.des.forEach(l=>{porCat[l.categoriaId]=(porCat[l.categoriaId]||0)+l.valor});
   const top=Object.entries(porCat).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const maxTop=top.length?top[0][1]:1;
   const semDados=!S.lancamentos.length&&!S.emprestimos.length&&!S.investimentos.length;
   const pctFixo=r.despesas?Math.round(r.fixas/r.despesas*100):0;
-  return `${modeBanner()}${exemploBanner()}
+  return `${backupAviso(semDados)}${exemploBanner()}
   <section class="hero" aria-label="Resumo">
-    <div><div class="eyebrow">Saldo em contas</div><div class="big ${''}">${UI.loaded?brl(total):'Carregando…'}</div></div>
+    <div class="hero-top"><div><div class="eyebrow">Saldo em contas</div><div class="big">${UI.loaded?brlS(total):'Carregando…'}</div></div>${olho('saldo')}</div>
     <div class="hero-row">
-      <div><span>Receitas</span><b>${brl(r.receitas)}</b></div>
-      <div><span>Despesas</span><b>${brl(r.despesas)}</b></div>
-      <div><span>Resultado</span><b>${res>=0?'+':'−'} ${brl(Math.abs(res))}</b></div>
+      <div><span>Receitas</span><b>${brlS(r.receitas)}</b></div>
+      <div><span>Despesas</span><b>${brlS(r.despesas)}</b></div>
+      <div><span>Resultado</span><b>${ocSaldo?OCULTO:(res>=0?'+':'−')+' '+brl(Math.abs(res))}</b></div>
     </div>
   </section>
   ${semDados&&UI.loaded?`<div class="card">${empty('plus','Comece pelo seu primeiro lançamento',`Toque em <b>+</b> para registrar um gasto ou uma receita. Leva menos de 10 segundos.`,`<div class="actions" style="width:100%;max-width:360px"><button class="btn primary" data-act="novo-lanc">${ic('plus')} Lançar agora</button><button class="btn ghost" data-act="carregar-exemplo">Ver exemplo</button></div>`)}</div>`:''}
@@ -568,10 +632,12 @@ function vInicio(){
     <button class="card stat" data-act="ir" data-v="emprestimos" style="text-align:left;cursor:pointer"><span class="eyebrow">Eu devo</span><b>${brl(tDevo)}</b><span class="xs muted">${devo.filter(e=>!empInfo(e).quitado).length} empréstimo(s) ativo(s)</span></button>
     <button class="card stat" data-act="ir" data-v="emprestimos" data-aba="medevem" style="text-align:left;cursor:pointer"><span class="eyebrow">Me devem</span><b class="pos">${brl(tMe)}</b><span class="xs ${atrasoMe?'neg':'muted'}">${atrasoMe?brl(atrasoMe)+' em atraso':'Nada em atraso'}</span></button>
   </div>
-  <button class="card stat" data-act="ir" data-v="investimentos" style="text-align:left;cursor:pointer;flex-direction:row;align-items:center;gap:12px">
-    <span class="cat-ico" style="background:var(--brand-soft);color:var(--brand)">${ic('piggy')}</span>
-    <span class="row-main"><span class="eyebrow">Investido</span><b style="font-size:var(--fs-lg)">${brl(inv)}</b></span>${ic('chevR')}
-  </button>
+  <div class="card stat inv-card">
+    <button type="button" class="inv-link" data-act="ir" data-v="investimentos" aria-label="Abrir investimentos">
+      <span class="cat-ico" style="background:var(--brand-soft);color:var(--brand)">${ic('piggy')}</span>
+      <span class="row-main"><span class="eyebrow">Investido</span><b style="font-size:var(--fs-lg)">${brlI(inv)}</b>${rendTot&&!ocInv?`<span>${brl(rendTot)} de rendimentos</span>`:''}</span></button>
+    ${olho('inv')}<button type="button" class="iconbtn" data-act="ir" data-v="investimentos" aria-label="Abrir investimentos">${ic('chevR')}</button>
+  </div>
   <section class="card" aria-label="Maiores gastos">
     <div class="section-h"><h2>Maiores gastos do mês</h2></div>
     ${top.length?`<div class="list" style="margin-top:6px">${top.map(([cid,v])=>{const c=cat(cid);return `<div style="display:flex;align-items:center;gap:12px;padding:8px 0">${catIcon(c)}<div class="row-main" style="gap:6px"><div style="display:flex;justify-content:space-between;gap:8px"><b>${esc(c?c.nome:'Sem categoria')}</b><span class="small">${brl(v)}</span></div><div class="bar"><i style="width:${Math.max(3,v/maxTop*100)}%;background:${(c&&c.cor)||'var(--muted)'}"></i></div></div></div>`}).join('')}</div>`
@@ -628,13 +694,61 @@ function vEmprestimos(){
 }
 
 function vInvestimentos(){
-  const tot=sum(S.investimentos,saldoInv);
-  const porTipo={}; S.investimentos.forEach(i=>porTipo[i.tipo]=(porTipo[i.tipo]||0)+saldoInv(i));
-  return `${voltar()}<div class="hero"><div><div class="eyebrow">Total investido</div><div class="big">${brl(tot)}</div></div>
-   ${Object.keys(porTipo).length?`<div class="small" style="opacity:.85">${Object.entries(porTipo).map(([t,v])=>`${esc(TIPO_INV[t]||t)}: ${brl(v)}`).join(' · ')}</div>`:''}</div>
-   <button class="btn primary" data-act="novo-inv">${ic('plus')} Nova aplicação</button>
-   <section class="card" style="padding-block:4px">${S.investimentos.length?`<div class="list">${S.investimentos.map(i=>`<div class="row" data-act="abrir-inv" data-id="${i.id}" role="button" tabindex="0"><span class="cat-ico" style="background:var(--brand-soft);color:var(--brand)">${ic(i.tipo==='reserva'?'shield':'piggy')}</span><div class="row-main"><b>${esc(i.nome)}</b><span>${esc(TIPO_INV[i.tipo]||'')}${i.instituicao?' · '+esc(i.instituicao):''}${i.liquidez?' · '+(i.liquidez==='diaria'?'Liquidez diária':'No vencimento'):''}</span></div><div class="row-end"><b>${brl(saldoInv(i))}</b></div></div>`).join('')}</div>`
-   :empty('piggy','Nenhuma aplicação ainda','Cadastre sua reserva de emergência e seus investimentos para ver o patrimônio crescer.')}</section>`;
+  const m=brlI, O=ocInv;
+  if(!S.investimentos.length)return `${voltar()}<button class="btn primary" data-act="novo-inv">${ic('plus')} Nova aplicação</button>
+   <section class="card">${empty('piggy','Nenhuma aplicação ainda','Cadastre sua reserva de emergência e seus investimentos para ver distribuição, rentabilidade e evolução do patrimônio.')}</section>`;
+  const st=S.investimentos.map(i=>Object.assign({i},invStats(i)));
+  const tot=sum(st,x=>x.saldo), ap=sum(st,x=>x.ap), rend=sum(st,x=>x.rend), res=sum(st,x=>x.res);
+  const ymH=ymOf(hoje());
+  const rendMes=sum(S.investimentos,i=>sum((i.movimentos||[]).filter(x=>x.tipo==='rendimento'&&x.data&&ymOf(x.data)===ymH),x=>x.valor));
+  const tipos=Object.keys(TIPO_INV);
+  const porTipo=tipos.map((t,k)=>({t,k,v:sum(st.filter(x=>(tipos.includes(x.i.tipo)?x.i.tipo:'outros')===t),x=>x.saldo)})).filter(x=>x.v>0);
+  const pos=sum(porTipo,x=>x.v)||1;
+  const evo=evolucaoInv(12), maxE=Math.max(1,...evo.map(x=>x.v));
+  const si=UI.evoSel!=null&&evo[UI.evoSel]?UI.evoSel:evo.length-1, sel=evo[si];
+  const ant=si>0?evo[si-1].v:0, dif=sel.v-ant;
+  const reserva=sum(st.filter(x=>x.i.tipo==='reserva'),x=>x.saldo), media=mediaEssencial(), meses=media?reserva/media:0, meta=media*6;
+  const liqD=sum(st.filter(x=>x.i.liquidez!=='vencimento'),x=>x.saldo), liqV=sum(st.filter(x=>x.i.liquidez==='vencimento'),x=>x.saldo);
+  const mesAbrev=ym=>{const [y,mm]=ym.split('-').map(Number);return new Intl.DateTimeFormat('pt-BR',{month:'short'}).format(new Date(y,mm-1,1)).replace('.','')};
+  return `${voltar()}
+  <section class="hero" aria-label="Total investido">
+    <div class="hero-top"><div><div class="eyebrow">Total investido</div><div class="big">${m(tot)}</div></div>${olho('inv')}</div>
+    <div class="hero-row">
+      <div><span>Aplicado</span><b>${m(ap-res)}</b></div>
+      <div><span>Rendimentos</span><b>${m(rend)}</b></div>
+      <div><span>Rentabilidade</span><b>${O?'••••':pctFmt(ap?rend/ap:0)}</b></div>
+    </div>
+  </section>
+  <button class="btn primary" data-act="novo-inv">${ic('plus')} Nova aplicação</button>
+  <section class="card" aria-label="Distribuição por tipo">
+    <div class="section-h"><h2>Distribuição</h2><span class="small muted">${porTipo.length} tipo(s)</span></div>
+    ${porTipo.length?`<div class="stack" style="margin:12px 0 4px" role="img" aria-label="${porTipo.map(x=>esc(TIPO_INV[x.t])+' '+Math.round(x.v/pos*100)+'%').join(', ')}">${porTipo.map(x=>`<i style="width:${x.v/pos*100}%;background:var(--s${x.k+1})" title="${esc(TIPO_INV[x.t])}: ${Math.round(x.v/pos*100)}%"></i>`).join('')}</div>
+    <div class="leg">${porTipo.map(x=>`<div><i class="sw" style="background:var(--s${x.k+1})"></i><span class="nm">${esc(TIPO_INV[x.t])}</span><span class="muted">${Math.round(x.v/pos*100)}%</span><b style="font-weight:600;min-width:84px;text-align:right">${m(x.v)}</b></div>`).join('')}</div>`
+    :`<p class="small muted" style="margin:8px 0 0">Sem saldo aplicado no momento.</p>`}
+  </section>
+  <section class="card" aria-label="Evolução do patrimônio">
+    <div class="section-h"><h2>Evolução</h2><span class="small muted">12 meses</span></div>
+    <p class="small" style="margin:8px 0 10px"><span style="text-transform:capitalize">${esc(mesNome(sel.ym))}</span>: <b>${m(sel.v)}</b>${si>0&&!O?` <span class="${dif>=0?'pos':'neg'}">(${dif>=0?'+':'−'} ${brl(Math.abs(dif))} no mês)</span>`:''}</p>
+    <div class="evo" role="group" aria-label="Saldo investido no fim de cada mês">${evo.map((x,k)=>`<button type="button" data-act="evo" data-v="${k}" aria-pressed="${k===si}" aria-label="${esc(mesNome(x.ym))}: ${O?'oculto':brl(x.v)}" title="${esc(mesNome(x.ym))}: ${O?'oculto':brl(x.v)}"><i style="height:${Math.max(0,x.v)/maxE*100}%"></i></button>`).join('')}</div>
+    <div class="evo-x" aria-hidden="true">${evo.map(x=>`<span>${esc(mesAbrev(x.ym))}</span>`).join('')}</div>
+    <p class="xs muted" style="margin:8px 0 0">Toque numa barra para ver o mês. Rendimentos em ${esc(mesCurto(ymH))}: ${m(rendMes)}.</p>
+  </section>
+  <section class="card" aria-label="Reserva de emergência" style="display:flex;flex-direction:column;gap:10px">
+    <div class="section-h"><h2>Reserva de emergência</h2>${media&&reserva?`<span class="pill ${meses>=6?'pos':meses>=3?'warn':'neg'}">${meses>=6?'Meta atingida':meses.toLocaleString('pt-BR',{maximumFractionDigits:1})+' meses'}</span>`:''}</div>
+    ${!media?`<p class="small muted" style="margin:0">Lance suas despesas essenciais (moradia, mercado, contas de casa…) para o app calcular a meta: 6 meses dessas despesas.</p>`
+     :`<div class="grid2"><div class="stat"><span class="eyebrow">Guardado</span><b>${m(reserva)}</b></div><div class="stat"><span class="eyebrow">Meta (6 meses)</span><b>${m(meta)}</b></div></div>
+     <div class="progress" role="img" aria-label="${Math.min(100,Math.round(reserva/meta*100))}% da meta"><i style="width:${Math.min(100,reserva/meta*100)}%"></i></div>
+     <span class="xs muted">Suas despesas essenciais somam ${m(media)} por mês. ${reserva>=meta?'Sua reserva cobre 6 meses ou mais.':`Faltam ${m(meta-reserva)} para cobrir 6 meses.`}</span>`}
+    ${!S.investimentos.some(i=>i.tipo==='reserva')?`<span class="xs muted">Dica: cadastre uma aplicação do tipo <b>Reserva de emergência</b> para acompanhar aqui.</span>`:''}
+  </section>
+  <section class="card" aria-label="Liquidez">
+    <div class="section-h"><h2>Liquidez</h2></div>
+    <div class="grid2" style="margin-top:12px">
+      <div class="stat"><span class="eyebrow">Resgate a qualquer dia</span><b>${m(liqD)}</b><span class="xs muted">${tot>0?Math.round(Math.max(0,liqD)/tot*100):0}% do total</span></div>
+      <div class="stat"><span class="eyebrow">Só no vencimento</span><b>${m(liqV)}</b><span class="xs muted">${tot>0?Math.round(Math.max(0,liqV)/tot*100):0}% do total</span></div>
+    </div>
+  </section>
+  <section class="card" style="padding-block:4px"><div class="list">${st.map(x=>{const i=x.i;return `<div class="row" data-act="abrir-inv" data-id="${i.id}" role="button" tabindex="0"><span class="cat-ico" style="background:var(--brand-soft);color:var(--brand)">${ic(i.tipo==='reserva'?'shield':'piggy')}</span><div class="row-main"><b>${esc(i.nome)}</b><span>${esc(TIPO_INV[i.tipo]||'')}${i.instituicao?' · '+esc(i.instituicao):''}${i.liquidez?' · '+(i.liquidez==='diaria'?'Liquidez diária':'No vencimento'):''}</span></div><div class="row-end"><b>${m(x.saldo)}</b><span class="xs muted">${tot>0?Math.round(Math.max(0,x.saldo)/tot*100):0}%${x.rend&&!O?` · <span class="pos">+${brl(x.rend)}</span>`:''}</span></div></div>`}).join('')}</div></section>`;
 }
 function voltar(){return `<button class="btn ghost sm" data-act="ir" data-v="mais" style="align-self:flex-start">${ic('chevL','sm')} Mais</button>`}
 
@@ -647,19 +761,19 @@ function vMais(){
     ${it('categorias','tag','Categorias',S.categorias.filter(c=>!c.oculta).length+' categorias')}
     ${it('pessoas','users','Pessoas','Quem empresta ou pega emprestado com você')}
     <button class="row" data-act="abrir-seg"><span class="cat-ico">${ic('lock')}</span><span class="row-main"><b>Segurança</b><span>${temPin()?'PIN ativo'+(bioRegistrada()?' · digital ativa':''):'Bloqueio com PIN e digital'}</span></span>${ic('chevR')}</button>
-    ${it('backup','download','Backup e exportação','Salvar cópia, exportar planilha, restaurar')}
+    ${it('backup','download','Backup e exportação',bkUltimo()?'Último backup '+haDias(bkUltimo()):'Nenhum backup feito ainda')}
     ${it('ajuda','help','Ajuda','Como usar o Meu Dinheiro')}
   </div></section>
   <section class="card"><div class="section-h"><h2>Tema</h2></div>
    <div class="seg" style="margin-top:12px" role="group" aria-label="Tema">${[['auto','Automático'],['claro','Claro'],['escuro','Escuro']].map(([k,l])=>`<button data-act="set-tema" data-v="${k}" aria-pressed="${tema===k}">${l}</button>`).join('')}</div>
    <p class="xs muted" style="margin:8px 0 0">O botão no topo da tela também troca o tema com um toque.</p></section>
-  <section class="card small muted" style="display:flex;gap:10px">${ic('shield')}<span>${mode==='db'?'Seus dados ficam salvos na sua conta e só você tem acesso a eles.':'Seus dados ficam salvos só neste navegador.'}</span></section>
+  <section class="card small muted" style="display:flex;gap:10px">${ic('shield')}<span>${mode==='db'?'Seus dados ficam salvos na sua conta e só você tem acesso a eles.':'Seus dados ficam salvos só neste aparelho. Faça backup com frequência.'}</span></section>
   ${signature()}`;
 }
 
 function vContas(){
-  return `${voltar()}<button class="btn primary" data-act="nova-conta">${ic('plus')} Nova conta ou cartão</button>
-  <section class="card" style="padding-block:4px"><div class="list">${S.contas.slice().sort((a,b)=>(a.ativa===false)-(b.ativa===false)).map(c=>{const s=saldoConta(c.id);return `<div class="row" data-act="abrir-conta" data-id="${c.id}" role="button" tabindex="0"><span class="cat-ico" style="background:var(--surface-2);color:var(--ink)">${ic(c.tipo==='cartao'?'card':c.tipo==='carteira'?'wallet':'bank')}</span><div class="row-main"><b>${esc(c.nome)}</b><span>${TIPO_CONTA[c.tipo]||''}${c.ativa===false?' · Arquivada':''}</span></div><div class="row-end"><b class="${s<0?'neg':''}">${brl(s)}</b>${c.tipo==='cartao'&&s<0?'<span class="xs muted">fatura em aberto</span>':''}</div></div>`}).join('')}</div></section>`;
+  return `${voltar()}<div style="display:flex;gap:8px;align-items:center"><button class="btn primary" data-act="nova-conta" style="flex:1">${ic('plus')} Nova conta ou cartão</button>${olho('saldo')}</div>
+  <section class="card" style="padding-block:4px"><div class="list">${S.contas.slice().sort((a,b)=>(a.ativa===false)-(b.ativa===false)).map(c=>{const s=saldoConta(c.id);return `<div class="row" data-act="abrir-conta" data-id="${c.id}" role="button" tabindex="0"><span class="cat-ico" style="background:var(--surface-2);color:var(--ink)">${ic(c.tipo==='cartao'?'card':c.tipo==='carteira'?'wallet':'bank')}</span><div class="row-main"><b>${esc(c.nome)}</b><span>${TIPO_CONTA[c.tipo]||''}${c.ativa===false?' · Arquivada':''}</span></div><div class="row-end"><b class="${s<0?'neg':''}">${brlS(s)}</b>${c.tipo==='cartao'&&s<0?'<span class="xs muted">fatura em aberto</span>':''}</div></div>`}).join('')}</div></section>`;
 }
 function vCategorias(){
   const g=t=>S.categorias.filter(c=>(t==='receita'?c.tipo==='receita':c.tipo==='despesa'&&c.grupo===t));
@@ -671,14 +785,19 @@ function vPessoas(){
   <section class="card" style="padding-block:4px">${S.pessoas.length?`<div class="list">${S.pessoas.slice().sort((a,b)=>a.nome.localeCompare(b.nome)).map(p=>{const es=S.emprestimos.filter(e=>e.contraparte===p.nome);const me=sum(es.filter(e=>e.direcao==='medevem'),e=>empInfo(e).saldo),eu=sum(es.filter(e=>e.direcao==='devo'),e=>empInfo(e).saldo);return `<div class="row" data-act="abrir-pessoa" data-id="${p.id}" role="button" tabindex="0"><span class="cat-ico" style="background:var(--surface-2);color:var(--ink);font-weight:600">${esc(p.nome.trim().charAt(0).toUpperCase())}</span><div class="row-main"><b>${esc(p.nome)}</b><span>${esc(p.telefone||'')}</span></div><div class="row-end">${me?`<span class="small pos">Te deve ${brl(me)}</span>`:''}${eu?`<span class="small neg">Você deve ${brl(eu)}</span>`:''}${!me&&!eu?'<span class="xs muted">Sem pendências</span>':''}</div></div>`}).join('')}</div>`:empty('users','Nenhuma pessoa cadastrada','Pessoas são criadas automaticamente quando você registra um empréstimo.')}</section>`;
 }
 function vBackup(){
+  const u=bkUltimo(), p=bkPref(), atr=bkAtrasado();
   return `${voltar()}
+  <section class="card" style="display:flex;flex-direction:column;gap:10px"><div class="section-h"><h2 style="font-size:var(--fs-lg)">Situação do backup</h2><span class="pill ${atr?'warn':'pos'}">${atr?(u?'Atrasado':'Nunca feito'):'Em dia'}</span></div>
+   <p class="small" style="margin:0" id="bk-status">${u?`Último backup: <b>${dataHora(u)}</b> (${haDias(u)})`:'Nenhum backup feito neste aparelho ainda.'}</p>
+   <label class="toggle" for="bk-mostrar"><span>Mostrar lembrete na tela inicial</span><input type="checkbox" id="bk-mostrar" ${p.mostrar?'checked':''}></label>
+   <div class="field"><label for="bk-dias">Avisar quando o último backup tiver mais de</label><select class="input" id="bk-dias">${[7,15,30].map(d=>`<option value="${d}" ${p.dias===d?'selected':''}>${d} dias</option>`).join('')}</select></div></section>
   <section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 style="font-size:var(--fs-lg)">Salvar uma cópia</h2>
    <p class="small muted" style="margin:0">Baixa um arquivo com todos os seus dados. Guarde no Google Drive ou no e-mail para restaurar quando precisar.</p>
    <button class="btn primary" data-act="exp-json">${ic('download')} Baixar backup completo</button>
    <button class="btn ghost" data-act="exp-csv">${ic('download')} Exportar lançamentos para planilha (CSV)</button></section>
   <section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 style="font-size:var(--fs-lg)">Restaurar backup</h2>
    <p class="small muted" style="margin:0">Substitui todos os dados atuais pelos do arquivo de backup.</p>
-   <label class="btn ghost" for="imp-file" style="cursor:pointer">${ic('upload')} Escolher arquivo de backup</label>
+   <label class="btn ghost" for="imp-file" data-act="imp-escolher" style="cursor:pointer">${ic('upload')} Escolher arquivo de backup</label>
    <input id="imp-file" type="file" accept=".json,application/json" hidden>
    <div id="imp-box"></div></section>
   <div id="exp-box"></div>`;
@@ -703,7 +822,9 @@ function vAjuda(){
 const VIEWS={inicio:vInicio,lancamentos:vLancamentos,emprestimos:vEmprestimos,investimentos:vInvestimentos,mais:vMais,contas:vContas,categorias:vCategorias,pessoas:vPessoas,backup:vBackup,ajuda:vAjuda};
 function render(){
   renderNav();
-  const v=$('#view'); const active=document.activeElement; const wasBusca=active&&active.id==='busca'; const pos=wasBusca?active.selectionStart:0;
+  const v=$('#view');
+  if(lockState==='locked'){v.innerHTML='';return} /* nada de dados na tela enquanto bloqueado */
+  const active=document.activeElement; const wasBusca=active&&active.id==='busca'; const pos=wasBusca?active.selectionStart:0;
   v.innerHTML=(VIEWS[UI.view]||vInicio)();
   if(wasBusca){const b=$('#busca');if(b){b.focus();try{b.setSelectionRange(pos,pos)}catch(e){}}}
   if(sheetRefresh)sheetRefresh();
@@ -867,31 +988,41 @@ function detalheEmp(id){
 }
 
 /* Investimento */
-function formInv(){
-  openSheet('Nova aplicação',`<div class="field"><label for="if-nome">Nome</label><input class="input" id="if-nome" placeholder="Ex.: CDB Nubank, Tesouro Selic" autofocus></div>
-   <div class="field"><label for="if-tipo">Tipo</label><select class="input" id="if-tipo">${Object.entries(TIPO_INV).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div>
-   <div class="two"><div class="field"><label for="if-inst">Instituição</label><input class="input" id="if-inst" placeholder="Ex.: Inter"></div><div class="field"><label for="if-liq">Liquidez</label><select class="input" id="if-liq"><option value="diaria">Diária</option><option value="vencimento">No vencimento</option></select></div></div>
-   <div class="field"><label for="if-saldo">Saldo que já existe hoje (opcional)</label><input class="input" id="if-saldo" inputmode="decimal" placeholder="0,00"></div>
+function formInv(id){
+  const i=id?clone(S.investimentos.find(x=>x.id===id)||{}):{nome:'',tipo:'reserva',instituicao:'',liquidez:'diaria'};
+  if(id&&!i.id)return closeSheet();
+  openSheet(id?'Editar aplicação':'Nova aplicação',`<div class="field"><label for="if-nome">Nome</label><input class="input" id="if-nome" value="${esc(i.nome)}" placeholder="Ex.: CDB Nubank, Tesouro Selic" autofocus></div>
+   <div class="field"><label for="if-tipo">Tipo</label><select class="input" id="if-tipo">${Object.entries(TIPO_INV).map(([k,v])=>`<option value="${k}" ${i.tipo===k?'selected':''}>${v}</option>`).join('')}</select></div>
+   <div class="two"><div class="field"><label for="if-inst">Instituição</label><input class="input" id="if-inst" value="${esc(i.instituicao||'')}" placeholder="Ex.: Inter"></div><div class="field"><label for="if-liq">Liquidez</label><select class="input" id="if-liq"><option value="diaria">Diária</option><option value="vencimento" ${i.liquidez==='vencimento'?'selected':''}>No vencimento</option></select></div></div>
+   ${id?'':`<div class="field"><label for="if-saldo">Saldo que já existe hoje (opcional)</label><input class="input" id="if-saldo" inputmode="decimal" placeholder="0,00"></div>`}
    <div id="if-err" class="small neg" role="alert"></div><button class="btn primary" data-act="if-salvar">Salvar aplicação</button>`);
-  sheetHandlers={'if-salvar':()=>{const nome=val('if-nome').trim();if(!nome)return $('#if-err').textContent='Dê um nome para a aplicação.';const s=parseMoney(val('if-saldo'))||0;
-    put('investimentos',{nome,tipo:val('if-tipo'),instituicao:val('if-inst').trim(),liquidez:val('if-liq'),movimentos:s?[{id:uid(),tipo:'inicial',valor:s,data:hoje()}]:[]},true);closeSheet();render();toast('Aplicação cadastrada')}};
+  sheetHandlers={'if-salvar':()=>{const nome=val('if-nome').trim();if(!nome)return $('#if-err').textContent='Dê um nome para a aplicação.';
+    Object.assign(i,{nome,tipo:val('if-tipo'),instituicao:val('if-inst').trim(),liquidez:val('if-liq')});
+    if(id){put('investimentos',i,true);render();detalheInv(id);toast('Aplicação atualizada');return}
+    const s=parseMoney(val('if-saldo'))||0; i.movimentos=s>0?[{id:uid(),tipo:'inicial',valor:s,data:hoje()}]:[];
+    put('investimentos',i,true);closeSheet();render();toast('Aplicação cadastrada')}};
 }
 function detalheInv(id){
   const i=S.investimentos.find(x=>x.id===id); if(!i){closeSheet();return}
   const nm={inicial:'Saldo inicial',aporte:'Aporte',resgate:'Resgate',rendimento:'Rendimento'};
-  const body=`<div class="card stat"><span class="eyebrow">Saldo atual</span><b style="font-size:var(--fs-xl)">${brl(saldoInv(i))}</b><span class="xs muted">${esc(TIPO_INV[i.tipo]||'')}${i.instituicao?' · '+esc(i.instituicao):''}</span></div>
+  const x=invStats(i);
+  const body=`<div class="card stat"><span class="eyebrow">Saldo atual</span><b style="font-size:var(--fs-xl)">${brlI(x.saldo)}</b><span class="xs muted">${esc(TIPO_INV[i.tipo]||'')}${i.instituicao?' · '+esc(i.instituicao):''}${i.liquidez?' · '+(i.liquidez==='diaria'?'Liquidez diária':'No vencimento'):''}</span>
+    <div class="grid2" style="margin-top:10px"><div class="stat"><span class="eyebrow">Rendimentos</span><b class="pos" style="font-size:var(--fs-md)">${brlI(x.rend)}</b></div><div class="stat"><span class="eyebrow">Rentabilidade</span><b style="font-size:var(--fs-md)">${ocInv?'••••':pctFmt(x.ap?x.rend/x.ap:0)}</b></div></div>
+    <button class="btn ghost sm" data-act="im-editar" style="align-self:flex-start;margin-top:8px">${ic('edit','sm')} Editar dados</button></div>
    <div class="card" style="display:flex;flex-direction:column;gap:12px"><b>Novo movimento</b>
     <div class="seg" role="group" aria-label="Movimento">${[['aporte','Aporte'],['resgate','Resgate'],['rendimento','Rendimento']].map(([k,t],j)=>`<button type="button" data-act="im-tipo" data-v="${k}" aria-pressed="${j===0}">${t}</button>`).join('')}</div>
     <div class="two"><div class="field"><label for="im-valor">Valor</label><input class="input" id="im-valor" inputmode="decimal" placeholder="0,00"></div><div class="field"><label for="im-data">Data</label><input class="input" type="date" id="im-data" value="${hoje()}"></div></div>
     <div class="field" id="im-conta-f"><label for="im-conta">Conta</label><select class="input" id="im-conta">${optsContas()}</select></div>
     <button class="btn primary" data-act="im-salvar">Registrar</button></div>
-   <section class="card" style="padding-block:4px">${(i.movimentos||[]).slice().sort((a,b)=>a.data<b.data?1:-1).map(m=>`<div class="inst"><span class="cat-ico" style="width:32px;height:32px;background:var(--surface-2);color:${m.tipo==='resgate'?'var(--neg)':'var(--pos)'}">${ic(m.tipo==='resgate'?'down':'up','sm')}</span><div class="row-main"><b>${nm[m.tipo]}</b><span>${dataCurta(m.data)}</span></div><b class="${m.tipo==='resgate'?'neg':'pos'}">${m.tipo==='resgate'?'−':'+'} ${brl(m.valor)}</b><button class="iconbtn" data-act="im-del" data-n="${m.id}" aria-label="Excluir movimento">${ic('trash','sm')}</button></div>`).join('')||'<p class="small muted">Nenhum movimento ainda.</p>'}</section>
+   <section class="card" style="padding-block:4px">${(i.movimentos||[]).slice().sort((a,b)=>a.data<b.data?1:-1).map(m=>`<div class="inst"><span class="cat-ico" style="width:32px;height:32px;background:var(--surface-2);color:${m.tipo==='resgate'?'var(--neg)':'var(--pos)'}">${ic(m.tipo==='resgate'?'down':'up','sm')}</span><div class="row-main"><b>${nm[m.tipo]}</b><span>${dataCurta(m.data)}</span></div><b class="${m.tipo==='resgate'?'neg':'pos'}">${m.tipo==='resgate'?'−':'+'} ${brlI(m.valor)}</b><button class="iconbtn" data-act="im-del" data-n="${m.id}" aria-label="Excluir movimento">${ic('trash','sm')}</button></div>`).join('')||'<p class="small muted">Nenhum movimento ainda.</p>'}</section>
    <div id="im-box"></div><button class="btn danger" data-act="im-excluir">${ic('trash','sm')} Excluir aplicação</button>`;
   openSheet(i.nome,body);
   let tipo='aporte';
   sheetHandlers={
     'im-tipo':v=>{tipo=v;document.querySelectorAll('[data-act="im-tipo"]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));$('#im-conta-f').hidden=v==='rendimento'},
-    'im-salvar':()=>{const v=parseMoney(val('im-valor'));if(!v)return toast('Digite o valor.');const i2=clone(S.investimentos.find(x=>x.id===id));const m={id:uid(),tipo,valor:v,data:val('im-data')||hoje()};
+    'im-editar':()=>formInv(id),
+    'im-salvar':()=>{const v=parseMoney(val('im-valor'));if(!v||v<0)return toast('Digite o valor.');const i2=clone(S.investimentos.find(x=>x.id===id));
+      if(tipo==='resgate'&&v>saldoInv(i2))return toast('O resgate é maior que o saldo da aplicação ('+brl(saldoInv(i2))+').');const m={id:uid(),tipo,valor:v,data:val('im-data')||hoje()};
       if(tipo!=='rendimento'){const c=catByKey(tipo==='aporte'?'aporte':'resgate');const l=put('lancamentos',{tipo:tipo==='aporte'?'despesa':'receita',valor:v,data:m.data,contaId:val('im-conta'),categoriaId:c&&c.id,descricao:(tipo==='aporte'?'Aporte em ':'Resgate de ')+i2.nome,status:'pago',mov:'investimento',vinculo:id},true);m.lancId=l.id;m.contaId=val('im-conta')}
       i2.movimentos=(i2.movimentos||[]).concat(m);put('investimentos',i2,true);render();detalheInv(id);toast('Movimento registrado')},
     'im-del':mid=>{const i2=clone(S.investimentos.find(x=>x.id===id));const m=i2.movimentos.find(x=>x.id===mid);if(m&&m.lancId)del('lancamentos',m.lancId,true);i2.movimentos=i2.movimentos.filter(x=>x.id!==mid);put('investimentos',i2,true);render();detalheInv(id)},
@@ -969,11 +1100,17 @@ function apagarExemplo(){
 
 /* ---------- Backup ---------- */
 async function salvarArquivo(nome,conteudo,tipo){
-  if(NATIVE){try{const r=await plug('Filesystem').writeFile({path:nome,data:conteudo,directory:'CACHE',encoding:'utf8'});await plug('Share').share({title:nome,dialogTitle:'Salvar ou enviar '+nome,files:[r.uri]});return}catch(e){if(e&&/cancel/i.test(e.message||''))return;toast('Não foi possível compartilhar o arquivo.')}}
-  if(downloads){try{const r=await downloads.save({filename:nome,data:new Blob([conteudo],{type:tipo})});if(r!=='cancelled')toast('Arquivo salvo');return}catch(e){if(e&&e.code&&e.code!=='unavailable'){toast('Não foi possível salvar o arquivo.');return}}}
-  if(!window.claude){try{const u=URL.createObjectURL(new Blob([conteudo],{type:tipo}));const a=document.createElement('a');a.href=u;a.download=nome;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast('Arquivo salvo em Downloads');return}catch(e){}}
-  const box=$('#exp-box'); if(!box)return;
+  if(NATIVE){pausaLivre();try{const r=await plug('Filesystem').writeFile({path:nome,data:conteudo,directory:'CACHE',encoding:'utf8'});await plug('Share').share({title:nome,dialogTitle:'Salvar ou enviar '+nome,files:[r.uri]});return true}catch(e){if(e&&/cancel/i.test(e.message||''))return false;toast('Não foi possível compartilhar o arquivo.')}}
+  if(downloads){try{const r=await downloads.save({filename:nome,data:new Blob([conteudo],{type:tipo})});if(r!=='cancelled'){toast('Arquivo salvo');return true}return false}catch(e){if(e&&e.code&&e.code!=='unavailable'){toast('Não foi possível salvar o arquivo.');return false}}}
+  if(!window.claude){try{const u=URL.createObjectURL(new Blob([conteudo],{type:tipo}));const a=document.createElement('a');a.href=u;a.download=nome;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast('Arquivo salvo em Downloads');return true}catch(e){}}
+  if(!$('#exp-box')&&UI.view!=='backup'){closeSheet();UI.view='backup';render()}
+  const box=$('#exp-box'); if(!box)return false;
   box.innerHTML=`<section class="card" style="display:flex;flex-direction:column;gap:10px"><b>Copie o conteúdo abaixo</b><p class="small muted" style="margin:0">Este navegador não permite baixar arquivos daqui. Copie e cole num arquivo chamado <b>${esc(nome)}</b>.</p><textarea class="input" id="exp-txt" rows="6" readonly>${esc(conteudo)}</textarea><button class="btn primary" data-act="copiar">Copiar</button></section>`;
+  return false;
+}
+async function fazerBackup(){
+  const ok=await salvarArquivo('meu-dinheiro-backup-'+hoje()+'.json',JSON.stringify({app:'meu-dinheiro',versao:1,geradoEm:new Date().toISOString(),dados:S},null,1),'application/json');
+  if(ok){registrarBackup();if(lockState==='open')render()}
 }
 function csvLanc(){
   const q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
@@ -1041,25 +1178,58 @@ async function bioEntrar(){
   if(!a||!a.response||!a.response.authenticatorData)return false;
   return (new Uint8Array(a.response.authenticatorData)[32]&0x04)!==0; /* digital/biometria confirmada pelo aparelho */
 }
-function bloquear(){if(!temPin())return;closeSheet();lockState='locked';pinBuf='';bioPedido=false;renderLock()}
+/* Pausa livre: compartilhar um arquivo, escolher um backup ou ler a digital tira o app da frente por instantes.
+   Nesses casos, voltar em até 2 minutos não bloqueia. */
+let pausaLivreAte=0;
+const pausaLivre=()=>{pausaLivreAte=Date.now()+120000};
+const emPausaLivre=()=>Date.now()<pausaLivreAte;
+let esqueci=null; /* null = teclado do PIN; 'menu' | 'codigo' | 'pergunta' | 'apagar' = recuperação */
+function bloquear(){if(!temPin())return;closeSheet();lockState='locked';pinBuf='';bioPedido=false;esqueci=null;pausaLivreAte=0;renderLock()}
 function bioTentar(){const m=$('#pin-msg');if(m){m.className='pin-msg muted';m.textContent='Toque no leitor de digital…'}bioEntrar().then(ok=>{if(ok)desbloquear();else{const mm=$('#pin-msg');if(mm){mm.className='pin-msg neg';mm.textContent='Digital não confirmada. Use o PIN.'}}}).catch(err=>{const mm=$('#pin-msg');if(mm){mm.className='pin-msg neg';mm.textContent=bioErro(err)+' Use o PIN.'}})}
-function desbloquear(){lockState='open';pinBuf='';lsDel('md_tent');lastActivity=Date.now();renderLock()}
-function renderLock(forgot){
+function desbloquear(){lockState='open';pinBuf='';esqueci=null;lsDel('md_tent');lastActivity=Date.now();renderLock()}
+function registrarErro(){const t=tentativas();t.n++;if(t.n>=5)t.ate=Date.now()+Math.min(15*60000,30000*Math.pow(2,t.n-5));lsSet('md_tent',JSON.stringify(t));return t}
+const temCodigo=()=>!!(SEG&&SEG.rec&&SEG.rec.hash), temPergunta=()=>!!(SEG&&SEG.perg&&SEG.perg.hash);
+function telaEsqueci(bio,espera){
+  const msg=`<div class="pin-msg ${espera?'neg':'muted'}" id="pin-msg" role="status">${espera?`Muitas tentativas. Aguarde ${espera}s.`:''}</div>`;
+  if(esqueci==='menu'){
+    const op=(act,icn,t,sub,estilo,livre)=>`<button class="row" data-act="${act}" ${espera&&!livre?'disabled':''}><span class="cat-ico" style="${estilo||''}">${ic(icn)}</span><span class="row-main"><b>${t}</b><span>${sub}</span></span>${ic('chevR')}</button>`;
+    const nada=!bio&&!temCodigo()&&!temPergunta();
+    return `<p class="small muted" style="margin:0">Prove que é você para criar um PIN novo. Seus dados continuam salvos.</p>
+     <div class="menu">${bio?op('rc-bio','finger','Usar a digital','Confirme com a digital deste aparelho'):''}
+      ${temCodigo()?op('rc-ir-codigo','key','Código de recuperação','O código de 12 letras e números que você guardou'):''}
+      ${temPergunta()?op('rc-ir-pergunta','help','Pergunta de segurança',esc(SEG.perg.texto)):''}
+      ${op('rc-ir-apagar','trash','Apagar tudo e começar de novo','Última opção: depois dá para restaurar um backup','background:var(--neg-soft);color:var(--neg)',true)}</div>
+     ${nada?`<div class="banner">${ic('alert')}<div>Não há digital, código nem pergunta de recuperação configurados. Sem o PIN, a saída é apagar os dados do app e restaurar um backup.</div></div>`:''}
+     ${msg}<button class="btn ghost" data-act="rc-voltar">Voltar para o PIN</button>`;
+  }
+  if(esqueci==='codigo'||esqueci==='pergunta'){
+    const cod=esqueci==='codigo';
+    return `<p class="small" style="margin:0">${cod?'Digite o código de recuperação que você guardou ao criar o PIN.':'<b>'+esc(SEG.perg.texto)+'</b>'}</p>
+     <input class="input${cod?' codefield':''}" id="rc-input" autocomplete="off" autocorrect="off" spellcheck="false" ${cod?'autocapitalize="characters" placeholder="XXXX-XXXX-XXXX" aria-label="Código de recuperação"':'placeholder="Sua resposta" aria-label="Resposta"'} ${espera?'disabled':''}>
+     ${msg}<div class="actions"><button class="btn ghost" data-act="rc-menu">Voltar</button><button class="btn primary" data-act="rc-confirmar" ${espera?'disabled':''}>Confirmar</button></div>`;
+  }
+  return `<p class="small" style="margin:0"><b>Isto apaga todos os lançamentos, contas, empréstimos e investimentos ${mode==='db'?'da sua conta':'deste aparelho'}</b> e tira o PIN. Se você tem um arquivo de backup, poderá restaurá-lo depois em Mais › Backup.</p>
+   <p class="small muted" style="margin:0">Para confirmar, digite <b>APAGAR</b>.</p>
+   <input class="input" id="rc-input" autocomplete="off" autocapitalize="characters" placeholder="APAGAR" aria-label="Digite APAGAR">
+   <div id="rc-err" class="small neg" role="alert"></div>
+   <div class="actions"><button class="btn ghost" data-act="rc-menu">Voltar</button><button class="btn danger" data-act="rc-apagar">Apagar tudo</button></div>`;
+}
+function renderLock(){
   const root=$('#lock-root'); clearInterval(lockTick);
   const main=$('#view'); if(main){if(lockState==='open')main.removeAttribute('inert');else main.setAttribute('inert','')}
   atualizarLockBtn();
-  if(lockState==='open'){root.innerHTML='';return}
+  if(lockState==='open'){const tinha=root.innerHTML!=='';root.innerHTML='';if(tinha)render();return}
   if(lockState==='checking')return;
+  if(main)main.innerHTML='';
   const t=tentativas(); const espera=Math.max(0,Math.ceil((t.ate-Date.now())/1000));
-  const bio=bioRegistrada()&&bioOk;
-  const head=`<div class="lock-head"><span class="brand-mark">${ic('trend')}</span><h1>${forgot?'Esqueci o PIN':'Digite seu PIN'}</h1><span class="small muted">Meu Dinheiro está bloqueado</span></div>`;
-  if(forgot){
-    root.innerHTML=`<div class="lock" role="dialog" aria-modal="true" aria-label="Redefinir PIN">${head}
-     <div class="card" style="max-width:360px;display:flex;flex-direction:column;gap:12px"><p class="small" style="margin:0">Para tirar o PIN, digite <b>REDEFINIR</b> abaixo. Seus lançamentos continuam salvos. Depois, crie um PIN novo em <b>Mais › Segurança</b>.</p>
-     <input class="input" id="pin-reset-txt" autocomplete="off" autocapitalize="characters" placeholder="REDEFINIR" aria-label="Digite REDEFINIR">
-     <div id="pin-reset-err" class="small neg" role="alert"></div>
-     <div class="actions"><button class="btn ghost" data-act="pin-reset-cancel">Voltar</button><button class="btn danger" data-act="pin-reset">Tirar o PIN</button></div></div></div>`;
-    setTimeout(()=>{const i=$('#pin-reset-txt');if(i)i.focus()},50);return;
+  const bio=!!(bioRegistrada()&&bioOk);
+  if(esqueci==='codigo'&&!temCodigo()||esqueci==='pergunta'&&!temPergunta())esqueci='menu';
+  const titulo={menu:'Esqueci o PIN',codigo:'Código de recuperação',pergunta:'Pergunta de segurança',apagar:'Apagar e recomeçar'}[esqueci]||'Digite seu PIN';
+  const head=`<div class="lock-head"><span class="brand-mark">${ic('trend')}</span><h1>${titulo}</h1><span class="small muted">Meu Dinheiro está bloqueado</span></div>`;
+  if(espera)lockTick=setInterval(()=>{if(Date.now()>=tentativas().ate){renderLock()}else{const m=$('#pin-msg');if(m)m.textContent=`Muitas tentativas. Aguarde ${Math.ceil((tentativas().ate-Date.now())/1000)}s.`}},1000);
+  if(esqueci){
+    root.innerHTML=`<div class="lock" role="dialog" aria-modal="true" aria-label="${titulo}">${head}<div class="card lock-opts">${telaEsqueci(bio,espera)}</div></div>`;
+    setTimeout(()=>{const i=$('#rc-input');if(i&&!i.disabled)i.focus()},50);return;
   }
   const n=SEG.pinLen||4;
   const k=d=>`<button class="key" data-act="pin-key" data-v="${d}" ${espera?'disabled':''} aria-label="${d}">${d}</button>`;
@@ -1071,12 +1241,11 @@ function renderLock(forgot){
     ${k(0)}<button class="key flat" data-act="pin-back" aria-label="Apagar">${ic('backspace')}</button></div>
    <button class="linkbtn" data-act="pin-esqueci">Esqueci o PIN</button></div>`;
   if(bio&&NATIVE&&!espera&&!bioPedido){bioPedido=true;setTimeout(bioTentar,250)}
-  if(espera)lockTick=setInterval(()=>{if(Date.now()>=tentativas().ate){renderLock()}else{const m=$('#pin-msg');if(m)m.textContent=`Muitas tentativas. Aguarde ${Math.ceil((tentativas().ate-Date.now())/1000)}s.`}},1000);
 }
 function pintarDots(err){const d=$('#pin-dots');if(!d)return;[...d.children].forEach((c,i)=>c.classList.toggle('on',i<pinBuf.length));d.setAttribute('aria-label',pinBuf.length+' dígitos');if(err){d.classList.remove('err');void d.offsetWidth;d.classList.add('err')}}
 let verificando=false;
 async function pinTecla(dg){
-  if(verificando||lockState!=='locked'||Date.now()<tentativas().ate)return;
+  if(verificando||lockState!=='locked'||esqueci||Date.now()<tentativas().ate)return;
   const n=SEG.pinLen||4; if(pinBuf.length>=n)return;
   pinBuf+=dg; pintarDots();
   if(pinBuf.length<n)return;
@@ -1084,42 +1253,104 @@ async function pinTecla(dg){
   let ok=false; try{ok=(await hashPin(pinBuf,SEG.pinSalt))===SEG.pinHash}catch(e){}
   verificando=false;
   if(ok){desbloquear();return}
-  const t=tentativas(); t.n++; if(t.n>=5)t.ate=Date.now()+Math.min(15*60000,30000*Math.pow(2,t.n-5));
-  lsSet('md_tent',JSON.stringify(t)); pinBuf=''; renderLock(); pintarDots(true);
+  registrarErro(); pinBuf=''; renderLock(); pintarDots(true);
 }
-function pinApagar(){if(lockState!=='locked')return;pinBuf=pinBuf.slice(0,-1);pintarDots()}
+function pinApagar(){if(lockState!=='locked'||esqueci)return;pinBuf=pinBuf.slice(0,-1);pintarDots()}
 const pinValido=p=>/^\d{4,6}$/.test(p);
 const pinFraco=p=>/^(\d)\1+$/.test(p)||'0123456789'.includes(p)||'9876543210'.includes(p);
-async function novoPinDados(p){const salt=uid();return {pinHash:await hashPin(p,salt),pinSalt:salt,pinLen:p.length,autoLock:SEG&&SEG.autoLock!=null?SEG.autoLock:0,atualizadoEm:Date.now()}}
-async function confere(p){try{return temPin()&&(await hashPin(p,SEG.pinSalt))===SEG.pinHash}catch(e){return false}}
+async function novoPinDados(p){const salt=uid();return Object.assign({},SEG||{},{pinHash:await hashPin(p,salt),pinSalt:salt,pinLen:p.length,autoLock:SEG&&SEG.autoLock!=null?SEG.autoLock:0,atualizadoEm:Date.now()})}
+async function confere(p){try{return temPin()&&pinValido(p)&&(await hashPin(p,SEG.pinSalt))===SEG.pinHash}catch(e){return false}}
+
+/* Recuperação do PIN: código de 12 caracteres e pergunta de segurança, guardados só como hash (PBKDF2) */
+const ALFA='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; /* sem 0/O e 1/I para não confundir */
+function gerarCodigo(){const r=crypto.getRandomValues(new Uint8Array(12));return Array.from(r,x=>ALFA[x%32]).join('').match(/.{4}/g).join('-')}
+const normCod=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const normResp=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+async function segredoDados(texto){const salt=uid();return {hash:await hashPin(texto,salt),salt,em:Date.now()}}
+async function rcConfirmar(){
+  if(verificando||Date.now()<tentativas().ate)return;
+  const v=val('rc-input'); if(!v.trim())return;
+  const via=esqueci; verificando=true; let ok=false;
+  try{ok=via==='codigo'?(await hashPin(normCod(v),SEG.rec.salt))===SEG.rec.hash:(await hashPin(normResp(v),SEG.perg.salt))===SEG.perg.hash}catch(e){}
+  verificando=false;
+  if(ok){desbloquear();formNovoPin(via);return}
+  const t=registrarErro(); renderLock();
+  const m=$('#pin-msg'); if(m&&Date.now()>=t.ate){m.className='pin-msg neg';m.textContent=(via==='codigo'?'Código incorreto.':'Resposta incorreta.')+` ${Math.max(0,5-t.n)} tentativa(s) antes de uma pausa.`}
+}
+function rcBio(){const m=$('#pin-msg');if(m){m.className='pin-msg muted';m.textContent='Toque no leitor de digital…'}pausaLivre();
+  bioEntrar().then(ok=>{if(ok){desbloquear();formNovoPin('bio')}else{const mm=$('#pin-msg');if(mm){mm.className='pin-msg neg';mm.textContent='Digital não confirmada.'}}}).catch(err=>{const mm=$('#pin-msg');if(mm){mm.className='pin-msg neg';mm.textContent=bioErro(err)}})}
+function apagarTudo(){
+  if(val('rc-input').trim().toUpperCase()!=='APAGAR'){const e=$('#rc-err');if(e)e.textContent='Digite APAGAR para confirmar.';return}
+  COLS.forEach(c=>S[c].slice().forEach(x=>del(c,x.id,true)));
+  segSalvar(null);lsDel('md_bio');lsDel('md_bk_em');seedIfEmpty();UI.view='inicio';desbloquear();render();
+  toast('Dados apagados. Para recuperar, restaure um backup em Mais › Backup.');
+}
+
+const pinIn=(id,l)=>`<div class="field"><label for="${id}">${l}</label><input class="input pinfield" id="${id}" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off"></div>`;
+const segErr=(m,id)=>{const e=$('#'+(id||'sg-err'));if(e)e.textContent=m};
+function checarNovo(){const a=val('sg-novo'),b=val('sg-conf');if(!pinValido(a)){segErr('O PIN precisa ter de 4 a 6 números.');return null}if(pinFraco(a)){segErr('Evite PIN fácil como 1234 ou 0000.');return null}if(a!==b){segErr('Os dois PINs não são iguais.');return null}return a}
+function mostrarCodigo(cod,aviso){
+  openSheet('Código de recuperação',`${aviso?`<div class="banner info">${ic('check')}<div>${esc(aviso)}</div></div>`:''}
+   <p class="small" style="margin:0">Se esquecer o PIN, este código libera o app para você criar um PIN novo. <b>Ele aparece só agora.</b> Anote num papel ou num gerenciador de senhas, fora deste celular.</p>
+   <div class="code" id="rc-codigo">${cod}</div>
+   <button class="btn ghost" data-act="cod-copiar">Copiar código</button>
+   <button class="btn primary" data-act="cod-ok">Já guardei o código</button>`);
+  sheetHandlers={
+    'cod-copiar':()=>{const ok=()=>toast('Código copiado');if(navigator.clipboard)navigator.clipboard.writeText(cod).then(ok).catch(()=>toast('Selecione o código e copie'));else toast('Selecione o código e copie')},
+    'cod-ok':()=>formSeguranca()
+  };
+}
+/* Depois de provar quem é (digital, código ou pergunta), cria um PIN novo sem pedir o antigo */
+function formNovoPin(via){
+  const como={bio:'Digital confirmada.',codigo:'Código confirmado.',pergunta:'Resposta confirmada.'}[via];
+  openSheet('Criar um PIN novo',`<div class="banner info">${ic('shield')}<div>${como} Agora crie um PIN novo.${via==='codigo'?' O código usado deixa de valer e você recebe outro.':''}</div></div>
+   ${pinIn('sg-novo','Novo PIN')}${pinIn('sg-conf','Repita o novo PIN')}
+   <div id="sg-err" class="small neg" role="alert"></div><button class="btn primary" data-act="sg-redef">${ic('lock')} Salvar novo PIN</button>`);
+  setTimeout(()=>{const i=$('#sg-novo');if(i)i.focus()},80);
+  sheetHandlers={'sg-redef':async()=>{const p=checarNovo();if(!p)return;const d=await novoPinDados(p);let cod=null;if(via==='codigo'){cod=gerarCodigo();d.rec=await segredoDados(normCod(cod))}
+    segSalvar(d);lastActivity=Date.now();if(cod)mostrarCodigo(cod,'PIN novo salvo. Guarde o novo código.');else{closeSheet();toast('PIN novo salvo')}}};
+}
 
 function formSeguranca(){
-  const pinIn=(id,l)=>`<div class="field"><label for="${id}">${l}</label><input class="input pinfield" id="${id}" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off"></div>`;
   const bio=bioRegistrada();
+  const PERGS=['Qual o nome do seu primeiro animal de estimação?','Em que cidade sua mãe nasceu?','Qual o nome da sua primeira escola?','Qual o apelido que você tinha na infância?','Qual o nome do seu melhor amigo de infância?'];
+  const card=(t,c)=>`<section class="card" style="display:flex;flex-direction:column;gap:10px"><b>${t}</b>${c}</section>`;
   const body=!temPin()?`
-   <p class="small muted" style="margin:0">Com o PIN, o app pede uma senha de 4 a 6 números sempre que for aberto. Depois você pode ativar a digital.</p>
+   <p class="small muted" style="margin:0">Com o PIN, o app pede uma senha de 4 a 6 números sempre que for aberto. Você também recebe um código de recuperação para o caso de esquecer o PIN.</p>
    ${pinIn('sg-novo','Novo PIN')}${pinIn('sg-conf','Repita o PIN')}
    <div id="sg-err" class="small neg" role="alert"></div>
    <button class="btn primary" data-act="sg-criar">${ic('lock')} Criar PIN</button>`
   :`<div class="banner info">${ic('shield')}<div>PIN ativo. O app pede o PIN ao abrir${bio?' e aceita a digital neste aparelho':''}.</div></div>
+   ${!temCodigo()&&!temPergunta()&&!bio?`<div class="banner">${ic('alert')}<div>Configure uma forma de recuperação abaixo. Sem ela, esquecer o PIN obriga a apagar os dados.</div></div>`:''}
    <div class="field"><label for="sg-auto">Bloquear automaticamente</label><select class="input" id="sg-auto">${[[0,'Ao sair do app'],[1,'Após 1 minuto sem uso'],[5,'Após 5 minutos sem uso'],[15,'Após 15 minutos sem uso']].map(([v,l])=>`<option value="${v}" ${Number(SEG.autoLock||0)===v?'selected':''}>${l}</option>`).join('')}</select></div>
-   <section class="card" style="display:flex;flex-direction:column;gap:10px"><b>Digital</b>
-    ${bio?`<p class="small muted" style="margin:0">Ativa neste aparelho. Em outros aparelhos, ative de novo por lá.</p><button class="btn ghost" data-act="sg-bio-off">Desativar digital neste aparelho</button>`
-    :bioOk?`<p class="small muted" style="margin:0">Use a digital ou o reconhecimento facial do aparelho para desbloquear sem digitar o PIN.</p><button class="btn primary" data-act="sg-bio-on">${ic('finger')} Ativar digital neste aparelho</button>`
+   ${card('Digital',`${bio?`<p class="small muted" style="margin:0">Ativa neste aparelho. Também serve para criar um PIN novo se você esquecer o atual. Em outros aparelhos, ative de novo por lá.</p><button class="btn ghost" data-act="sg-bio-off">Desativar digital neste aparelho</button>`
+    :bioOk?`<p class="small muted" style="margin:0">Use a digital ou o reconhecimento facial do aparelho para desbloquear sem digitar o PIN.</p>${pinIn('sg-bio-pin','PIN atual')}<button class="btn primary" data-act="sg-bio-on">${ic('finger')} Ativar digital neste aparelho</button>`
     :`<p class="small muted" style="margin:0">Este aparelho ou navegador não libera a digital para esta página. Continue usando o PIN.</p>`}
-    <div id="sg-bio-msg" class="small" role="status"></div></section>
-   <section class="card" style="display:flex;flex-direction:column;gap:10px"><b>Alterar PIN</b>${pinIn('sg-atual','PIN atual')}${pinIn('sg-novo','Novo PIN')}${pinIn('sg-conf','Repita o novo PIN')}
-    <div id="sg-err" class="small neg" role="alert"></div><button class="btn primary" data-act="sg-alterar">Salvar novo PIN</button></section>
-   <section class="card" style="display:flex;flex-direction:column;gap:10px"><b>Tirar o PIN</b>${pinIn('sg-rem','PIN atual')}
-    <div id="sg-rem-err" class="small neg" role="alert"></div><button class="btn danger" data-act="sg-remover">Tirar o PIN e a digital</button></section>`;
+    <div id="sg-bio-msg" class="small" role="status"></div>`)}
+   ${card('Se esquecer o PIN',`<p class="small muted" style="margin:0">Na tela de bloqueio, toque em <b>Esqueci o PIN</b> e use uma destas opções. Para mudar qualquer uma, confirme com o PIN atual.</p>
+    ${pinIn('sg-rpin','PIN atual')}
+    <div class="inst"><span class="cat-ico" style="width:34px;height:34px;background:var(--surface-2)">${ic('key','sm')}</span><div class="row-main"><b>Código de recuperação</b><span>${temCodigo()?'Criado em '+esc(dataHora(SEG.rec.em).slice(0,10)):'Não criado'}</span></div><button class="btn sm ${temCodigo()?'ghost':'primary'}" data-act="sg-cod">${temCodigo()?'Gerar outro':'Criar'}</button></div>
+    <div class="inst"><span class="cat-ico" style="width:34px;height:34px;background:var(--surface-2)">${ic('help','sm')}</span><div class="row-main"><b>Pergunta de segurança</b><span>${temPergunta()?esc(SEG.perg.texto):'Não definida'}</span></div>${temPergunta()?'<button class="btn sm ghost" data-act="sg-perg-del">Remover</button>':''}</div>
+    <div class="field"><label for="sg-perg">${temPergunta()?'Trocar a pergunta':'Pergunta'}</label><input class="input" id="sg-perg" list="sg-pergs" placeholder="Escolha ou escreva uma pergunta"><datalist id="sg-pergs">${PERGS.map(q=>`<option value="${esc(q)}">`).join('')}</datalist></div>
+    <div class="field"><label for="sg-resp">Resposta</label><input class="input" id="sg-resp" autocomplete="off" autocorrect="off" spellcheck="false"><span class="xs muted">Escolha uma resposta que só você sabe e que não está nas redes sociais. Maiúsculas e acentos não importam.</span></div>
+    <button class="btn ghost" data-act="sg-perg-salvar">Salvar pergunta</button>
+    <div id="sg-rec-err" class="small neg" role="alert"></div>`)}
+   ${card('Alterar PIN',`${pinIn('sg-atual','PIN atual')}${pinIn('sg-novo','Novo PIN')}${pinIn('sg-conf','Repita o novo PIN')}
+    <div id="sg-err" class="small neg" role="alert"></div><button class="btn primary" data-act="sg-alterar">Salvar novo PIN</button>`)}
+   ${card('Tirar o PIN',`${pinIn('sg-rem','PIN atual')}
+    <div id="sg-rem-err" class="small neg" role="alert"></div><button class="btn danger" data-act="sg-remover">Tirar o PIN e a digital</button>`)}`;
   openSheet('Segurança',body);
-  const err=(m,id)=>{const e=$('#'+(id||'sg-err'));if(e)e.textContent=m};
-  const checarNovo=()=>{const a=val('sg-novo'),b=val('sg-conf');if(!pinValido(a)){err('O PIN precisa ter de 4 a 6 números.');return null}if(pinFraco(a)){err('Evite PIN fácil como 1234 ou 0000.');return null}if(a!==b){err('Os dois PINs não são iguais.');return null}return a};
+  const err=segErr;
+  const pinRec=async()=>{if(!(await confere(val('sg-rpin')))){err('Digite o PIN atual para confirmar.','sg-rec-err');return false}return true};
   sheetHandlers={
-    'sg-criar':async()=>{const p=checarNovo();if(!p)return;try{segSalvar(await novoPinDados(p))}catch(e){return err('Este navegador não permite criar PIN aqui.')}lastActivity=Date.now();formSeguranca();toast('PIN criado')},
+    'sg-criar':async()=>{const p=checarNovo();if(!p)return;const cod=gerarCodigo();try{const d=await novoPinDados(p);d.rec=await segredoDados(normCod(cod));segSalvar(d)}catch(e){return err('Este navegador não permite criar PIN aqui.')}lastActivity=Date.now();mostrarCodigo(cod,'PIN criado.')},
     'sg-alterar':async()=>{if(!(await confere(val('sg-atual'))))return err('PIN atual incorreto.');const p=checarNovo();if(!p)return;segSalvar(await novoPinDados(p));formSeguranca();toast('PIN alterado')},
     'sg-remover':async()=>{if(!(await confere(val('sg-rem'))))return err('PIN atual incorreto.','sg-rem-err');segSalvar(null);lsDel('md_bio');closeSheet();toast('PIN removido')},
-    'sg-bio-on':async()=>{const m=$('#sg-bio-msg');m.className='small muted';m.textContent='Siga as instruções do aparelho…';try{await bioAtivar();formSeguranca();toast('Digital ativada')}catch(e){m.className='small neg';m.textContent=bioErro(e)}},
+    'sg-cod':async()=>{if(!(await pinRec()))return;const cod=gerarCodigo();segSalvar(Object.assign({},SEG,{rec:await segredoDados(normCod(cod)),atualizadoEm:Date.now()}));mostrarCodigo(cod,'Código novo criado. O anterior deixou de valer.')},
+    'sg-perg-salvar':async()=>{const q=val('sg-perg').trim(),r=normResp(val('sg-resp'));if(q.length<5)return err('Escreva ou escolha uma pergunta.','sg-rec-err');if(r.length<3)return err('A resposta precisa ter pelo menos 3 letras.','sg-rec-err');if(!(await pinRec()))return;
+      segSalvar(Object.assign({},SEG,{perg:Object.assign({texto:q},await segredoDados(r)),atualizadoEm:Date.now()}));formSeguranca();toast('Pergunta de segurança salva')},
+    'sg-perg-del':async()=>{if(!(await pinRec()))return;const d=Object.assign({},SEG,{atualizadoEm:Date.now()});delete d.perg;segSalvar(d);formSeguranca();toast('Pergunta removida')},
+    'sg-bio-on':async()=>{const m=$('#sg-bio-msg');if(!(await confere(val('sg-bio-pin')))){m.className='small neg';m.textContent='Digite o PIN atual para ativar a digital.';return}m.className='small muted';m.textContent='Siga as instruções do aparelho…';pausaLivre();try{await bioAtivar();formSeguranca();toast('Digital ativada')}catch(e){m.className='small neg';m.textContent=bioErro(e)}},
     'sg-bio-off':()=>{lsDel('md_bio');formSeguranca();toast('Digital desativada neste aparelho')}
   };
 }
@@ -1129,12 +1360,18 @@ document.addEventListener('click',e=>{
   const t=e.target.closest('[data-act]'); if(!t)return;
   const a=t.dataset.act, v=t.dataset.v, id=t.dataset.id;
   if(lockState!=='open'){
+    if(lockState!=='locked')return;
     if(a==='pin-key')pinTecla(v);
     else if(a==='pin-back')pinApagar();
-    else if(a==='pin-esqueci')renderLock(true);
-    else if(a==='pin-reset-cancel')renderLock();
-    else if(a==='pin-reset'){if(val('pin-reset-txt').trim().toUpperCase()!=='REDEFINIR'){$('#pin-reset-err').textContent='Digite REDEFINIR para confirmar.';return}segSalvar(null);lsDel('md_bio');desbloquear();toast('PIN removido. Crie um novo em Mais › Segurança.')}
     else if(a==='pin-bio')bioTentar();
+    else if(a==='pin-esqueci'||a==='rc-menu'){esqueci='menu';renderLock()}
+    else if(a==='rc-voltar'){esqueci=null;pinBuf='';renderLock()}
+    else if(a==='rc-ir-codigo'){esqueci='codigo';renderLock()}
+    else if(a==='rc-ir-pergunta'){esqueci='pergunta';renderLock()}
+    else if(a==='rc-ir-apagar'){esqueci='apagar';renderLock()}
+    else if(a==='rc-confirmar')rcConfirmar();
+    else if(a==='rc-bio')rcBio();
+    else if(a==='rc-apagar')apagarTudo();
     return;
   }
   if(a==='fechar-bg'&&e.target!==t)return;
@@ -1164,7 +1401,12 @@ document.addEventListener('click',e=>{
     case 'fechar': case 'fechar-bg': closeSheet(); break;
     case 'carregar-exemplo': carregarExemplo(); break;
     case 'apagar-exemplo': apagarExemplo(); break;
-    case 'exp-json': salvarArquivo('meu-dinheiro-backup-'+hoje()+'.json',JSON.stringify({app:'meu-dinheiro',versao:1,geradoEm:new Date().toISOString(),dados:S},null,1),'application/json'); break;
+    case 'exp-json': fazerBackup(); break;
+    case 'bk-adiar': bkSetPref({adiarAte:Date.now()+3*DIA}); render(); toast('Vamos lembrar de novo em 3 dias'); break;
+    case 'bk-ocultar': bkSetPref({adiarAte:bkUltimo()+bkPref().dias*DIA}); render(); toast('Aviso oculto até o próximo backup. Ajuste em Mais › Backup.'); break;
+    case 'imp-escolher': pausaLivre(); break;
+    case 'olho': alternarOlho(v); break;
+    case 'evo': UI.evoSel=Number(v); render(); break;
     case 'exp-csv': salvarArquivo('meu-dinheiro-lancamentos-'+hoje()+'.csv',csvLanc(),'text/csv'); break;
     case 'copiar': {const ta=$('#exp-txt'); navigator.clipboard&&navigator.clipboard.writeText(ta.value).then(()=>toast('Copiado')).catch(()=>{ta.select();toast('Selecionado: copie com Ctrl+C')}); if(!navigator.clipboard){ta.select()} break}
   }
@@ -1172,9 +1414,10 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{
   lastActivity=Date.now();
   if(lockState!=='open'){
+    if(e.key==='Enter'&&e.target.id==='rc-input'){e.preventDefault();if(esqueci==='apagar')apagarTudo();else rcConfirmar();return}
     if(e.target.matches&&e.target.matches('input'))return;
-    if(lockState==='locked'&&/^[0-9]$/.test(e.key)){e.preventDefault();pinTecla(e.key)}
-    else if(lockState==='locked'&&e.key==='Backspace'){e.preventDefault();pinApagar()}
+    if(lockState==='locked'&&!esqueci&&/^[0-9]$/.test(e.key)){e.preventDefault();pinTecla(e.key)}
+    else if(lockState==='locked'&&!esqueci&&e.key==='Backspace'){e.preventDefault();pinApagar()}
     return;
   }
   if(e.key==='Escape'&&$('#sheet-root').innerHTML)closeSheet();
@@ -1184,12 +1427,14 @@ document.addEventListener('input',e=>{if(e.target.id==='busca'){UI.busca=e.targe
 document.addEventListener('pointerdown',()=>{lastActivity=Date.now()},true);
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='hidden'){hiddenAt=Date.now();return}
-  if(lockState==='open'&&temPin()&&hiddenAt){const min=Number(SEG.autoLock||0);if(Date.now()-hiddenAt>=min*60000)bloquear()}
+  if(lockState==='open'&&temPin()&&hiddenAt&&!emPausaLivre()){const min=Number(SEG.autoLock||0);if(Date.now()-hiddenAt>=min*60000)bloquear()}
 });
 setInterval(()=>{if(lockState==='open'&&temPin()){const min=Number(SEG.autoLock||0);if(min>0&&Date.now()-lastActivity>=min*60000)bloquear()}},10000);
 document.addEventListener('change',e=>{
+  if(e.target.id==='bk-mostrar'){bkSetPref({mostrar:e.target.checked,adiarAte:0});toast(e.target.checked?'Lembrete de backup ligado':'Lembrete de backup desligado');return}
+  if(e.target.id==='bk-dias'){bkSetPref({dias:Number(e.target.value),adiarAte:0});render();toast('Lembrete ajustado');return}
   if(e.target.id==='sg-auto'&&temPin()){segSalvar(Object.assign({},SEG,{autoLock:Number(e.target.value),atualizadoEm:Date.now()}));toast('Bloqueio automático atualizado');return}
-  if(e.target.id==='imp-file'&&e.target.files[0]){const r=new FileReader();r.onload=()=>{sheetHandlers={};importar(String(r.result))};r.readAsText(e.target.files[0]);e.target.value=''}
+  if(e.target.id==='imp-file'&&e.target.files[0]){lastActivity=Date.now();const r=new FileReader();r.onload=()=>{sheetHandlers={};importar(String(r.result))};r.readAsText(e.target.files[0]);e.target.value=''}
 });
 
 boot();

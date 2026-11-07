@@ -26,11 +26,12 @@ Os dados ficam salvos no próprio aparelho. Faça backup em **Mais › Backup** 
 - **Fixas x variáveis**, **parcelamento** (divide o valor total) e **repetição mensal** (aluguel, salário, assinaturas).
 - **Contas e cartões**: o saldo de cada conta e a fatura do cartão de crédito.
 - **Empréstimos** em duas listas, *Eu devo* e *Me devem*, com parcelas, juros pela tabela Price, atrasos e saldo de cada pessoa.
-- **Investimentos**: aportes, resgates, rendimentos e reserva de emergência.
+- **Investimentos** com painel: distribuição por tipo, rentabilidade, evolução em 12 meses, meta da reserva de emergência e liquidez.
 - **Início** com saldo em contas, resultado do mês, fixas x variáveis, vencimentos dos próximos 7 dias, quem deve a quem e os maiores gastos.
 - **Categorias** na regra 50/30/20 (essencial, estilo de vida, financeiro).
-- **Segurança**: PIN de 4 a 6 números, digital, bloqueio automático e pausa após 5 erros.
-- **Backup** completo em arquivo, exportação para planilha (CSV) e restauração.
+- **Segurança**: PIN de 4 a 6 números, digital, bloqueio automático, pausa após 5 erros e recuperação do PIN por código, pergunta de segurança ou digital.
+- **Privacidade**: botão de olho para ocultar o saldo e o total investido.
+- **Backup** completo em arquivo, exportação para planilha (CSV) e restauração, com a data do último backup e lembrete quando atrasa.
 - **Tema** claro, escuro ou automático num único botão.
 
 ## Documentação
@@ -43,7 +44,7 @@ Os dados ficam salvos no próprio aparelho. Faça backup em **Mais › Backup** 
 | [Arquitetura](docs/arquitetura.md) | Quem mantém o código | Como o app é organizado e roda em cada plataforma |
 | [Modelo de dados](docs/modelo-de-dados.md) | Quem mantém o código | Coleções, campos e formato do backup |
 | [Desenvolvimento e publicação](docs/desenvolvimento.md) | Quem mantém o código | Rodar, testar, gerar o APK e publicar versões |
-| [Testes](docs/testes.md) | Quem mantém o código | O que os 95 testes automáticos verificam |
+| [Testes](docs/testes.md) | Quem mantém o código | O que os 135 testes automáticos verificam |
 | [Histórico de versões](CHANGELOG.md) | Todos | O que mudou em cada versão |
 
 ## Estrutura do repositório
@@ -61,7 +62,7 @@ docs/                   documentação e capturas de tela
 ```bash
 npm ci
 npx playwright install chromium
-npm test                 # 95 verificações de ponta a ponta
+npm test                 # 135 verificações de ponta a ponta
 npx cap sync android     # copia www/ para o projeto Android
 ```
 

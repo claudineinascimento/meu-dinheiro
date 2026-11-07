@@ -18,7 +18,9 @@ Como os dados ficam no aparelho, **o backup é sua responsabilidade**. Desinstal
 - O PIN **não é guardado**. O app guarda só um resumo criptográfico: PBKDF2 com SHA‑256, 120.000 iterações e um sal aleatório por PIN. Quem copiar os dados não lê o PIN.
 - Após 5 erros seguidos, o app pausa as tentativas por 30 segundos, dobrando a cada novo erro até 15 minutos.
 - **Bloqueio automático**: ao sair do app (padrão) ou após 1, 5 ou 15 minutos sem uso. O cadeado no topo bloqueia na hora.
-- Enquanto bloqueado, o conteúdo fica coberto e inacessível ao toque e ao teclado.
+- Enquanto bloqueado, o conteúdo fica coberto, inacessível ao toque e ao teclado, e os valores nem são desenhados na página.
+- Compartilhar o backup, escolher um arquivo para restaurar ou ler a digital tiram o app da frente por instantes. Voltar em até 2 minutos depois dessas ações não bloqueia o app; voltar depois disso bloqueia normalmente.
+- Ativar a digital, mudar a recuperação, alterar ou tirar o PIN pedem o PIN atual. Assim, quem pega o app aberto por um instante não consegue cadastrar a própria digital ou trocar a pergunta.
 
 ## Digital
 
@@ -32,11 +34,28 @@ A digital é ativada **por aparelho** e fica registrada só nele. O PIN continua
 
 ## Esqueci o PIN
 
-Na tela de bloqueio, **Esqueci o PIN** pede para digitar `REDEFINIR` e então remove o PIN e a digital, sem apagar os dados.
+Até a versão 1.0, *Esqueci o PIN* tirava o PIN só com a palavra `REDEFINIR`, o que deixava qualquer pessoa entrar. Agora é preciso provar quem é:
+
+| Forma | Como é guardada | Observação |
+| --- | --- | --- |
+| Código de recuperação | Só o resumo PBKDF2 (120.000 iterações, sal próprio). O código aparece uma única vez, ao criar o PIN ou ao gerar outro. | 12 caracteres sem letras parecidas (sem 0/O, 1/I), cerca de 60 bits. Depois de usado, o app gera outro. |
+| Pergunta de segurança | A pergunta em texto; a resposta só como resumo PBKDF2 da resposta sem acentos e em minúsculas. | Escolha uma resposta difícil de adivinhar. É a opção mais fraca das três. |
+| Digital | Registro no próprio aparelho. | Só vale onde foi ativada. |
+| Apagar tudo | Nada é revelado: os dados e o PIN são apagados. | Depois, restaure um backup. |
+
+Erros no código e na resposta contam nas mesmas tentativas do PIN, com a mesma pausa. Ao recuperar, o app pede um PIN novo; a pergunta e o código continuam valendo (o código é trocado se foi ele o usado).
 
 ## O que o PIN protege, e o que não protege
 
-O PIN protege contra quem pega o celular **já desbloqueado** e abre o app: um curioso, um filho, alguém no trabalho. Ele não substitui a segurança do próprio celular. A opção *Esqueci o PIN* existe para você não perder o acesso aos seus dados, então quem conhece o app consegue tirar o PIN e entrar.
+O PIN protege contra quem pega o celular **já desbloqueado** e abre o app: um curioso, um filho, alguém no trabalho. Ele não substitui a segurança do próprio celular. Quem tiver acesso técnico ao armazenamento do aparelho (ferramentas de desenvolvedor, root) consegue ler os dados, porque eles não são criptografados no aparelho.
+
+## Ocultar valores
+
+O botão de **olho** esconde o saldo (Início e Contas) e, separadamente, o total investido (Início e Investimentos), trocando os valores por `R$ ••••`. A escolha fica salva no aparelho. Serve para abrir o app perto de outras pessoas; não é uma proteção como o PIN.
+
+## Lembrete de backup
+
+O app guarda neste aparelho a data e a hora do último backup completo que deu certo. Na tela Início, mostra *Backup em dia* ou um aviso quando passa do prazo (7, 15 ou 30 dias, escolhido em **Mais › Backup**). O aviso pode ser adiado por 3 dias, escondido até o próximo prazo ou desligado.
 
 Para proteção forte:
 

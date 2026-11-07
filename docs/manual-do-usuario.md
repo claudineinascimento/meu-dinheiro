@@ -17,15 +17,18 @@ Quer ver o app funcionando antes? Na tela Início, toque em **Ver exemplo**. Os 
 
 | Bloco | O que mostra |
 | --- | --- |
-| Saldo em contas | Soma dos saldos de todas as contas ativas, contando só o que já foi pago ou recebido. |
+| Aviso de backup | Quando foi o último backup. Fica amarelo se passar do prazo (7 dias por padrão). Toque no **×** ou em **Lembrar em 3 dias** para esconder. |
+| Saldo em contas | Soma dos saldos de todas as contas ativas, contando só o que já foi pago ou recebido. O **olho** esconde o saldo e os totais do mês. |
 | Receitas, Despesas, Resultado | Totais do mês escolhido no topo, pagos e pendentes. Resultado = receitas − despesas. |
 | Despesas do mês | Fixas x variáveis, quanto já foi pago e quanto as fixas comprometem da receita. |
 | A vencer em 7 dias | Lançamentos pendentes e parcelas de empréstimo que vencem até 7 dias à frente, incluindo os atrasados. |
 | Eu devo / Me devem | Saldo em aberto dos empréstimos e quanto está atrasado. |
-| Investido | Total aplicado em investimentos. |
+| Investido | Total aplicado em investimentos e os rendimentos. Tem o seu próprio **olho** para esconder o valor. |
 | Maiores gastos do mês | As 5 categorias com mais despesa. |
 
 Use as setas **‹ ›** no topo para trocar de mês.
+
+O olho fica salvo no aparelho: se você esconder o saldo, ele continua escondido ao abrir o app de novo, até tocar no olho outra vez. O saldo das contas em **Mais › Contas e cartões** segue o olho do saldo; a tela de Investimentos segue o olho do investido.
 
 ## 3. Lançar uma receita ou despesa
 
@@ -97,7 +100,18 @@ Em **Mais › Investimentos**:
    - **Resgate**: sai do investimento e volta para a conta.
    - **Rendimento**: aumenta o saldo do investimento.
 
-Aportes não contam como gasto do mês. É dinheiro guardado.
+Aportes não contam como gasto do mês. É dinheiro guardado. O resgate não pode ser maior que o saldo da aplicação. Para mudar nome, tipo, instituição ou liquidez, abra a aplicação e toque em **Editar dados**.
+
+### Painel de investimentos
+
+| Bloco | O que mostra |
+| --- | --- |
+| Total investido | Saldo de todas as aplicações, o valor aplicado (saldo inicial + aportes − resgates), os rendimentos e a rentabilidade (rendimentos ÷ total aplicado). |
+| Distribuição | Quanto do total está em cada tipo (reserva, renda fixa, Tesouro, ações...), em barra e lista com percentuais. |
+| Evolução | Saldo investido no fim de cada um dos últimos 12 meses. Toque numa barra para ver o valor e a variação do mês. |
+| Reserva de emergência | Compara as aplicações do tipo *Reserva de emergência* com 6 meses das suas despesas essenciais (média dos últimos 3 meses). |
+| Liquidez | Quanto dá para resgatar a qualquer dia e quanto só no vencimento. |
+| Lista | Cada aplicação com saldo, peso no total e rendimentos. |
 
 ## 7. Contas, categorias e pessoas
 
@@ -117,11 +131,21 @@ Em **Mais › Segurança**:
 - **Digital**: toque em **Ativar digital neste aparelho**. Cada aparelho ativa a sua. No APK, a digital é pedida sozinha ao abrir o app.
 - **Bloquear automaticamente**: ao sair do app, ou após 1, 5 ou 15 minutos sem uso.
 - **Cadeado no topo**: bloqueia na hora.
-- **Alterar PIN** e **Tirar o PIN** pedem o PIN atual.
+- **Alterar PIN**, **Tirar o PIN**, ativar a digital e mudar a recuperação pedem o PIN atual.
+- **Se esquecer o PIN**: ao criar o PIN, o app mostra um **código de recuperação** de 12 letras e números (ex.: `3R9U-VPGH-QX4M`). Anote fora do celular: ele aparece só uma vez. Você também pode cadastrar uma **pergunta de segurança**. Dá para gerar outro código quando quiser.
 
 Após 5 PINs errados, o app pausa as tentativas por 30 segundos. A pausa dobra a cada erro seguinte, até 15 minutos.
 
-Esqueceu o PIN? Na tela de bloqueio, toque em **Esqueci o PIN** e digite `REDEFINIR`. O PIN e a digital são removidos e seus dados continuam salvos. Detalhes em [Segurança e privacidade](seguranca.md).
+Esqueceu o PIN? Na tela de bloqueio, toque em **Esqueci o PIN** e escolha uma opção:
+
+| Opção | O que acontece |
+| --- | --- |
+| Usar a digital | Se a digital estiver ativa no aparelho, confirme e crie um PIN novo. |
+| Código de recuperação | Digite o código guardado (maiúsculas, traços e espaços não importam) e crie um PIN novo. O código usado é trocado por outro. |
+| Pergunta de segurança | Responda (acentos e maiúsculas não importam) e crie um PIN novo. |
+| Apagar tudo e começar de novo | Última opção: digite `APAGAR`. Todos os dados e o PIN são apagados. Depois, restaure um backup em **Mais › Backup**. |
+
+Erros no código ou na resposta contam como PIN errado e também levam à pausa. Detalhes em [Segurança e privacidade](seguranca.md).
 
 ## 9. Backup, planilha e troca de celular
 
@@ -130,6 +154,7 @@ Em **Mais › Backup e exportação**:
 - **Baixar backup completo**: gera um arquivo `.json` com todos os dados. No APK, abre o menu de compartilhar do Android para salvar no Google Drive, enviar por e-mail ou WhatsApp.
 - **Exportar lançamentos para planilha (CSV)**: abre no Excel ou no Google Planilhas, separado por ponto e vírgula.
 - **Restaurar backup**: substitui todos os dados atuais pelos do arquivo.
+- **Situação do backup**: data e hora do último backup feito neste aparelho. Ligue ou desligue o lembrete na tela inicial e escolha o prazo do aviso: 7, 15 ou 30 dias.
 
 Para trocar de celular ou de versão do app: baixe o backup no aparelho antigo e use **Restaurar backup** no novo.
 

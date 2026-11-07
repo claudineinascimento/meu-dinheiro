@@ -81,7 +81,7 @@ No APK, o service worker não é registrado: os arquivos já estão dentro do ap
 O fluxo `.github/workflows/publicar.yml` roda a cada push na `main`:
 
 ```
-testes (95 verificações) ──► site no GitHub Pages (pasta www)
+testes (135 verificações) ──► site no GitHub Pages (pasta www)
                          └─► APK assinado ──► Release "Meu Dinheiro 1.N" com meu-dinheiro.apk
 ```
 
