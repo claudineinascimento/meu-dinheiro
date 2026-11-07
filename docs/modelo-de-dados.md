@@ -107,6 +107,8 @@ Cada item de `parcelas`:
 | `pinSalt` | texto | Sal aleatório |
 | `pinLen` | inteiro | 4 a 6 |
 | `autoLock` | inteiro | Minutos sem uso; `0` = ao sair do app |
+| `rec` | objeto | Código de recuperação: `{hash, salt, em}`. `hash` é PBKDF2 do código sem traços, em maiúsculas |
+| `perg` | objeto | Pergunta de segurança: `{texto, hash, salt, em}`. `hash` é PBKDF2 da resposta sem acentos, em minúsculas |
 
 ## Chaves no aparelho (`localStorage`)
 
@@ -118,6 +120,10 @@ Cada item de `parcelas`:
 | `md_bio` | Registro da digital deste aparelho |
 | `md_tent` | Tentativas erradas de PIN e fim da pausa |
 | `md_tema` | `auto`, `claro` ou `escuro` |
+| `md_oc_saldo` | `1` quando o saldo está oculto pelo olho |
+| `md_oc_inv` | `1` quando o total investido está oculto pelo olho |
+| `md_bk_em` | Data e hora (milissegundos) do último backup completo feito neste aparelho |
+| `md_bk_pref` | Lembrete de backup: `{mostrar, dias, adiarAte}` |
 
 ## Formato do backup
 

@@ -88,6 +88,19 @@ saldo do investimento = saldo inicial + aportes + rendimentos − resgates
 
 **Investido** (tela Início) é a soma dos saldos de todas as aplicações.
 
+| Indicador do painel | Cálculo |
+| --- | --- |
+| Aplicado | saldo inicial + aportes − resgates |
+| Rendimentos | soma dos movimentos *Rendimento* |
+| Rentabilidade | rendimentos ÷ (saldo inicial + aportes) |
+| Distribuição | saldo de cada tipo ÷ soma dos tipos com saldo positivo |
+| Evolução | para cada um dos últimos 12 meses, soma de todos os movimentos com data até o fim do mês |
+| Meta da reserva | 6 × média mensal das despesas essenciais (grupo *Essencial*, sem empréstimos e aportes) nos últimos 3 meses que tiveram despesa essencial |
+| Meses cobertos | saldo das aplicações do tipo *Reserva de emergência* ÷ média mensal das despesas essenciais |
+| Liquidez | aplicações com liquidez diária x no vencimento |
+
+Um resgate maior que o saldo da aplicação é recusado.
+
 ## Vencimentos
 
 O bloco **A vencer em 7 dias** lista lançamentos pendentes e parcelas em aberto com data até hoje + 7 dias, incluindo os já atrasados, em ordem de data.

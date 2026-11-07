@@ -85,13 +85,38 @@ await p.click('[data-act="im-tipo"][data-v="rendimento"]');await p.fill('#im-val
 s=await saldo();ok(Math.abs(s-5650)<.001,'Aporte sai e resgate volta para a conta: '+s);
 const inv=money(await p.locator('.card.stat',{hasText:'Investido'}).locator('b').textContent());ok(inv===205,'Total investido com rendimento: '+inv);
 ok(Math.abs(money(await p.textContent('.hero-row div:nth-child(2) b'))-(50+200))<.001,'Aporte não conta como gasto');
+// olho: ocultar saldo e investido
+await p.click('.hero [data-act="olho"]');await wait();ok((await p.textContent('.hero .big')).includes('••••'),'Olho oculta o saldo');
+ok(!(await p.locator('.card.stat',{hasText:'Investido'}).locator('b').textContent()).includes('••••'),'Saldo oculto não esconde o investido');
+await p.locator('.inv-card [data-act="olho"]').click();await wait();ok((await p.locator('.card.stat',{hasText:'Investido'}).locator('b').textContent()).includes('••••'),'Olho oculta o total investido');
+await p.reload();await wait(600);ok((await p.textContent('.hero .big')).includes('••••'),'Preferência do olho fica salva');
+await go('investimentos');ok((await p.textContent('.hero .big')).includes('••••'),'Investimentos também ficam ocultos');
+await p.click('.hero [data-act="olho"]');await wait();ok(!(await p.textContent('.hero .big')).includes('••••'),'Olho mostra de novo o investido');
+await go('inicio');await p.click('.hero [data-act="olho"]');await wait();ok(money(await p.textContent('.hero .big'))===5650,'Olho mostra de novo o saldo');
+// painel de investimentos
+await go('investimentos');
+ok(await p.isVisible('text=Distribuição')&&await p.isVisible('text=Evolução')&&await p.isVisible('text=Reserva de emergência')&&await p.isVisible('text=Liquidez'),'Painel mostra distribuição, evolução, reserva e liquidez');
+ok(money(await p.textContent('.hero-row div:nth-child(2) b'))===5,'Painel soma os rendimentos');
+ok((await p.textContent('.hero-row div:nth-child(3) b')).includes('1,7%'),'Rentabilidade sobre o aplicado: '+await p.textContent('.hero-row div:nth-child(3) b'));
+ok(await p.locator('.evo button').count()===12,'Gráfico de evolução com 12 meses');
+await p.click('[data-act="abrir-inv"]');await wait();await p.click('[data-act="im-tipo"][data-v="resgate"]');await p.fill('#im-valor','999');await p.selectOption('#im-conta',{label:'Conta corrente'});await p.click('[data-act="im-salvar"]');await wait(200);
+ok((await p.textContent('#toast-root')).includes('maior que o saldo'),'Não deixa resgatar mais que o saldo');
+await p.click('[data-act="im-editar"]');await wait();await p.fill('#if-nome','Reserva Nubank');await p.click('[data-act="if-salvar"]');await wait(250);await p.click('[data-act="fechar"]');
+ok(await p.isVisible('text=Reserva Nubank'),'Editar aplicação muda o nome');
 // categoria
 await go('categorias');await p.click('[data-act="nova-cat"]');await p.fill('#cg-nome','Farmácia');await p.selectOption('#cg-grupo','essencial');await p.click('[data-act="cg-ico"][data-v="heart"]');await p.click('[data-act="cg-salvar"]');await wait(200);
 await p.click('.fab');await wait();ok((await p.locator('#lf-cat option',{hasText:'Farmácia'}).count())===1,'Nova categoria aparece no lançamento');await p.click('[data-act="fechar"]');
 // validação
 await p.click('.fab');await wait();await p.click('[data-act="lf-salvar"]');ok((await p.textContent('#lf-err')).includes('valor'),'Valida valor vazio');await p.click('[data-act="fechar"]');
 // backup
-await go('backup');await p.click('[data-act="exp-json"]');await wait(200);await p.click('[data-act="exp-csv"]');await wait(200);
+await go('inicio');ok(await p.isVisible('text=Você ainda não fez backup'),'Início avisa que nunca fez backup');
+await p.click('[data-act="bk-adiar"]');await wait();ok(!(await p.isVisible('text=Você ainda não fez backup')),'Aviso de backup pode ser adiado');
+await p.evaluate(()=>{const o=JSON.parse(localStorage.getItem('md_bk_pref'));o.adiarAte=0;localStorage.setItem('md_bk_pref',JSON.stringify(o))});
+await go('backup');ok(await p.isVisible('text=Nenhum backup feito'),'Backup mostra que nunca foi feito');await p.click('[data-act="exp-json"]');await wait(200);await p.click('[data-act="exp-csv"]');await wait(200);
+ok(await p.isVisible('text=Último backup:'),'Backup mostra a data do último backup');
+await go('inicio');ok(await p.isVisible('text=Backup em dia'),'Início mostra backup em dia');
+await p.click('[data-act="bk-ocultar"]');await wait();ok(!(await p.isVisible('text=Backup em dia')),'Informação de backup pode ser ocultada');
+await go('backup');await p.uncheck('#bk-mostrar');await wait();ok(JSON.parse(await p.evaluate(()=>localStorage.getItem('md_bk_pref'))).mostrar===false,'Lembrete de backup pode ser desligado');await p.check('#bk-mostrar');
 const saved=await p.evaluate(()=>window.__saved);ok(saved.length===2&&saved[0].filename.endsWith('.json')&&saved[1].text.includes('Mercado'),'Backup JSON e CSV gerados');
 const before=await p.evaluate(()=>JSON.parse(window.__saved[0].text).dados.lancamentos.length);
 await go('lancamentos');await p.locator('.row',{hasText:'Mercado'}).first().locator('.row-main').click();await p.click('[data-act="lf-excluir"]');await p.click('[data-act="lf-del-um"]');await wait(200);
@@ -106,7 +131,13 @@ for(const v of ['inicio','lancamentos','emprestimos','investimentos','contas','c
 await go('mais');await p.click('[data-act="abrir-seg"]');await wait();
 await p.fill('#sg-novo','1234');await p.fill('#sg-conf','1234');await p.click('[data-act="sg-criar"]');await wait(300);ok((await p.textContent('#sg-err')).includes('fácil'),'Recusa PIN fácil');
 await p.fill('#sg-novo','2580');await p.fill('#sg-conf','2581');await p.click('[data-act="sg-criar"]');await wait(300);ok((await p.textContent('#sg-err')).includes('iguais'),'Recusa PINs diferentes');
-await p.fill('#sg-novo','2580');await p.fill('#sg-conf','2580');await p.click('[data-act="sg-criar"]');await wait(800);ok(await p.isVisible('text=PIN ativo'),'PIN criado');
+await p.fill('#sg-novo','2580');await p.fill('#sg-conf','2580');await p.click('[data-act="sg-criar"]');await wait(800);
+const codigo=(await p.textContent('#rc-codigo')).trim();ok(/^[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(codigo),'Criar PIN mostra o código de recuperação: '+codigo);
+ok(!(await p.evaluate(()=>localStorage.getItem('mockdb'))).includes(codigo.replace(/-/g,'')),'Código não é guardado em texto');
+await p.click('[data-act="cod-ok"]');await wait(300);ok(await p.isVisible('text=PIN ativo'),'PIN criado');
+await p.fill('#sg-perg','Qual o nome do seu primeiro animal de estimação?');await p.fill('#sg-resp','Totó');await p.click('[data-act="sg-perg-salvar"]');await wait(800);
+ok((await p.textContent('#sg-rec-err')).includes('PIN atual'),'Mudar a recuperação pede o PIN atual');
+await p.fill('#sg-rpin','2580');await p.click('[data-act="sg-perg-salvar"]');await wait(1200);ok(await p.isVisible('text=Trocar a pergunta'),'Pergunta de segurança salva');
 await p.click('[data-act="fechar"]');ok(await p.isVisible('#lockbtn'),'Cadeado aparece no topo');
 await p.click('#lockbtn');await wait();ok(await p.isVisible('.lock'),'Bloquear agora mostra a tela de PIN');
 await p.keyboard.press('Escape');ok(await p.isVisible('.lock'),'Esc não fecha o bloqueio');
@@ -116,6 +147,7 @@ for(const d of '2580')await p.click(`[data-act="pin-key"][data-v="${d}"]`);await
 await p.screenshot({path:require('os').tmpdir()+'/e2e-home.png'});
 await p.reload();await wait(300);ok(await p.isVisible('.lock'),'Ao abrir de novo, pede o PIN');
 ok(await p.evaluate(()=>document.getElementById('view').hasAttribute('inert')),'Conteúdo fica inacessível atrás do bloqueio');
+ok(await p.evaluate(()=>document.getElementById('view').innerHTML==='' ),'Valores não ficam na página enquanto bloqueado');
 await p.screenshot({path:require('os').tmpdir()+'/e2e-lock.png'});
 await p.keyboard.type('2580');await wait(800);ok(!(await p.$('.lock')),'Desbloqueia pelo teclado físico');
 // tentativas
@@ -130,22 +162,43 @@ await cdp.send('WebAuthn.addVirtualAuthenticator',{options:{protocol:'ctap2',tra
 await p.reload();await wait(300);await p.keyboard.type('2580');await wait(800);
 await go('mais');await p.click('[data-act="abrir-seg"]');await wait(300);
 ok(await p.isVisible('[data-act="sg-bio-on"]'),'Oferece ativar digital quando o aparelho suporta');
-await p.click('[data-act="sg-bio-on"]');await wait(800);ok(await p.isVisible('text=Ativa neste aparelho'),'Digital ativada');
+await p.click('[data-act="sg-bio-on"]');await wait(600);ok((await p.textContent('#sg-bio-msg')).includes('PIN atual'),'Ativar a digital pede o PIN');
+await p.fill('#sg-bio-pin','2580');await p.click('[data-act="sg-bio-on"]');await wait(800);ok(await p.isVisible('text=Ativa neste aparelho'),'Digital ativada');
 await p.click('[data-act="fechar"]');await p.click('#lockbtn');await wait();ok(await p.isVisible('[data-act="pin-bio"]'),'Botão de digital na tela de bloqueio');
 await p.click('[data-act="pin-bio"]');await wait(800);ok(!(await p.$('.lock')),'Desbloqueia com a digital');
 // auto bloqueio ao sair
 await p.evaluate(()=>{Object.defineProperty(document,'visibilityState',{value:'hidden',configurable:true});document.dispatchEvent(new Event('visibilitychange'));Object.defineProperty(document,'visibilityState',{value:'visible',configurable:true});document.dispatchEvent(new Event('visibilitychange'))});
 await wait();ok(await p.isVisible('.lock'),'Bloqueia sozinho ao sair do app');
-// esqueci
-await p.click('[data-act="pin-esqueci"]');await p.fill('#pin-reset-txt','x');await p.click('[data-act="pin-reset"]');ok((await p.textContent('#pin-reset-err')).includes('REDEFINIR'),'Exige confirmação para tirar o PIN');
-await p.fill('#pin-reset-txt','redefinir');await p.click('[data-act="pin-reset"]');await wait(300);ok(!(await p.$('.lock')),'Esqueci o PIN libera o app');
-await p.reload();await wait(600);ok(!(await p.$('.lock')),'Sem PIN depois de redefinir');
-s=await saldo();ok(Math.abs(s-5650)<.001,'Dados preservados depois de redefinir o PIN: '+s);
+// esqueci: sem atalho que libere o app
+await p.click('[data-act="pin-esqueci"]');await wait();
+ok(await p.isVisible('[data-act="rc-bio"]')&&await p.isVisible('[data-act="rc-ir-codigo"]')&&await p.isVisible('[data-act="rc-ir-pergunta"]')&&await p.isVisible('[data-act="rc-ir-apagar"]'),'Esqueci o PIN oferece digital, código, pergunta e apagar');
+ok(!(await p.isVisible('text=REDEFINIR')),'Não existe mais o atalho que tirava o PIN sem provar quem é');
+await p.click('[data-act="rc-ir-pergunta"]');await p.fill('#rc-input','rex');await p.click('[data-act="rc-confirmar"]');await wait(800);
+ok((await p.textContent('#pin-msg')).includes('incorreta')&&await p.isVisible('.lock'),'Resposta errada não libera');
+await p.fill('#rc-input','  TOTO ');await p.click('[data-act="rc-confirmar"]');await wait(800);
+ok(!(await p.$('.lock'))&&await p.isVisible('text=Criar um PIN novo'),'Resposta certa (sem acento e maiúsculas) leva a criar PIN novo');
+await p.click('[data-act="fechar"]');await p.click('#lockbtn');await wait();
+await p.click('[data-act="pin-esqueci"]');await p.click('[data-act="rc-ir-codigo"]');await p.fill('#rc-input','AAAA-BBBB-CCCC');await p.keyboard.press('Enter');await wait(800);
+ok((await p.textContent('#pin-msg')).includes('incorreto'),'Código errado não libera');
+await p.fill('#rc-input',codigo.toLowerCase().replace(/-/g,' '));await p.click('[data-act="rc-confirmar"]');await wait(800);
+ok(!(await p.$('.lock'))&&await p.isVisible('text=Código confirmado'),'Código de recuperação libera para criar PIN novo');
+await p.fill('#sg-novo','1470');await p.fill('#sg-conf','1470');await p.click('[data-act="sg-redef"]');await wait(1200);
+const codigo2=(await p.textContent('#rc-codigo')).trim();ok(codigo2!==codigo,'Código usado é trocado por um novo');await p.click('[data-act="cod-ok"]');await wait(300);await p.click('[data-act="fechar"]');
+await p.reload();await wait(600);ok(await p.isVisible('.lock'),'PIN continua ativo depois da recuperação');
+await p.keyboard.type('2580');await wait(800);ok(await p.isVisible('.lock'),'PIN antigo não vale mais');
+await p.keyboard.type('1470');await wait(800);ok(!(await p.$('.lock')),'PIN novo desbloqueia');
+s=await saldo();ok(Math.abs(s-5650)<.001,'Dados preservados depois de recuperar o PIN: '+s);
+// apagar tudo
+await p.click('#lockbtn');await p.click('[data-act="pin-esqueci"]');await p.click('[data-act="rc-ir-apagar"]');await p.fill('#rc-input','x');await p.click('[data-act="rc-apagar"]');
+ok((await p.textContent('#rc-err')).includes('APAGAR')&&await p.isVisible('.lock'),'Apagar exige digitar APAGAR');
+await p.fill('#rc-input','apagar');await p.click('[data-act="rc-apagar"]');await wait(600);ok(!(await p.$('.lock')),'Apagar tudo libera o app');
+s=await saldo();ok(s===0,'Apagar tudo zera os dados: '+s);
+await p.reload();await wait(600);ok(!(await p.$('.lock')),'Sem PIN depois de apagar tudo');
 // telas estreitas e escuro
 await p.setViewportSize({width:320,height:640});for(const v of ['inicio','lancamentos','emprestimos']){await go(v);ok(!(await overflow()),'Sem rolagem lateral a 320px em '+v)}
 // modo local
 const p2=await ctx.newPage();p2.on('pageerror',e=>errs.push('local: '+e.message));await p2.goto(URL+'#local');await wait(600);
-ok(await p2.isVisible('text=salvos só neste aparelho'),'Modo local avisa onde ficam os dados');
+await p2.click('[data-act="ir"][data-v="mais"]');ok(await p2.isVisible('text=salvos só neste aparelho'),'Modo local avisa onde ficam os dados');await p2.click('[data-act="ir"][data-v="inicio"]');
 await p2.click('[data-act="carregar-exemplo"]');await wait(300);ok(await p2.isVisible('text=dados de exemplo'),'Exemplo carrega no modo local');
 await p2.click('[data-act="apagar-exemplo"]');await wait(200);ok(!(await p2.isVisible('text=dados de exemplo')),'Apagar exemplos funciona');
 const dk=await b.newPage({viewport:{width:390,height:844},colorScheme:'dark'});await dk.addInitScript({content:fs.readFileSync(__dirname+'/mock.js','utf8')});
