@@ -34,6 +34,8 @@ Alguns movimentos mudam o saldo da conta mas **não são renda nem gasto**, por 
 | Dinheiro que você emprestou para alguém | Sai | Fora |
 | Parcela recebida de quem te deve | Entra | Fora (é o seu dinheiro voltando) |
 | Parcela que você paga de um empréstimo | Sai | **Conta como despesa** (categoria *Parcela de empréstimo*, fixa) |
+| Valor extra ou quitação de um empréstimo que você pegou | Sai | **Conta como despesa** (categoria *Parcela de empréstimo*, variável) |
+| Valor extra recebido de quem te deve | Entra | Fora |
 | Aporte em investimento | Sai | Fora (é dinheiro guardado) |
 | Resgate de investimento | Entra | Fora |
 | Transferência entre contas | Move | Fora |
@@ -80,6 +82,56 @@ Exemplo verificado nos testes: R$ 2.000,00 a 2% ao mês em 10 vezes dá parcela 
 | Próxima parcela | A parcela em aberto com o vencimento mais próximo |
 | Quitado | Todas as parcelas pagas |
 
+## Pagamento extra e quitação antecipada
+
+Com juros, cada parcela em aberto vale **hoje** o seu valor presente. É a regra do Código de Defesa do Consumidor (art. 52, § 2º): quem antecipa paga sem os juros do tempo que falta.
+
+```
+meses até o vencimento  k = dias entre a data do pagamento e o vencimento ÷ 30 (0 se já venceu)
+valor presente da parcela = valor ÷ (1 + i)^k
+para quitar hoje          = soma dos valores presentes das parcelas em aberto
+desconto de juros         = soma das parcelas em aberto − para quitar hoje
+```
+
+Parcelas atrasadas valem o valor cheio (o app não calcula multa nem juros de atraso).
+
+| Opção | Como o valor `V` é aplicado |
+| --- | --- |
+| **Reduzir prazo** | Começa pela **última** parcela: se `V` cobre o valor presente dela, a parcela é marcada como antecipada e o resto segue para a anterior. O que sobrar abate a próxima parcela, que passa a valer `valor − sobra × (1 + i)^k`. |
+| **Reduzir parcela** | O saldo das parcelas que ainda vão vencer, a valor presente, menos `V`, é dividido de novo nas mesmas datas e com a mesma taxa: `parcela nova = (VP − V) ÷ Σ 1/(1 + i)^k`. Sem juros, `(saldo − V) ÷ parcelas`, com ajuste de centavos na última. |
+| **Quitar** | `V` = para quitar hoje. Todas as parcelas em aberto são marcadas como antecipadas. |
+
+```
+economia de juros = parcelas em aberto antes − parcelas em aberto depois − V
+```
+
+Sem juros, o valor presente é o próprio valor e não há economia: o valor extra abate direto do saldo. O app não aceita um valor maior que o necessário para quitar.
+
+Exemplo (com os dados de exemplo do app): R$ 6.000,00 a 1,9% ao mês em 12 vezes, parcela de R$ 563,88, com 3 pagas. Um valor extra de R$ 1.500,00 reduzindo o prazo elimina as 2 últimas parcelas, diminui a 10ª e economiza cerca de R$ 214 de juros. O mesmo valor reduzindo a parcela leva as 9 restantes de R$ 563,88 para cerca de R$ 384.
+
+Cada pagamento extra guarda uma cópia das parcelas de antes. **Desfazer** (só o último) devolve as parcelas e apaga o lançamento, desde que nenhuma parcela tenha sido paga depois.
+
+## Extrato
+
+| Item | Cálculo |
+| --- | --- |
+| Lançamentos | Data entre *de* e *até*, mais os filtros de tipo, situação, conta e categoria. Ordem por data. |
+| Entradas e saídas (sem conta escolhida) | Receitas e despesas da lista, pagas e pendentes. Transferências ficam de fora. |
+| Com uma conta escolhida | Receitas e transferências que **entram** na conta são entradas; despesas e transferências que **saem** são saídas. |
+| Saldo anterior | Saldo da conta no fim do dia anterior ao início do período (só pagos). |
+| Entradas pagas e saídas pagas | Só os lançamentos pagos, para fechar a conta: saldo anterior + entradas pagas − saídas pagas = saldo final. |
+| Saldo linha a linha | Aparece com uma conta escolhida, tipo *Todos*, sem categoria e sem o filtro *Pendentes*. Pendentes ficam sem saldo. |
+| Subtotais por mês | Quando o período tem mais de um mês. |
+| Resumo por categoria | Soma, quantidade e participação (%) de cada categoria, para despesas e para receitas. |
+
+## Cartão de crédito
+
+```
+fatura em aberto   = −saldo do cartão (quando negativo)
+limite disponível  = limite − fatura em aberto
+próximo vencimento = próxima data com o dia de vencimento, a partir de hoje
+```
+
 ## Investimentos
 
 ```
@@ -113,4 +165,5 @@ O bloco **A vencer em 7 dias** lista lançamentos pendentes e parcelas em aberto
 | `3.500` | R$ 3.500,00 (ponto de milhar) |
 | `1.234,56` | R$ 1.234,56 |
 | `12.5` | R$ 12,50 |
-| `-350,00` (saldo de cartão) | R$ −350,00 |
+| `-350,00` (saldo de conta) | R$ −350,00 |
+| `350,00` (fatura do cartão) | Fatura de R$ 350,00, guardada como saldo −350,00 |

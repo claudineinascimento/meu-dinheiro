@@ -19,6 +19,7 @@ const p2=await ctx.newPage();await p2.goto(U+'#novo');await p2.waitForTimeout(80
 await cdp.send('WebAuthn.enable');await cdp.send('WebAuthn.addVirtualAuthenticator',{options:{protocol:'ctap2',transport:'internal',hasResidentKey:true,hasUserVerification:true,isUserVerified:true}});
 await p.reload();await p.waitForTimeout(800);await p.click('[data-act="ir"][data-v="mais"]');await p.click('[data-act="abrir-seg"]');await p.fill('#sg-novo','2580');await p.fill('#sg-conf','2580');await p.click('[data-act="sg-criar"]');await p.waitForTimeout(800);await p.click('[data-act="cod-ok"]');
 await p.fill('#sg-bio-pin','2580');await p.click('[data-act="sg-bio-on"]');await p.waitForTimeout(800);ok(await p.isVisible('text=Ativa neste aparelho'),'Digital ativa no app instalado');
-await p.reload();await p.waitForTimeout(800);ok(await p.isVisible('.lock'),'Pede PIN ao abrir');await p.click('[data-act="pin-bio"]');await p.waitForTimeout(800);ok(!(await p.$('.lock')),'Desbloqueia com digital');
+await p.reload();await p.waitForTimeout(150);ok(await p.isVisible('.lock'),'Abre bloqueado');await p.waitForTimeout(1200);ok(!(await p.$('.lock')),'Pede a digital sozinho ao abrir e desbloqueia sem PIN');
+await p.click('#lockbtn');await p.waitForTimeout(600);ok(await p.isVisible('[data-act="pin-bio"]')&&await p.isVisible('[data-act="pin-key"]'),'Bloqueado: digital ou PIN');await p.click('[data-act="pin-bio"]');await p.waitForTimeout(800);ok(!(await p.$('.lock')),'Desbloqueia com o botão da digital');
 await p.screenshot({path:require('os').tmpdir()+'/pwa-home.png'});
 ok(!errs.length,'Sem erros '+JSON.stringify(errs));console.log(R.join('\n'));console.log(`${R.length-F}/${R.length}`);await b.close()})();

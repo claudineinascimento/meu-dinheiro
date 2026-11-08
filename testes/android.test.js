@@ -1,6 +1,6 @@
 const {chromium}=require('playwright');const R=[];let F=0;const ok=(c,m)=>{R.push((c?'PASS ':'FAIL ')+m);if(!c)F++};
 (async()=>{const b=await chromium.launch();const ctx=await b.newContext({viewport:{width:390,height:844}});
-await ctx.addInitScript(()=>{window.__bioCalls=0;window.Capacitor={isNativePlatform:()=>true,Plugins:{BiometricAuthNative:{checkBiometry:async()=>({isAvailable:true}),internalAuthenticate:async()=>{window.__bioCalls++}},Filesystem:{writeFile:async o=>{window.__file=o;return {uri:'file:///cache/'+o.path}}},Share:{share:async o=>{window.__shared=o}}}}});
+await ctx.addInitScript(()=>{window.__bioCalls=0;window.Capacitor={isNativePlatform:()=>true,Plugins:{BiometricAuthNative:{checkBiometry:async()=>({isAvailable:true}),internalAuthenticate:async()=>{window.__bioCalls++;document.dispatchEvent(new Event('pause'));await new Promise(r=>setTimeout(r,50));setTimeout(()=>document.dispatchEvent(new Event('resume')),30)}},Filesystem:{writeFile:async o=>{window.__file=o;return {uri:'file:///cache/'+o.path}}},Share:{share:async o=>{window.__shared=o}}}}});
 const p=await ctx.newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));
 await p.goto('http://localhost:8766/');await p.waitForTimeout(800);
 ok(!(await p.evaluate(()=>navigator.serviceWorker.controller))&&!(await p.evaluate(async()=>(await navigator.serviceWorker.getRegistrations()).length)),'No APK não registra service worker');
@@ -10,6 +10,7 @@ await p.fill('#sg-bio-pin','2580');await p.click('[data-act="sg-bio-on"]');await
 await p.reload();await p.waitForTimeout(1200);ok(!(await p.$('.lock'))&&await p.evaluate(()=>window.__bioCalls)===1,'Ao abrir, pede a digital sozinho e desbloqueia');
 await p.evaluate(()=>document.dispatchEvent(new Event('pause')));await p.evaluate(()=>document.dispatchEvent(new Event('resume')));await p.waitForTimeout(800);
 ok(await p.evaluate(()=>window.__bioCalls)===2&&!(await p.$('.lock')),'Ao voltar para o app, bloqueia e pede a digital');
+await p.waitForTimeout(1500);ok(await p.evaluate(()=>window.__bioCalls)===2&&!(await p.$('.lock')),'Depois da digital, o app não bloqueia de novo nem pede a digital em loop');
 await p.click('[data-act="ir"][data-v="mais"]');await p.click('[data-act="ir"][data-v="backup"]');await p.click('[data-act="exp-json"]');await p.waitForTimeout(300);
 const sh=await p.evaluate(()=>window.__shared);ok(sh&&sh.files&&sh.files[0].endsWith('.json'),'Backup abre o compartilhar do Android: '+JSON.stringify(sh));
 await p.evaluate(()=>document.dispatchEvent(new Event('pause')));await p.evaluate(()=>document.dispatchEvent(new Event('resume')));await p.waitForTimeout(500);

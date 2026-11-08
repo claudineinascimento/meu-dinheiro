@@ -262,6 +262,25 @@ details.faq ul{padding-left:18px}
 .evo button:hover i,.evo button[aria-pressed="true"] i{opacity:1}
 .evo-x{display:flex;gap:4px;font-size:.625rem;color:var(--muted);margin-top:4px}
 .evo-x span{flex:1;text-align:center;min-width:0;overflow:hidden;text-transform:capitalize}
+
+/* 1.2: digital primeiro, barra de ferramentas, simulação, sobre */
+.bio-btn{display:flex;flex-direction:column;align-items:center;gap:8px;border:1.5px solid var(--brand-2);background:var(--brand-soft);color:var(--brand);border-radius:20px;padding:14px 26px;font-weight:600;font-size:var(--fs-sm);cursor:pointer}
+.bio-btn .ico{width:40px;height:40px;stroke-width:1.6}
+.bio-btn:disabled{opacity:.5;cursor:default}
+.toolbar{display:flex;gap:8px;align-items:stretch}
+.toolbar .search{flex:1;min-width:0}
+.toolbar .btn{padding:8px 12px;flex:none}
+@media (max-width:360px){.toolbar .tb-txt{display:none}}
+.sim{background:var(--surface-2);border-radius:var(--r-sm);padding:10px 12px;font-size:var(--fs-sm);line-height:1.5}
+.sim:empty{display:none}
+.about{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+.about>.brand-mark{width:56px;height:56px;border-radius:16px}
+.about>.brand-mark .ico{width:30px;height:30px}
+.about h2{font-size:var(--fs-xl)}
+ul.news{margin:10px 0 6px;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:var(--fs-sm)}
+details.faq ul li{margin-bottom:4px}
+.menu a.row:hover,.menu .row:hover{background:color-mix(in srgb,var(--surface-2) 50%,transparent)}
+.card>.eyebrow{display:block}
 </style>
 
 <header class="top"><div class="top-in">
@@ -343,9 +362,14 @@ const P={
  eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
  eyeOff:'<path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-2.6 3.5M6.6 6.6C3.8 8.3 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M3 3l18 18"/>',
  key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/>',
- pie:'<path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/>'
+ pie:'<path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/>',
+ file:'<path d="M6 2.5h8.5L19 7v14.5H6z"/><path d="M14 2.5V7.5h5M9 12.5h7M9 16.5h7"/>',
+ reset:'<path d="M4 4v5h5"/><path d="M4.6 15a8 8 0 1 0 1.6-8.2L4 9"/>'
 };
 const ic=(n,c)=>`<svg class="ico${c?' '+c:''}" viewBox="0 0 24 24" aria-hidden="true">${P[n]||P.dots}</svg>`;
+
+/* ---------- Versão (igual ao campo version do package.json) ---------- */
+const VERSAO='1.2.0';
 
 /* ---------- Utilidades ---------- */
 const $=s=>document.querySelector(s);
@@ -450,7 +474,7 @@ async function boot(){
   applyTheme(); render();
   bioSuportado().then(v=>{bioOk=v;if(lockState==='locked')renderLock()});
   document.addEventListener('pause',()=>{hiddenAt=Date.now()});
-  document.addEventListener('resume',()=>{if(lockState==='open'&&temPin()&&hiddenAt&&!emPausaLivre()&&Date.now()-hiddenAt>=Number(SEG.autoLock||0)*60000)bloquear()});
+  document.addEventListener('resume',()=>{if(lockState==='open'&&temPin()&&hiddenAt&&!emPausaLivre()&&Date.now()-hiddenAt>=Number(SEG.autoLock||0)*60000&&!voltaBio())bloquear()});
   try{const c=JSON.parse(lsGet('md_seg_cache'));if(c&&c.pinHash){SEG=c;lockState='locked';renderLock()}}catch(e){}
   setTimeout(()=>{if(!segLoaded&&lockState==='checking'){lockState='open';renderLock()}},12000);
   const c=window.claude;
@@ -534,7 +558,7 @@ function toast(msg){const r=$('#toast-root');r.innerHTML=`<div class="toast" rol
 /* ---------- Navegação ---------- */
 const NAV=[['inicio','Início','home'],['lancamentos','Lançamentos','list'],['novo','','plus'],['emprestimos','Empréstimos','loan'],['mais','Mais','grid']];
 function renderNav(){
-  const cur=['investimentos','contas','categorias','pessoas','backup','ajuda'].includes(UI.view)?'mais':UI.view;
+  const cur=['investimentos','contas','categorias','pessoas','backup','ajuda','sobre'].includes(UI.view)?'mais':UI.view;
   $('#nav').innerHTML=`<button class="btn primary side-new" data-act="novo-lanc">${ic('plus')} Novo lançamento</button>`+NAV.map(([k,l,i])=>k==='novo'
     ?`<div class="fab-wrap"><button class="fab" data-act="novo-lanc" aria-label="Novo lançamento">${ic('plus')}</button></div>`
     :`<button data-act="ir" data-v="${k}" ${cur===k?'aria-current="page"':''}>${ic(i)}<span>${l}</span></button>`).join('');
@@ -559,7 +583,7 @@ function lancRow(l){
   </div>`;
 }
 function empty(icon,title,text,btn){return `<div class="empty"><span class="cat-ico">${ic(icon,'lg')}</span><b>${title}</b><span class="small">${text}</span>${btn||''}</div>`}
-function signature(){return `<div class="signature"><span>Meu Dinheiro · controle financeiro pessoal</span><span>Desenvolvido por <b>Claudinei Nascimento</b></span></div>`}
+function signature(){return `<div class="signature"><span>Meu Dinheiro ${VERSAO} · controle financeiro pessoal</span><span>Desenvolvido por <b>Claudinei Nascimento</b></span></div>`}
 /* Lembrete de backup: data do último backup, aviso quando atrasa, pode ser adiado ou desligado */
 const DIA=86400000;
 function bkPref(){let p=null;try{p=JSON.parse(lsGet('md_bk_pref'))}catch(e){}return Object.assign({mostrar:true,dias:7,adiarAte:0},p||{})}
@@ -651,7 +675,7 @@ function vLancamentos(){
   if(f==='receita'||f==='despesa'||f==='transferencia')ls=ls.filter(l=>l.tipo===f);
   if(f==='pendente')ls=ls.filter(l=>l.status!=='pago');
   if(f==='fixo')ls=ls.filter(l=>l.natureza==='fixo');
-  if(q)ls=ls.filter(l=>{const c=cat(l.categoriaId);return (l.descricao||'').toLowerCase().includes(q)||(c&&c.nome.toLowerCase().includes(q))});
+  if(q)ls=ls.filter(l=>{const c=cat(l.categoriaId),ct=conta(l.contaId);return (l.descricao||'').toLowerCase().includes(q)||(c&&c.nome.toLowerCase().includes(q))||(ct&&ct.nome.toLowerCase().includes(q))||moneyIn(l.valor).includes(q)});
   ls.sort((a,b)=>a.data===b.data?(b.atualizadoEm||0)-(a.atualizadoEm||0):(a.data<b.data?1:-1));
   const dias={}; ls.forEach(l=>{(dias[l.data]=dias[l.data]||[]).push(l)});
   const r=resumoMes(UI.mes);
@@ -660,7 +684,7 @@ function vLancamentos(){
     <div class="card stat"><span class="eyebrow">Receitas</span><b class="pos">${brl(r.receitas)}</b><span class="xs muted">${brl(r.recebidas)} recebidas</span></div>
     <div class="card stat"><span class="eyebrow">Despesas</span><b class="neg">${brl(r.despesas)}</b><span class="xs muted">${brl(r.pagas)} pagas</span></div>
   </div>
-  <label class="search"><span class="sr">Buscar</span>${ic('search','sm')}<input id="busca" type="search" placeholder="Buscar por descrição ou categoria" value="${esc(UI.busca)}"></label>
+  <div class="toolbar"><label class="search"><span class="sr">Buscar</span>${ic('search','sm')}<input id="busca" type="search" placeholder="Buscar descrição, categoria ou conta" value="${esc(UI.busca)}"></label><button class="btn ghost" data-act="extrato" aria-label="Gerar extrato em PDF" title="Extrato em PDF">${ic('file')}<span class="tb-txt">Extrato</span></button></div>
   <div class="chips" role="group" aria-label="Filtro">${chips.map(([k,l])=>`<button class="chip" data-act="filtro" data-v="${k}" aria-pressed="${f===k}">${l}</button>`).join('')}</div>
   <section class="card" style="padding-top:4px">
     ${ls.length?Object.keys(dias).map(d=>{const t=sum(dias[d].filter(contaNoResultado),l=>l.tipo==='receita'?l.valor:l.tipo==='despesa'?-l.valor:0);return `<div class="day-h"><span>${esc(diaSemana(d))}</span><span>${t>=0?'+':'−'} ${brl(Math.abs(t))}</span></div><div class="list">${dias[d].map(lancRow).join('')}</div>`}).join('')
@@ -754,27 +778,27 @@ function voltar(){return `<button class="btn ghost sm" data-act="ir" data-v="mai
 
 function vMais(){
   const it=(v,i,t,s)=>`<button class="row" data-act="ir" data-v="${v}"><span class="cat-ico">${ic(i)}</span><span class="row-main"><b>${t}</b><span>${s}</span></span>${ic('chevR')}</button>`;
+  const grupo=(t,c)=>`<section class="card" style="padding-block:10px 4px"><div class="eyebrow">${t}</div><div class="menu">${c}</div></section>`;
+  const nCart=S.contas.filter(c=>c.tipo==='cartao'&&c.ativa!==false).length, nCont=contasAtivas().length-nCart;
   const inst=!NATIVE&&window.__mdInstall&&!window.__mdInstalled?`<section class="card" style="padding-block:4px"><div class="menu"><button class="row" data-act="instalar"><span class="cat-ico" style="background:var(--brand-soft);color:var(--brand)">${ic('download')}</span><span class="row-main"><b>Instalar o app</b><span>Ícone na tela inicial e uso sem internet</span></span>${ic('chevR')}</button></div></section>`:'';
-  return `${inst}<section class="card" style="padding-block:4px"><div class="menu">
+  return `${inst}${grupo('Minhas finanças',`
+    ${it('contas','wallet','Contas e cartões',`${nCont} conta(s)${nCart?' · '+nCart+' cartão(ões)':''}, Pix e limites`)}
     ${it('investimentos','piggy','Investimentos','Aplicações, aportes e resgates')}
-    ${it('contas','wallet','Contas e cartões',contasAtivas().length+' conta(s) ativa(s)')}
     ${it('categorias','tag','Categorias',S.categorias.filter(c=>!c.oculta).length+' categorias')}
-    ${it('pessoas','users','Pessoas','Quem empresta ou pega emprestado com você')}
+    ${it('pessoas','users','Pessoas','Quem empresta ou pega emprestado com você')}`)}
+  ${grupo('Aplicativo',`
     <button class="row" data-act="abrir-seg"><span class="cat-ico">${ic('lock')}</span><span class="row-main"><b>Segurança</b><span>${temPin()?'PIN ativo'+(bioRegistrada()?' · digital ativa':''):'Bloqueio com PIN e digital'}</span></span>${ic('chevR')}</button>
     ${it('backup','download','Backup e exportação',bkUltimo()?'Último backup '+haDias(bkUltimo()):'Nenhum backup feito ainda')}
     ${it('ajuda','help','Ajuda','Como usar o Meu Dinheiro')}
-  </div></section>
+    ${it('sobre','info','Sobre','Versão '+VERSAO+', novidades e créditos')}`)}
   <section class="card"><div class="section-h"><h2>Tema</h2></div>
    <div class="seg" style="margin-top:12px" role="group" aria-label="Tema">${[['auto','Automático'],['claro','Claro'],['escuro','Escuro']].map(([k,l])=>`<button data-act="set-tema" data-v="${k}" aria-pressed="${tema===k}">${l}</button>`).join('')}</div>
    <p class="xs muted" style="margin:8px 0 0">O botão no topo da tela também troca o tema com um toque.</p></section>
   <section class="card small muted" style="display:flex;gap:10px">${ic('shield')}<span>${mode==='db'?'Seus dados ficam salvos na sua conta e só você tem acesso a eles.':'Seus dados ficam salvos só neste aparelho. Faça backup com frequência.'}</span></section>
+  <section class="card" style="padding-block:4px"><div class="menu"><button class="row" data-act="fabrica"><span class="cat-ico" style="background:var(--neg-soft);color:var(--neg)">${ic('reset')}</span><span class="row-main"><b class="neg">Restaurar padrão de fábrica</b><span>Apaga dados e configurações${temPin()?'; pede o seu PIN':''}</span></span>${ic('chevR')}</button></div></section>
   ${signature()}`;
 }
 
-function vContas(){
-  return `${voltar()}<div style="display:flex;gap:8px;align-items:center"><button class="btn primary" data-act="nova-conta" style="flex:1">${ic('plus')} Nova conta ou cartão</button>${olho('saldo')}</div>
-  <section class="card" style="padding-block:4px"><div class="list">${S.contas.slice().sort((a,b)=>(a.ativa===false)-(b.ativa===false)).map(c=>{const s=saldoConta(c.id);return `<div class="row" data-act="abrir-conta" data-id="${c.id}" role="button" tabindex="0"><span class="cat-ico" style="background:var(--surface-2);color:var(--ink)">${ic(c.tipo==='cartao'?'card':c.tipo==='carteira'?'wallet':'bank')}</span><div class="row-main"><b>${esc(c.nome)}</b><span>${TIPO_CONTA[c.tipo]||''}${c.ativa===false?' · Arquivada':''}</span></div><div class="row-end"><b class="${s<0?'neg':''}">${brlS(s)}</b>${c.tipo==='cartao'&&s<0?'<span class="xs muted">fatura em aberto</span>':''}</div></div>`}).join('')}</div></section>`;
-}
 function vCategorias(){
   const g=t=>S.categorias.filter(c=>(t==='receita'?c.tipo==='receita':c.tipo==='despesa'&&c.grupo===t));
   return `${voltar()}<button class="btn primary" data-act="nova-cat">${ic('plus')} Nova categoria</button>
@@ -804,22 +828,78 @@ function vBackup(){
 }
 function vAjuda(){
   const q=(i,t,b)=>`<details class="faq"><summary>${ic(i)}<span>${t}</span>${ic('chevR','sm')}</summary>${b}</details>`;
-  return `${voltar()}<section class="card" style="padding-block:6px">
+  return `${voltar()}<button class="bk" data-act="ir" data-v="sobre" style="cursor:pointer;text-align:left">${ic('info','sm')}<span style="flex:1;min-width:0">Versão ${VERSAO} · veja as novidades em <b>Sobre</b></span>${ic('chevR','sm')}</button><section class="card" style="padding-block:6px">
   ${q('plus','Como lançar um gasto ou uma receita','<p>Toque no botão <b>+</b>, escolha Despesa ou Receita, digite o valor e a categoria. Conta e data já vêm preenchidas. Pronto: o lançamento entra no mês e no saldo da conta.</p>')}
   ${q('check','Pago ou pendente','<p>O círculo à direita de cada lançamento mostra se ele já foi pago (verde) ou se ainda vai vencer. Só lançamentos pagos mexem no saldo das contas. Toque no círculo para trocar.</p>')}
   ${q('calendar','Contas fixas e compras parceladas','<ul><li><b>Repetir todo mês</b>: para aluguel, salário, academia e assinaturas. O app cria os próximos meses como pendentes.</li><li><b>Parcelar</b>: digite o valor total e o número de parcelas. O app divide e lança uma parcela por mês.</li><li>Marque <b>Fixo</b> para despesas que se repetem; isso separa fixas e variáveis no resumo.</li></ul>')}
-  ${q('card','Cartão de crédito','<p>Cadastre o cartão em <b>Mais › Contas e cartões</b> e lance as compras nele. O saldo negativo do cartão é a fatura em aberto. Para pagar a fatura, faça uma <b>Transferência</b> da conta corrente para o cartão.</p>')}
-  ${q('loan','Empréstimos: eu devo e me devem','<ul><li><b>Eu devo</b>: empréstimos e financiamentos que você pegou. Informe valor, parcelas e juros ao mês; o app calcula a parcela (tabela Price) e você pode ajustar.</li><li><b>Me devem</b>: dinheiro que você emprestou para alguém.</li><li>Abra o empréstimo e toque em <b>Pagar</b> ou <b>Receber</b> em cada parcela. O app cria o lançamento e atualiza o saldo devedor.</li><li>O dinheiro que entra ao pegar um empréstimo, ou que sai ao emprestar, não conta como receita nem gasto do mês. As parcelas que você paga contam como despesa financeira.</li></ul>')}
+  ${q('file','Extrato em PDF','<ul><li>Em <b>Lançamentos</b>, toque em <b>Extrato</b>.</li><li>Use um <b>modelo pronto</b> (extrato do mês, gastos por categoria, contas a pagar nos próximos 30 dias, rendimentos do ano passado para o Imposto de Renda, fatura do cartão) ou monte o seu: período, tipo, situação, conta e categoria.</li><li>Escolhendo uma conta, o PDF traz saldo anterior, saldo linha a linha e saldo final, como o extrato do banco.</li><li>O resumo por categoria mostra quanto cada uma pesou no período.</li><li>O botão <b>Planilha</b> gera o mesmo filtro em CSV.</li></ul>')}
+  ${q('card','Contas, cartões e Pix','<ul><li>Em <b>Mais › Contas e cartões</b>, guarde banco, agência, número da conta, titular e chave Pix. Toque na conta e em <b>Copiar dados</b> para mandar a alguém.</li><li>No cartão de crédito, guarde bandeira, os 4 últimos números, limite, dia de fechamento e de vencimento. O app mostra a fatura em aberto e o limite disponível.</li><li>Lance as compras no cartão. Para pagar a fatura, abra o cartão e toque em <b>Pagar fatura</b>: o app faz a transferência da conta para o cartão.</li><li>Nunca guarde senhas, o número completo do cartão ou o código de segurança.</li></ul>')}
+  ${q('loan','Empréstimos: eu devo e me devem','<ul><li><b>Eu devo</b>: empréstimos e financiamentos que você pegou. Informe valor, parcelas e juros ao mês; o app calcula a parcela (tabela Price) e você pode ajustar.</li><li><b>Me devem</b>: dinheiro que você emprestou para alguém.</li><li>Abra o empréstimo e toque em <b>Pagar</b> ou <b>Receber</b> em cada parcela. O app cria o lançamento e atualiza o saldo devedor.</li><li><b>Pagar extra</b> (ou <b>Receber extra</b>): qualquer valor abate o saldo. Escolha <b>reduzir o prazo</b> (mantém a parcela e elimina as últimas, o que mais economiza juros) ou <b>reduzir a parcela</b> (mantém o prazo e diminui cada parcela). O app mostra o efeito antes de confirmar.</li><li><b>Quitar</b>: paga tudo de uma vez pelo valor de hoje, sem os juros do tempo que falta, como prevê o Código de Defesa do Consumidor.</li><li>Errou? Em <b>Pagamentos extras</b>, toque em <b>Desfazer</b> no último.</li><li>O dinheiro que entra ao pegar um empréstimo, ou que sai ao emprestar, não conta como receita nem gasto do mês. As parcelas que você paga contam como despesa financeira.</li></ul>')}
   ${q('piggy','Investimentos e reserva de emergência','<p>Em <b>Mais › Investimentos</b>, cadastre cada aplicação. Registre aportes (saem da conta), resgates (voltam para a conta) e rendimentos. Aportes não contam como gasto: é dinheiro guardado. O ideal é ter de 3 a 6 meses de despesas essenciais na reserva.</p>')}
   ${q('tag','Categorias e a regra 50/30/20','<p>As despesas são agrupadas em Essencial (meta até 50% da renda), Estilo de vida (até 30%) e Financeiro (pelo menos 20% para poupar e pagar dívidas). Você pode criar, renomear ou ocultar categorias.</p>')}
-  ${q('lock','PIN e digital','<ul><li>Em <b>Mais › Segurança</b>, crie um PIN de 4 a 6 números. O app passa a pedir o PIN sempre que for aberto.</li><li>Depois, toque em <b>Ativar digital neste aparelho</b> para desbloquear com a digital ou o rosto. Cada aparelho ativa a sua.</li><li>Escolha quando bloquear sozinho: ao sair do app ou após 1, 5 ou 15 minutos sem uso. O cadeado no topo bloqueia na hora.</li><li>Após 5 PINs errados, o app pede uma pausa antes de tentar de novo.</li><li>Esqueceu o PIN? Toque em <b>Esqueci o PIN</b> na tela de bloqueio. Seus dados não se perdem.</li></ul>')}
+  ${q('lock','PIN e digital','<ul><li>Em <b>Mais › Segurança</b>, crie um PIN de 4 a 6 números. O app passa a pedir o PIN sempre que for aberto.</li><li>Depois, toque em <b>Ativar digital neste aparelho</b>. Com ela ativa, o app pede a digital sozinho ao abrir: não precisa digitar o PIN. O PIN continua valendo se a digital falhar. Cada aparelho ativa a sua.</li><li>Escolha quando bloquear sozinho: ao sair do app ou após 1, 5 ou 15 minutos sem uso. O cadeado no topo bloqueia na hora.</li><li>Após 5 PINs errados, o app pede uma pausa antes de tentar de novo.</li><li>Esqueceu o PIN? Toque em <b>Esqueci o PIN</b> na tela de bloqueio. Seus dados não se perdem.</li></ul>')}
+  ${q('reset','Restaurar padrão de fábrica','<p>Em <b>Mais › Restaurar padrão de fábrica</b>, o app apaga todos os dados e configurações e volta como recém-instalado. Se você tem PIN, ele é pedido para confirmar. Faça um backup antes, se quiser guardar uma cópia.</p>')}
   ${q('sun','Tema claro, escuro e automático','<p>O botão no canto superior direito troca o tema com um toque: automático (segue o celular), claro e escuro.</p>')}
   ${q('phone','Instalar no celular','<ul><li><b>Android (APK)</b>: baixe o arquivo meu-dinheiro.apk, abra e permita instalar de fontes desconhecidas quando o Android pedir.</li><li><b>Android (Chrome)</b>: abra o endereço do app, toque em <b>Mais › Instalar o app</b> ou no menu ⋮ do Chrome em <b>Instalar app</b>.</li><li><b>iPhone (Safari)</b>: abra o endereço no Safari, toque em <b>Compartilhar</b> e depois em <b>Adicionar à Tela de Início</b>.</li><li>Instalado, ele abre em tela cheia e funciona sem internet. Para levar seus dados de outra versão, baixe o backup lá e use <b>Restaurar backup</b> aqui.</li></ul>')}
   ${q('shield','Onde ficam meus dados','<p>'+(mode==='db'?'Na sua conta, com acesso só seu. Você pode baixar uma cópia a qualquer momento em Backup.':'Neste navegador. Se limpar os dados do navegador, eles se perdem: faça backup com frequência.')+'</p>')}
   </section>${signature()}`;
 }
 
-const VIEWS={inicio:vInicio,lancamentos:vLancamentos,emprestimos:vEmprestimos,investimentos:vInvestimentos,mais:vMais,contas:vContas,categorias:vCategorias,pessoas:vPessoas,backup:vBackup,ajuda:vAjuda};
+const NOVIDADES=[
+ ['1.2','novembro de 2026',['Digital primeiro: com a digital ativa, o app pede a digital sozinho ao abrir e o PIN fica como alternativa. Corrigido o bloqueio repetido no Android depois de ler a digital.',
+   'Empréstimos: pague ou receba qualquer valor extra, escolhendo reduzir o prazo ou a parcela, e quite antes com desconto dos juros. O app mostra a economia antes de confirmar.',
+   'Extratos em PDF na tela Lançamentos, por período, tipo, situação, conta e categoria, com modelos prontos e saldo linha a linha por conta.',
+   'Contas e cartões com banco, agência, conta, chave Pix, bandeira, final, limite, fechamento e vencimento. Botão Pagar fatura.',
+   'Restaurar padrão de fábrica, confirmando com o seu PIN.',
+   'Tela Sobre, ajuda revisada e menu Mais reorganizado.']],
+ ['1.1','novembro de 2026',['Olho para ocultar saldo e investido.','Recuperação do PIN por código, pergunta ou digital.','Painel de investimentos com reserva de emergência.','Lembrete de backup.']],
+ ['1.0','novembro de 2026',['Primeira versão: lançamentos, contas, empréstimos, investimentos, PIN, digital e backup.']]
+];
+function plataforma(){if(NATIVE)return 'App Android (APK)';if(mode==='db')return 'Versão no Claude';try{if(matchMedia('(display-mode: standalone)').matches)return 'App instalado (PWA)'}catch(e){}return 'Navegador'}
+function vSobre(){
+  const [atual,...antes]=NOVIDADES;
+  const it=(act,v,i,t,s,ext)=>ext?`<a class="row" href="${v}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none"><span class="cat-ico">${ic(i)}</span><span class="row-main"><b>${t}</b><span>${s}</span></span>${ic('chevR')}</a>`:`<button class="row" data-act="${act}" data-v="${v}"><span class="cat-ico">${ic(i)}</span><span class="row-main"><b>${t}</b><span>${s}</span></span>${ic('chevR')}</button>`;
+  return `${voltar()}
+  <section class="card about"><span class="brand-mark">${ic('trend')}</span><h2>Meu Dinheiro</h2><span class="small muted">Controle financeiro pessoal, simples e privado</span>
+   <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><span class="pill pos" id="sobre-versao">Versão ${VERSAO}</span><span class="pill mut">${esc(plataforma())}</span></div></section>
+  <section class="card"><div class="section-h"><h2>Novidades da versão ${atual[0]}</h2><span class="xs muted">${atual[1]}</span></div>
+   <ul class="news">${atual[2].map(t=>`<li>${esc(t)}</li>`).join('')}</ul>
+   ${antes.map(([v,d,ls])=>`<details class="faq"><summary>${ic('clock')}<span>Versão ${v} · ${d}</span>${ic('chevR','sm')}</summary><ul>${ls.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></details>`).join('')}</section>
+  <section class="card" style="padding-block:4px"><div class="menu">
+   ${it('ir','ajuda','help','Ajuda','Passo a passo de cada tela')}
+   ${it('abrir-seg','','lock','Privacidade e segurança',mode==='db'?'Dados na sua conta, só você acessa':'Dados só neste aparelho, sem cadastro')}
+   ${it('','https://github.com/claudineinascimento/meu-dinheiro/releases','download','Versões e atualizações','Baixe a versão mais nova do app',true)}
+   ${it('','https://github.com/claudineinascimento/meu-dinheiro','book','Código-fonte','Projeto aberto no GitHub, licença MIT',true)}
+  </div></section>
+  <section class="card about" style="gap:4px"><span class="xs muted">Desenvolvido por</span><b style="font-size:var(--fs-lg)">Claudinei Nascimento</b><span class="xs muted">© 2026 · Licença MIT</span></section>`;
+}
+function formFabrica(){
+  const pin=temPin();
+  openSheet('Restaurar padrão de fábrica',`<div class="banner">${ic('alert')}<div><b>Isto apaga tudo ${mode==='db'?'da sua conta neste app':'deste aparelho'}</b> e deixa o app como recém-instalado:<ul style="margin:6px 0 0;padding-left:18px"><li>lançamentos, contas, cartões, empréstimos, investimentos e pessoas;</li><li>categorias criadas ou alteradas por você;</li><li>PIN, digital, código e pergunta de recuperação;</li><li>tema, olho e lembrete de backup.</li></ul></div></div>
+   <p class="small muted" style="margin:0">Não dá para desfazer. Se quiser guardar uma cópia, faça um backup antes.</p>
+   <button class="btn ghost" data-act="exp-json">${ic('download','sm')} Fazer backup antes</button>
+   ${pin?pinIn('fb-pin','Digite seu PIN para confirmar'):`<div class="field"><label for="fb-txt">Digite <b>RESTAURAR</b> para confirmar</label><input class="input" id="fb-txt" autocomplete="off" autocapitalize="characters" placeholder="RESTAURAR"></div>`}
+   <div id="fb-err" class="small neg" role="alert"></div>
+   <div class="actions"><button class="btn ghost" data-act="fechar">Cancelar</button><button class="btn danger" data-act="fb-ok">${ic('trash','sm')} Restaurar</button></div>`);
+  setTimeout(()=>{const i=$(pin?'#fb-pin':'#fb-txt');if(i)i.focus()},80);
+  sheetHandlers={'fb-ok':async()=>{
+    const err=m=>{const e=$('#fb-err');if(e)e.textContent=m};
+    if(pin){const t=tentativas();if(Date.now()<t.ate)return err(`Muitas tentativas. Aguarde ${Math.ceil((t.ate-Date.now())/1000)}s.`);
+      if(!(await confere(val('fb-pin')))){const t2=registrarErro();return err(Date.now()<t2.ate?`PIN incorreto. Muitas tentativas: aguarde ${Math.ceil((t2.ate-Date.now())/1000)}s.`:`PIN incorreto. ${Math.max(0,5-t2.n)} tentativa(s) antes de uma pausa.`)}}
+    else if(val('fb-txt').trim().toUpperCase()!=='RESTAURAR')return err('Digite RESTAURAR para confirmar.');
+    restaurarFabrica();closeSheet();render();window.scrollTo(0,0);toast('App restaurado ao padrão de fábrica')}};
+}
+/* Volta o app ao estado de recém-instalado: dados, segurança e preferências deste aparelho */
+function restaurarFabrica(){
+  COLS.forEach(c=>S[c].slice().forEach(x=>del(c,x.id,true)));
+  segSalvar(null);
+  ['md_bio','md_bio_auto','md_bk_em','md_bk_pref','md_oc_saldo','md_oc_inv','md_tema','md_tent'].forEach(lsDel);
+  ocSaldo=false;ocInv=false;tema='auto';applyTheme();EX=null;
+  Object.assign(UI,{view:'inicio',mes:ymOf(hoje()),filtro:'todos',busca:'',empAba:'devo',evoSel:null});
+  seedIfEmpty();
+}
+
+const VIEWS={inicio:vInicio,lancamentos:vLancamentos,emprestimos:vEmprestimos,investimentos:vInvestimentos,mais:vMais,contas:vContas,categorias:vCategorias,pessoas:vPessoas,backup:vBackup,ajuda:vAjuda,sobre:vSobre};
 function render(){
   renderNav();
   const v=$('#view');
@@ -850,7 +930,8 @@ function optsCats(tipo,sel){
 
 /* Lançamento */
 function formLanc(l){
-  const novo=!l; l=l?clone(l):{tipo:'despesa',valor:0,data:hoje(),contaId:(contasAtivas()[0]||{}).id,natureza:'variavel',status:'pago'};
+  /* sem id = novo lançamento (pode vir com campos já preenchidos, como no "Pagar fatura") */
+  const novo=!l||!l.id; l=Object.assign({tipo:'despesa',valor:0,data:hoje(),contaId:(contasAtivas()[0]||{}).id,natureza:'variavel',status:'pago'},l?clone(l):{});
   if(l.mov||l.vinculo){
     if(!l.mov)l.mov=S.emprestimos.some(e=>e.id===l.vinculo)?'emprestimo':'investimento';
     const alvo=l.mov==='investimento'?'investimentos':'emprestimos';
@@ -868,7 +949,7 @@ function formLanc(l){
    ${st.tipo==='transferencia'?`<div class="field"><label for="lf-data">Data</label><input class="input" type="date" id="lf-data" value="${l.data}"></div>`:''}
    ${st.tipo==='despesa'?`<div class="field"><span class="lbl">Natureza</span><div class="seg" role="group" aria-label="Natureza"><button type="button" data-act="lf-nat" data-v="variavel" aria-pressed="${st.natureza!=='fixo'}">Variável</button><button type="button" data-act="lf-nat" data-v="fixo" aria-pressed="${st.natureza==='fixo'}">Fixo</button></div></div>`:''}
    <label class="toggle" for="lf-pago"><span>${st.tipo==='receita'?'Já recebido':'Já pago'}</span><input type="checkbox" id="lf-pago" ${l.status==='pago'?'checked':''}></label>
-   ${novo&&st.tipo!=='transferencia'?`<div class="two"><div class="field"><label for="lf-rep">Repetição</label><select class="input" id="lf-rep"><option value="nao">Não repetir</option><option value="mensal">Repetir todo mês</option>${st.tipo==='despesa'?'<option value="parcelar">Parcelar o valor</option>':''}</select></div><div class="field"><label for="lf-n">Quantas vezes</label><input class="input" id="lf-n" type="number" min="2" max="72" value="12" inputmode="numeric"></div></div><p class="xs muted" style="margin:-6px 0 0" id="lf-rep-hint">Repetir cria os próximos meses como pendentes. Parcelar divide o valor total.</p>`:''}
+   ${novo&&st.tipo!=='transferencia'?`<div class="two"><div class="field"><label for="lf-rep">Repetição</label><select class="input" id="lf-rep"><option value="nao">Não repetir</option><option value="mensal">Repetir todo mês</option>${st.tipo==='despesa'?'<option value="parcelar">Parcelar o valor</option>':''}</select></div><div class="field" id="lf-n-f" hidden><label for="lf-n">Quantas vezes</label><input class="input" id="lf-n" type="number" min="2" max="72" value="12" inputmode="numeric"></div></div><p class="xs muted" style="margin:-6px 0 0" id="lf-rep-hint">Repetir cria os próximos meses como pendentes. Parcelar divide o valor total.</p>`:''}
    ${l.grupoId&&!novo?`<p class="xs muted" style="margin:0">Faz parte de uma série${l.parcela?' ('+esc(l.parcela)+')':''}. Alterações valem só para este mês.</p>`:''}
    <div id="lf-err" class="small neg" role="alert"></div>
    <div class="actions">${!novo?`<button class="btn danger" data-act="lf-excluir">${ic('trash','sm')} Excluir</button>`:''}<button class="btn primary" data-act="lf-salvar">${novo?'Lançar':'Salvar'}</button></div>
@@ -931,7 +1012,7 @@ function formEmp(direcao){
     sh.addEventListener('input',e=>{if(e.target.id==='ef-parc')parcManual=!!e.target.value;if(['ef-valor','ef-n','ef-taxa','ef-parc'].includes(e.target.id))recalc()});
   });
   sheetHandlers={
-    'ef-dir':v=>{dir=v;document.querySelectorAll('[data-act="ef-dir"]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));$('#ef-cp-l').textContent=v==='devo'?'Com quem (banco ou pessoa)':'Para quem você emprestou';$('#ef-mov-l').textContent=v==='devo'?'Registrar a entrada do dinheiro na conta':'Registrar a saída do dinheiro da conta'},
+    'ef-dir':v=>{dir=v;document.querySelectorAll('[data-act="ef-dir"]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));$('#ef-cp-l').textContent=v==='devo'?'Com quem (banco ou pessoa)':'Para quem você emprestou';$('#ef-cp').placeholder=v==='devo'?'Ex.: Banco do Brasil':'Ex.: João';$('#ef-mov-l').textContent=v==='devo'?'Registrar a entrada do dinheiro na conta':'Registrar a saída do dinheiro da conta'},
     'ef-salvar':()=>{
       const cp=val('ef-cp').trim(),P=parseMoney(val('ef-valor')),n=parseInt(val('ef-n')),taxa=parseFloat(String(val('ef-taxa')).replace(',','.'))||0,p=parseMoney(val('ef-parc')),venc=val('ef-venc');
       const err=m=>$('#ef-err').textContent=m;
@@ -949,36 +1030,133 @@ function formEmp(direcao){
     }
   };
 }
+/* Pagamento extra, amortização e quitação antecipada.
+   Com juros, cada parcela em aberto vale hoje o seu valor presente: valor / (1 + taxa)^meses até o vencimento.
+   É a regra do Código de Defesa do Consumidor (art. 52, § 2º): quem antecipa paga sem os juros do tempo que falta. */
+const mesesAte=(de,ate)=>Math.max(0,(Date.parse(ate)-Date.parse(de))/DIA/30);
+function vpParcela(e,p,d){const i=(e.taxa||0)/100;if(!i)return p.valor;return Math.round(p.valor/Math.pow(1+i,mesesAte(d,p.venc)))}
+const porVenc=(a,b)=>a.venc<b.venc?-1:a.venc>b.venc?1:a.n-b.n;
+function quitacao(e,d){const ab=(e.parcelas||[]).filter(p=>!p.pagoEm);const vp=sum(ab,p=>vpParcela(e,p,d)),nominal=sum(ab,p=>p.valor);return {vp,nominal,desconto:Math.max(0,nominal-vp),n:ab.length}}
+function simularAmort(e,V,modo,d){
+  const ps=clone(e.parcelas||[]); const i=(e.taxa||0)/100;
+  const ab=ps.filter(p=>!p.pagoEm).sort(porVenc); if(!ab.length||!(V>0))return null;
+  const q=quitacao(e,d); const r={ps,modo,quita:false,eliminadas:0,abatida:null,parcelaAntes:null,parcelaDepois:null,usado:V};
+  const marcar=p=>{p.valorPago=vpParcela(e,p,d);p.pagoEm=d;p.antecipada=true};
+  const fut=ab.filter(p=>p.venc>=d), vpFut=sum(fut,p=>vpParcela(e,p,d));
+  if(V>=q.vp){ab.forEach(marcar);r.quita=true;r.modo='quitacao';r.usado=q.vp;r.eliminadas=ab.length}
+  else if(modo==='parcela'&&fut.length&&V<vpFut){
+    /* reduzir a parcela: o saldo que sobra é refinanciado nas mesmas datas, com a mesma taxa */
+    const novo=vpFut-V; r.parcelaAntes=fut[0].valor;
+    if(i){const fator=sum(fut,p=>1/Math.pow(1+i,mesesAte(d,p.venc)));const c=Math.round(novo/fator);fut.forEach(p=>{if(p.valorOriginal==null)p.valorOriginal=p.valor;p.valor=c})}
+    else{const b=Math.floor(novo/fut.length);fut.forEach((p,k)=>{if(p.valorOriginal==null)p.valorOriginal=p.valor;p.valor=k===fut.length-1?novo-b*(fut.length-1):b})}
+    r.parcelaDepois=fut[0].valor;
+  }else{
+    /* reduzir o prazo: o valor quita as últimas parcelas pelo valor presente; o que sobra abate a parcela seguinte */
+    r.modo='prazo'; let rem=V;
+    for(const p of ab.slice().reverse()){
+      const vp=vpParcela(e,p,d);
+      if(rem>=vp){marcar(p);rem-=vp;r.eliminadas++;continue}
+      if(rem>0){const f=i?Math.pow(1+i,mesesAte(d,p.venc)):1;if(p.valorOriginal==null)p.valorOriginal=p.valor;p.valor=Math.max(1,p.valor-Math.round(rem*f));r.abatida=p}
+      break;
+    }
+  }
+  const rest=ps.filter(p=>!p.pagoEm).sort(porVenc);
+  r.economia=Math.max(0,q.nominal-sum(rest,p=>p.valor)-r.usado);
+  r.restantes=rest.length; r.fim=rest.length?rest[rest.length-1].venc:null;
+  return r;
+}
+const mesAno=iso=>{const [y,m]=iso.split('-').map(Number);return new Intl.DateTimeFormat('pt-BR',{month:'short',year:'numeric'}).format(new Date(y,m-1,1)).replace('.','').replace(' de ',' ')};
+const MODO_AM={prazo:'Reduziu o prazo',parcela:'Reduziu a parcela',quitacao:'Quitação antecipada'};
 function detalheEmp(id){
   const e=S.emprestimos.find(x=>x.id===id); if(!e){closeSheet();return}
-  const inf=empInfo(e); const h=hoje(); const verbo=e.direcao==='devo'?'Pagar':'Receber';
-  const body=`<div class="grid2"><div class="card stat"><span class="eyebrow">${e.direcao==='devo'?'Saldo devedor':'A receber'}</span><b>${brl(inf.saldo)}</b><span class="xs muted">${inf.pagas}/${inf.total} parcelas</span></div>
-    <div class="card stat"><span class="eyebrow">Valor original</span><b>${brl(e.principal)}</b><span class="xs muted">${e.taxa?String(e.taxa).replace('.',',')+'% ao mês':'Sem juros'}</span></div></div>
+  const inf=empInfo(e); const h=hoje(); const devo=e.direcao==='devo'; const verbo=devo?'Pagar':'Receber';
+  const q=quitacao(e,h); const ams=e.amortizacoes||[]; const ultAm=ams[ams.length-1];
+  const body=`<div class="grid2"><div class="card stat"><span class="eyebrow">${devo?'Saldo devedor':'A receber'}</span><b>${brl(inf.saldo)}</b><span class="xs muted">${inf.pagas}/${inf.total} parcelas pagas</span></div>
+    <div class="card stat"><span class="eyebrow">${devo?'Para quitar hoje':'Quitação hoje'}</span><b class="${q.desconto?'pos':''}">${brl(q.vp)}</b><span class="xs muted">${inf.quitado?'Empréstimo quitado':q.desconto?'Desconto de '+brl(q.desconto)+' em juros':'Sem juros a descontar'}</span></div></div>
+   <p class="xs muted" style="margin:-4px 0 0">Valor original ${brl(e.principal)} · ${e.taxa?String(e.taxa).replace('.',',')+'% ao mês (tabela Price)':'sem juros'}${e.finalidade?' · '+esc(e.finalidade):''}</p>
    ${inf.atrasadas.length?`<div class="banner">${ic('alert')}<div>${inf.atrasadas.length} parcela(s) em atraso, somando ${brl(inf.atrasado)}.</div></div>`:''}
-   <section class="card" style="padding-block:4px">${(e.parcelas||[]).map(p=>{const atr=!p.pagoEm&&p.venc<h;return `<div class="inst"><span class="n">${p.n}</span><div class="row-main"><b>${brl(p.valorPago||p.valor)}</b><span>${p.pagoEm?(e.direcao==='devo'?'Paga em ':'Recebida em ')+dataCurta(p.pagoEm):'Vence '+dataCurta(p.venc)}</span></div>
-     ${p.pagoEm?`<button class="check on" data-act="ed-desfazer" data-n="${p.n}" aria-label="Desfazer pagamento da parcela ${p.n}">${ic('check')}</button>`:`<span class="pill ${atr?'neg':'mut'}">${atr?'Atrasada':'Aberta'}</span><button class="btn sm primary" data-act="ed-pagar" data-n="${p.n}">${verbo}</button>`}</div>`}).join('')}</section>
+   ${inf.quitado?'':`<div class="actions"><button class="btn ghost" data-act="ed-extra">${ic('plus','sm')} ${devo?'Pagar extra':'Receber extra'}</button><button class="btn ghost" data-act="ed-quitar">${ic('check','sm')} Quitar</button></div>`}
    <div id="ed-box"></div>
+   <section class="card" style="padding-block:4px" aria-label="Parcelas">${(e.parcelas||[]).slice().sort(porVenc).map(p=>{const atr=!p.pagoEm&&p.venc<h;return `<div class="inst"><span class="n">${p.n}</span><div class="row-main"><b>${brl(p.valorPago||p.valor)}</b><span>${p.pagoEm?(p.antecipada?'Antecipada em ':devo?'Paga em ':'Recebida em ')+dataCurta(p.pagoEm):'Vence '+dataCurta(p.venc)}${!p.pagoEm&&p.valorOriginal!=null&&p.valorOriginal!==p.valor?' · era '+brl(p.valorOriginal):''}</span></div>
+     ${p.pagoEm?(p.amortId?`<span class="pill pos">Antecipada</span>`:`<button class="check on" data-act="ed-desfazer" data-n="${p.n}" aria-label="Desfazer pagamento da parcela ${p.n}">${ic('check')}</button>`):`<span class="pill ${atr?'neg':'mut'}">${atr?'Atrasada':'Aberta'}</span><button class="btn sm primary" data-act="ed-pagar" data-n="${p.n}">${verbo}</button>`}</div>`}).join('')}</section>
+   ${ams.length?`<section class="card" style="padding-block:10px 4px" aria-label="Pagamentos extras"><div class="eyebrow">Pagamentos extras</div>${ams.slice().reverse().map(a=>`<div class="inst"><span class="cat-ico" style="width:32px;height:32px;background:var(--pos-soft);color:var(--pos)">${ic('down','sm')}</span><div class="row-main"><b>${brl(a.valor)}</b><span>${dataCurta(a.data)} · ${MODO_AM[a.modo]||''}${a.economia?' · economia de '+brl(a.economia):''}</span></div>${a===ultAm?`<button class="btn sm ghost" data-act="ed-am-desf" data-n="${a.id}">${ic('undo','sm')} Desfazer</button>`:''}</div>`).join('')}</section>`:''}
    <button class="btn danger" data-act="ed-excluir">${ic('trash','sm')} Excluir empréstimo</button>`;
-  openSheet((e.direcao==='devo'?'Devo a ':'Me deve: ')+e.contraparte,body);
+  let amModo='prazo', amQuitar=false;
+  const simTexto=()=>{
+    const box=$('#am-sim'); if(!box)return;
+    const d=val('am-data')||h, V=parseMoney(val('am-valor')), qd=quitacao(e,d);
+    const okBtn=$('[data-act="am-ok"]'); const pode=v=>{if(okBtn)okBtn.disabled=!v};
+    if(!V||V<0||isNaN(V)){box.className='sim muted';box.textContent='Digite o valor para ver o efeito antes de confirmar.';return pode(false)}
+    if(V>qd.vp+1){box.className='sim neg';box.innerHTML=`O valor passa do necessário para quitar: <b>${brl(qd.vp)}</b>.`;return pode(false)}
+    const r=simularAmort(e,Math.min(V,qd.vp),amModo,d); if(!r){box.textContent='';return pode(false)}
+    const eco=r.economia?` Você ${devo?'economiza':'deixa de receber'} <b>${brl(r.economia)}</b> de juros.`:(e.taxa?'':' Sem juros: o valor abate direto do saldo.');
+    box.className='sim';
+    if(r.quita)box.innerHTML=`Quita o empréstimo${qd.desconto?` com desconto de <b>${brl(qd.desconto)}</b> nos juros`:''}.`;
+    else if(r.modo==='parcela')box.innerHTML=`A parcela passa de <b>${brl(r.parcelaAntes)}</b> para <b>${brl(r.parcelaDepois)}</b> nas ${r.restantes} parcelas que faltam.${eco}`;
+    else box.innerHTML=`${r.eliminadas?`Elimina <b>${r.eliminadas} parcela(s)</b>${r.abatida?' e diminui a parcela '+r.abatida.n:''}`:`Diminui a parcela ${r.abatida?r.abatida.n:''}`}. ${r.fim?'Termina em <b>'+esc(mesAno(r.fim))+'</b>.':''}${eco}`;
+    pode(true);
+  };
+  const amForm=quitar=>{
+    amQuitar=quitar; amModo='prazo';
+    $('#ed-box').innerHTML=`<div class="card" style="display:flex;flex-direction:column;gap:12px"><b>${quitar?'Quitar antes do prazo':devo?'Pagar valor extra':'Receber valor extra'}</b>
+      ${quitar?`<p class="small muted" style="margin:0">Paga todas as parcelas em aberto de uma vez, sem os juros do tempo que falta.</p>`:`<p class="small muted" style="margin:0">Qualquer valor abate do saldo. Escolha como:</p>
+      <div class="seg" role="group" aria-label="Como abater"><button type="button" data-act="am-modo" data-v="prazo" aria-pressed="true">Reduzir prazo</button><button type="button" data-act="am-modo" data-v="parcela" aria-pressed="false">Reduzir parcela</button></div>
+      <p class="xs muted" style="margin:-4px 0 0" id="am-hint">Mantém o valor da parcela e elimina as últimas. É o que mais economiza juros.</p>`}
+      <div class="two"><div class="field"><label for="am-valor">Valor</label><input class="input" id="am-valor" inputmode="decimal" placeholder="0,00" value="${quitar?moneyIn(q.vp):''}"></div><div class="field"><label for="am-data">Data</label><input class="input" type="date" id="am-data" value="${h}"></div></div>
+      <div class="field"><label for="am-conta">Conta</label><select class="input" id="am-conta">${optsContas(e.contaId)}</select></div>
+      <div class="sim" id="am-sim" role="status"></div>
+      <div class="actions"><button class="btn ghost" data-act="ed-cancel">Cancelar</button><button class="btn primary" data-act="am-ok">Confirmar</button></div></div>`;
+    simTexto(); const f=$('#am-valor'); if(f&&!quitar)f.focus();
+    $('#ed-box').scrollIntoView({block:'nearest',behavior:'smooth'});
+  };
+  openSheet((devo?'Devo a ':'Me deve: ')+e.contraparte,body,sh=>sh.addEventListener('input',ev=>{
+    if(ev.target.id==='am-data'&&amQuitar){const d=ev.target.value||h;$('#am-valor').value=moneyIn(quitacao(e,d).vp)}
+    if(ev.target.id==='am-valor'||ev.target.id==='am-data')simTexto()}));
   sheetHandlers={
     'ed-pagar':n=>{
       const p=e.parcelas.find(x=>x.n==n);
       $('#ed-box').innerHTML=`<div class="card" style="display:flex;flex-direction:column;gap:12px"><b>${verbo} parcela ${p.n}</b>
         <div class="two"><div class="field"><label for="ep-valor">Valor</label><input class="input" id="ep-valor" inputmode="decimal" value="${moneyIn(p.valor)}"></div><div class="field"><label for="ep-data">Data</label><input class="input" type="date" id="ep-data" value="${hoje()}"></div></div>
         <div class="field"><label for="ep-conta">Conta</label><select class="input" id="ep-conta">${optsContas(e.contaId)}</select></div>
-        <button class="btn primary" data-act="ed-confirmar" data-n="${p.n}">Confirmar</button></div>`;
+        <p class="xs muted" style="margin:-4px 0 0">Use o valor que saiu de fato (com multa ou desconto). Para abater outro valor do saldo, use <b>${devo?'Pagar extra':'Receber extra'}</b>.</p>
+        <div class="actions"><button class="btn ghost" data-act="ed-cancel">Cancelar</button><button class="btn primary" data-act="ed-confirmar" data-n="${p.n}">Confirmar</button></div></div>`;
       $('#ed-box').scrollIntoView({block:'nearest',behavior:'smooth'});
     },
     'ed-confirmar':n=>{
       const e2=clone(S.emprestimos.find(x=>x.id===id)); const p=e2.parcelas.find(x=>x.n==n);
-      const v=parseMoney(val('ep-valor')); if(!v)return toast('Digite o valor pago.');
+      const v=parseMoney(val('ep-valor')); if(!v||v<0)return toast('Digite o valor pago.');
       const c=catByKey(e2.direcao==='devo'?'parcela_emprestimo':'receb_emprestimo');
       const l=put('lancamentos',{tipo:e2.direcao==='devo'?'despesa':'receita',valor:v,data:val('ep-data')||hoje(),contaId:val('ep-conta'),categoriaId:c&&c.id,natureza:e2.direcao==='devo'?'fixo':null,descricao:`${e2.direcao==='devo'?'Parcela':'Recebido de'} ${e2.contraparte} ${p.n}/${e2.parcelas.length}`,status:'pago',mov:e2.direcao==='devo'?null:'emprestimo',vinculo:e2.id},true);
       Object.assign(p,{pagoEm:val('ep-data')||hoje(),valorPago:v,lancId:l.id});
       put('emprestimos',e2,true);render();detalheEmp(id);toast(e2.direcao==='devo'?'Pagamento registrado':'Recebimento registrado');
     },
+    'ed-extra':()=>amForm(false),
+    'ed-quitar':()=>amForm(true),
+    'am-modo':v=>{amModo=v;document.querySelectorAll('[data-act="am-modo"]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));const hh=$('#am-hint');if(hh)hh.textContent=v==='prazo'?'Mantém o valor da parcela e elimina as últimas. É o que mais economiza juros.':'Mantém o número de parcelas e diminui o valor de cada uma. Alivia o orçamento do mês.';simTexto()},
+    'am-ok':()=>{
+      const d=val('am-data')||hoje(), V=parseMoney(val('am-valor')); const e2=clone(S.emprestimos.find(x=>x.id===id)); const qd=quitacao(e2,d);
+      if(!V||V<0||isNaN(V))return toast('Digite o valor.'); if(V>qd.vp+1)return toast('O valor passa do necessário para quitar ('+brl(qd.vp)+').');
+      const r=simularAmort(e2,Math.min(V,qd.vp),amModo,d); if(!r)return;
+      const a={id:uid(),data:d,valor:r.usado,modo:r.modo,contaId:val('am-conta'),economia:r.economia,eliminadas:r.eliminadas,antes:clone(e2.parcelas||[]),em:Date.now()};
+      const c=catByKey(devo?'parcela_emprestimo':'receb_emprestimo');
+      const l=put('lancamentos',{tipo:devo?'despesa':'receita',valor:r.usado,data:d,contaId:a.contaId,categoriaId:c&&c.id,natureza:devo?'variavel':null,
+        descricao:r.quita?`Quitação ${devo?'':'de '}${e2.contraparte}`:devo?`Amortização ${e2.contraparte}`:`Recebido de ${e2.contraparte} (valor extra)`,status:'pago',mov:devo?null:'emprestimo',vinculo:e2.id},true);
+      a.lancId=l.id;
+      r.ps.forEach(p=>{const antes=a.antes.find(x=>x.n===p.n);if(p.pagoEm&&antes&&!antes.pagoEm)p.amortId=a.id});
+      e2.parcelas=r.ps; e2.amortizacoes=(e2.amortizacoes||[]).concat(a);
+      put('emprestimos',e2,true);render();detalheEmp(id);toast(r.quita?'Empréstimo quitado':r.economia?'Valor abatido. Economia de '+brl(r.economia)+' em juros':'Valor abatido do saldo');
+    },
+    'ed-am-desf':aid=>{
+      const e2=clone(S.emprestimos.find(x=>x.id===id)); const a=(e2.amortizacoes||[]).find(x=>x.id===aid); if(!a)return;
+      const depois=e2.parcelas.some(p=>p.pagoEm&&!p.amortId&&!(a.antes.find(x=>x.n===p.n)||{}).pagoEm);
+      if(depois)return toast('Desfaça antes os pagamentos de parcela feitos depois deste valor extra.');
+      if(a.lancId)del('lancamentos',a.lancId,true);
+      e2.parcelas=a.antes; e2.amortizacoes=e2.amortizacoes.filter(x=>x.id!==aid);
+      put('emprestimos',e2,true);render();detalheEmp(id);toast('Pagamento extra desfeito');
+    },
     'ed-desfazer':n=>{
       $('#ed-box').innerHTML=`<div class="confirm"><b>Desfazer o pagamento da parcela ${n}?</b><span>O lançamento ligado a ela também será excluído.</span><div class="actions"><button class="btn ghost sm" data-act="ed-cancel">Cancelar</button><button class="btn danger sm" data-act="ed-desfazer-ok" data-n="${n}">Desfazer</button></div></div>`;
+      $('#ed-box').scrollIntoView({block:'nearest'});
     },
     'ed-desfazer-ok':n=>{const e2=clone(S.emprestimos.find(x=>x.id===id));const p=e2.parcelas.find(x=>x.n==n);if(p.lancId)del('lancamentos',p.lancId,true);delete p.pagoEm;delete p.valorPago;delete p.lancId;put('emprestimos',e2,true);render();detalheEmp(id)},
     'ed-cancel':()=>{$('#ed-box').innerHTML=''},
@@ -1033,19 +1211,107 @@ function detalheInv(id){
 }
 
 /* Conta, categoria, pessoa */
+/* Contas e cartões: dados bancários, Pix e dados do cartão (só os 4 últimos números) */
+const BANDEIRAS=['Visa','Mastercard','Elo','American Express','Hipercard','Outra'];
+const PIX={cpf:'CPF',cnpj:'CNPJ',email:'E-mail',telefone:'Telefone',aleatoria:'Chave aleatória'};
+function proxDia(dia){
+  dia=Number(dia); if(!dia)return null; const h=hoje(); const [y,m]=h.split('-').map(Number);
+  const em=(yy,mm)=>isoOf(yy,mm,Math.min(dia,new Date(yy,mm,0).getDate()));
+  let d=em(y,m); if(d<h){const n=addMonths(isoOf(y,m,1),1).split('-').map(Number);d=em(n[0],n[1])} return d;
+}
+const contaIco=c=>c.tipo==='cartao'?'card':c.tipo==='carteira'?'wallet':c.tipo==='poupanca'?'piggy':'bank';
+function contaSub(c){
+  if(c.tipo==='cartao')return [c.bandeira,c.final?'•••• '+c.final:'',c.vencimento?'vence dia '+c.vencimento:''].filter(Boolean).join(' · ')||TIPO_CONTA.cartao;
+  return [c.instituicao||TIPO_CONTA[c.tipo],c.agencia?'Ag. '+c.agencia:'',c.numero?'Conta '+c.numero:''].filter(Boolean).join(' · ');
+}
+const fatura=c=>Math.max(0,-saldoConta(c.id));
+function dadosConta(c){
+  const L=[];const a=(k,v)=>{if(v)L.push([k,v])};
+  if(c.tipo==='cartao'){a('Emissor',c.instituicao);a('Bandeira',c.bandeira);a('Final',c.final?'•••• '+c.final:'');a('Limite',c.limite?brl(c.limite):'');a('Fecha dia',c.fechamento);a('Vence dia',c.vencimento);a('Paga com',c.contaPagamentoId&&(conta(c.contaPagamentoId)||{}).nome)}
+  else{a('Banco',c.instituicao);a('Agência',c.agencia);a('Conta',c.numero);a('Titular',c.titular);a('Pix'+(c.pixTipo?' ('+PIX[c.pixTipo]+')':''),c.pixChave)}
+  return L;
+}
+function vContas(){
+  const todas=S.contas.slice().sort((a,b)=>(a.ativa===false)-(b.ativa===false));
+  const contas=todas.filter(c=>c.tipo!=='cartao'), cartoes=todas.filter(c=>c.tipo==='cartao');
+  const ativ=c=>c.ativa!==false;
+  const tot=sum(contas.filter(ativ),c=>saldoConta(c.id)), fat=sum(cartoes.filter(ativ),fatura);
+  const row=c=>{const s=saldoConta(c.id);const lim=c.tipo==='cartao'&&c.limite?Math.max(0,c.limite-fatura(c)):null;
+    return `<div class="row" data-act="abrir-conta" data-id="${c.id}" role="button" tabindex="0"><span class="cat-ico" style="background:var(--surface-2);color:var(--ink)">${ic(contaIco(c))}</span><div class="row-main"><b>${esc(c.nome)}</b><span>${esc(contaSub(c))}${c.ativa===false?' · Arquivada':''}</span></div><div class="row-end"><b class="${s<0?'neg':''}">${brlS(s)}</b>${c.tipo==='cartao'?`<span class="xs muted">${lim!=null?(ocSaldo?'limite disponível':brl(lim)+' disponível'):s<0?'fatura em aberto':'sem fatura'}</span>`:''}</div></div>`};
+  return `${voltar()}
+  <div class="grid2"><div class="card stat"><span class="eyebrow">Em contas</span><b>${brlS(tot)}</b><span class="xs muted">${contas.filter(ativ).length} conta(s) ativa(s)</span></div>
+   <div class="card stat"><span class="eyebrow">Faturas abertas</span><b class="${fat?'neg':''}">${brlS(fat)}</b><span class="xs muted">${cartoes.filter(ativ).length} cartão(ões)</span></div></div>
+  <div style="display:flex;gap:8px;align-items:center"><button class="btn primary" data-act="nova-conta" style="flex:1">${ic('plus')} Nova conta ou cartão</button>${olho('saldo')}</div>
+  <section class="card" style="padding-block:10px 4px"><div class="eyebrow">Contas</div><div class="list">${contas.map(row).join('')||'<p class="small muted">Nenhuma conta.</p>'}</div></section>
+  <section class="card" style="padding-block:10px 4px"><div class="eyebrow">Cartões de crédito</div>${cartoes.length?`<div class="list">${cartoes.map(row).join('')}</div>`:`<p class="small muted" style="margin:6px 0 10px">Cadastre seus cartões com limite, fechamento e vencimento para acompanhar a fatura.</p>`}</section>`;
+}
+function detalheConta(id){
+  const c=conta(id); if(!c)return closeSheet();
+  const s=saldoConta(id), cart=c.tipo==='cartao', f=fatura(c), dados=dadosConta(c);
+  const usado=cart&&c.limite?Math.min(100,Math.round(f/c.limite*100)):0, venc=cart?proxDia(c.vencimento):null;
+  const temBanco=!cart&&(c.instituicao||c.agencia||c.numero||c.pixChave);
+  openSheet(c.nome,`<div class="card stat"><span class="eyebrow">${cart?'Fatura em aberto':'Saldo'}</span><b style="font-size:var(--fs-xl)" class="${!cart&&s<0?'neg':''}">${brlS(cart?f:s)}</b><span class="xs muted">${TIPO_CONTA[c.tipo]||''}${c.ativa===false?' · Arquivada':''}${venc?' · próximo vencimento '+dataCurta(venc):''}</span>
+     ${cart&&c.limite?`<div class="progress" style="margin-top:10px" role="img" aria-label="${usado}% do limite usado"><i style="width:${usado}%;background:${usado>80?'var(--neg)':'var(--brand-2)'}"></i></div><div class="legend" style="margin-top:6px"><span>Limite ${brlS(c.limite)}</span><span>Disponível ${brlS(Math.max(0,c.limite-f))}</span></div>`:''}</div>
+   ${dados.length?`<section class="card" style="padding-block:4px" aria-label="Dados"><div class="leg">${dados.map(([k,v])=>`<div><span class="muted" style="min-width:92px">${esc(k)}</span><span class="nm" style="text-align:right;white-space:normal;word-break:break-word">${esc(v)}</span></div>`).join('')}</div></section>`:`<p class="small muted" style="margin:0">Toque em <b>Editar</b> para guardar ${cart?'bandeira, limite, fechamento e vencimento':'banco, agência, conta e chave Pix'}.</p>`}
+   ${c.obs?`<p class="small" style="margin:0;white-space:pre-wrap">${esc(c.obs)}</p>`:''}
+   ${cart&&f?`<button class="btn primary" data-act="ct-pagar">${ic('transfer','sm')} Pagar fatura</button>`:''}
+   <div class="actions">${temBanco?`<button class="btn ghost" data-act="ct-copiar">${ic('receipt','sm')} Copiar dados</button>`:''}<button class="btn ghost" data-act="ct-extrato">${ic('file','sm')} Extrato</button></div>
+   <button class="btn ghost" data-act="ct-editar">${ic('edit','sm')} Editar</button>`);
+  sheetHandlers={
+    'ct-editar':()=>formConta(id),
+    'ct-extrato':()=>{closeSheet();UI.view='lancamentos';render();formExtrato({contaId:id})},
+    'ct-pagar':()=>{const pg=c.contaPagamentoId&&conta(c.contaPagamentoId)&&conta(c.contaPagamentoId).ativa!==false?c.contaPagamentoId:(contasAtivas().find(x=>x.tipo!=='cartao')||{}).id;
+      formLanc({tipo:'transferencia',valor:f,contaId:pg,contaDestinoId:id,descricao:'Pagamento da fatura '+c.nome,data:hoje(),status:'pago'})},
+    'ct-copiar':()=>{const t=[c.nome].concat(dados.map(([k,v])=>k+': '+v)).join('\n');if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>toast('Dados copiados')).catch(()=>toast('Não foi possível copiar'));else toast('Não foi possível copiar')}
+  };
+}
 function formConta(id){
   const c=id?clone(conta(id)):{nome:'',tipo:'corrente',saldoInicial:0,ativa:true};
-  const usada=id&&S.lancamentos.some(l=>l.contaId===id||l.contaDestinoId===id);
-  openSheet(id?'Editar conta':'Nova conta',`<div class="field"><label for="cf-nome">Nome</label><input class="input" id="cf-nome" value="${esc(c.nome)}" placeholder="Ex.: Nubank, Itaú, Carteira" autofocus></div>
-   <div class="field"><label for="cf-tipo">Tipo</label><select class="input" id="cf-tipo">${Object.entries(TIPO_CONTA).map(([k,v])=>`<option value="${k}" ${c.tipo===k?'selected':''}>${v}</option>`).join('')}</select></div>
-   <div class="field"><label for="cf-saldo">Saldo de hoje antes de usar o app</label><input class="input" id="cf-saldo" inputmode="decimal" value="${c.saldoInicial?(c.saldoInicial<0?'-':'')+moneyIn(Math.abs(c.saldoInicial)):''}" placeholder="0,00"><span class="xs muted">No cartão, informe a fatura atual como valor negativo, por exemplo -350,00.</span></div>
+  const usada=id&&(S.lancamentos.some(l=>l.contaId===id||l.contaDestinoId===id)||S.emprestimos.some(e=>e.contaId===id));
+  let tipo=c.tipo;
+  const ini=c.saldoInicial||0;
+  const campos=()=>tipo==='cartao'?`
+   <div class="field"><label for="cf-saldo">Fatura em aberto hoje, antes de usar o app</label><input class="input" id="cf-saldo" inputmode="decimal" value="${ini?moneyIn(Math.abs(ini)):''}" placeholder="0,00"><span class="xs muted">As compras lançadas neste cartão somam na fatura. Pague com uma transferência da conta para o cartão.</span></div>
+   <div class="two"><div class="field"><label for="cf-inst">Banco emissor</label><input class="input" id="cf-inst" value="${esc(c.instituicao||'')}" placeholder="Ex.: Nubank"></div>
+    <div class="field"><label for="cf-band">Bandeira</label><select class="input" id="cf-band"><option value="">—</option>${BANDEIRAS.map(b=>`<option ${c.bandeira===b?'selected':''}>${b}</option>`).join('')}</select></div></div>
+   <div class="two"><div class="field"><label for="cf-final">Final do cartão</label><input class="input" id="cf-final" inputmode="numeric" maxlength="4" value="${esc(c.final||'')}" placeholder="4 números"></div>
+    <div class="field"><label for="cf-lim">Limite</label><input class="input" id="cf-lim" inputmode="decimal" value="${moneyIn(c.limite)}" placeholder="0,00"></div></div>
+   <div class="two"><div class="field"><label for="cf-fech">Dia do fechamento</label><input class="input" id="cf-fech" type="number" min="1" max="31" inputmode="numeric" value="${c.fechamento||''}"></div>
+    <div class="field"><label for="cf-venc">Dia do vencimento</label><input class="input" id="cf-venc" type="number" min="1" max="31" inputmode="numeric" value="${c.vencimento||''}"></div></div>
+   <div class="field"><label for="cf-pg">Pagar a fatura com</label><select class="input" id="cf-pg"><option value="">Escolher na hora</option>${contasAtivas().filter(x=>x.tipo!=='cartao'&&x.id!==id).map(x=>`<option value="${x.id}" ${c.contaPagamentoId===x.id?'selected':''}>${esc(x.nome)}</option>`).join('')}</select></div>`
+   :`
+   <div class="field"><label for="cf-saldo">Saldo de hoje antes de usar o app</label><input class="input" id="cf-saldo" inputmode="decimal" value="${ini?(ini<0?'-':'')+moneyIn(Math.abs(ini)):''}" placeholder="0,00"></div>
+   ${tipo==='carteira'?'':`<div class="field"><label for="cf-inst">Banco ou instituição</label><input class="input" id="cf-inst" value="${esc(c.instituicao||'')}" placeholder="Ex.: Banco do Brasil, Nubank"></div>
+   <div class="two"><div class="field"><label for="cf-ag">Agência</label><input class="input" id="cf-ag" inputmode="numeric" value="${esc(c.agencia||'')}"></div>
+    <div class="field"><label for="cf-num">Conta</label><input class="input" id="cf-num" value="${esc(c.numero||'')}" placeholder="12345-6"></div></div>
+   <div class="field"><label for="cf-tit">Titular</label><input class="input" id="cf-tit" value="${esc(c.titular||'')}"></div>
+   <div class="two"><div class="field"><label for="cf-pixt">Chave Pix</label><select class="input" id="cf-pixt"><option value="">Tipo</option>${Object.entries(PIX).map(([k,v])=>`<option value="${k}" ${c.pixTipo===k?'selected':''}>${v}</option>`).join('')}</select></div>
+    <div class="field"><label for="cf-pix"><span class="sr">Chave Pix</span>&nbsp;</label><input class="input" id="cf-pix" value="${esc(c.pixChave||'')}" placeholder="Chave" aria-label="Chave Pix"></div></div>`}`;
+  const body=()=>`<div class="field"><label for="cf-nome">Nome</label><input class="input" id="cf-nome" value="${esc(c.nome)}" placeholder="Ex.: Nubank, Itaú, Carteira" autofocus></div>
+   <div class="field"><label for="cf-tipo">Tipo</label><select class="input" id="cf-tipo">${Object.entries(TIPO_CONTA).map(([k,v])=>`<option value="${k}" ${tipo===k?'selected':''}>${v}</option>`).join('')}</select></div>
+   <div id="cf-campos" style="display:flex;flex-direction:column;gap:14px">${campos()}</div>
+   <div class="field"><label for="cf-obs">Observações</label><textarea class="input" id="cf-obs" rows="2" placeholder="Ex.: gerente, telefone do banco">${esc(c.obs||'')}</textarea></div>
+   <p class="xs muted" style="margin:0;display:flex;gap:6px">${ic('shield','sm')}<span>Por segurança, não guarde senhas, o número completo do cartão nem o código de segurança (CVV).</span></p>
    ${id?`<label class="toggle" for="cf-ativa"><span>Conta ativa</span><input type="checkbox" id="cf-ativa" ${c.ativa!==false?'checked':''}></label>`:''}
    <div id="cf-err" class="small neg" role="alert"></div>
    <div class="actions">${id&&!usada?`<button class="btn danger" data-act="cf-del">${ic('trash','sm')} Excluir</button>`:''}<button class="btn primary" data-act="cf-salvar">Salvar</button></div>
-   ${usada?'<p class="xs muted" style="margin:0">Esta conta tem lançamentos. Para tirá-la da lista, desmarque “Conta ativa”.</p>':''}`);
-  sheetHandlers={'cf-salvar':()=>{const nome=val('cf-nome').trim();if(!nome)return $('#cf-err').textContent='Dê um nome para a conta.';const raw=val('cf-saldo').trim();const neg=raw.startsWith('-');const s=parseMoney(raw.replace('-',''))||0;
-    Object.assign(c,{nome,tipo:val('cf-tipo'),saldoInicial:neg?-s:s});if(id)c.ativa=document.getElementById('cf-ativa').checked;put('contas',c,true);closeSheet();render();toast('Conta salva')},
-    'cf-del':()=>{if(contasAtivas().length<=1)return toast('Mantenha pelo menos uma conta.');del('contas',id,true);closeSheet();render();toast('Conta excluída')}};
+   ${usada?'<p class="xs muted" style="margin:0">Esta conta tem lançamentos. Para tirá-la da lista, desmarque “Conta ativa”.</p>':''}`;
+  const guardar=()=>{const g=k=>{const e=document.getElementById(k);return e?e.value.trim():undefined};
+    const m={instituicao:'cf-inst',agencia:'cf-ag',numero:'cf-num',titular:'cf-tit',pixTipo:'cf-pixt',pixChave:'cf-pix',bandeira:'cf-band',final:'cf-final',contaPagamentoId:'cf-pg'};
+    Object.entries(m).forEach(([k,i])=>{const v=g(i);if(v!==undefined)c[k]=v});
+    if(document.getElementById('cf-lim'))c.limite=parseMoney(g('cf-lim'))||0;
+    ['fechamento','vencimento'].forEach((k,j)=>{const v=g(j?'cf-venc':'cf-fech');if(v!==undefined)c[k]=v?Math.min(31,Math.max(1,parseInt(v)||0))||null:null});
+    c.nome=val('cf-nome');c.obs=val('cf-obs')};
+  openSheet(id?'Editar conta ou cartão':'Nova conta ou cartão',body(),sh=>sh.addEventListener('change',e=>{if(e.target.id==='cf-tipo'){guardar();tipo=e.target.value;$('#cf-campos').innerHTML=campos()}}));
+  sheetHandlers={'cf-salvar':()=>{guardar();const nome=c.nome.trim();if(!nome)return $('#cf-err').textContent='Dê um nome para a conta.';
+    if(tipo==='cartao'&&c.final&&!/^\d{4}$/.test(c.final))return $('#cf-err').textContent='No final do cartão, guarde só os 4 últimos números.';
+    if(c.pixChave&&c.pixTipo==='cpf'&&c.pixChave.replace(/\D/g,'').length!==11)return $('#cf-err').textContent='O CPF da chave Pix precisa ter 11 números.';
+    const raw=val('cf-saldo').trim();const neg=raw.startsWith('-');const s=parseMoney(raw.replace('-',''))||0;
+    if(tipo==='cartao'){c.saldoInicial=neg?s:-s}else{c.saldoInicial=neg?-s:s;['bandeira','final','limite','fechamento','vencimento','contaPagamentoId'].forEach(k=>delete c[k])}
+    if(tipo!=='cartao'&&tipo==='carteira')['instituicao','agencia','numero','titular','pixTipo','pixChave'].forEach(k=>delete c[k]);
+    if(tipo==='cartao')['agencia','numero','titular','pixTipo','pixChave'].forEach(k=>delete c[k]);
+    Object.assign(c,{nome,tipo});if(id)c.ativa=document.getElementById('cf-ativa').checked;put('contas',c,true);if(id)detalheConta(id);else closeSheet();render();toast(tipo==='cartao'?'Cartão salvo':'Conta salva')},
+    'cf-del':()=>{if(contasAtivas().length<=1&&c.ativa!==false)return toast('Mantenha pelo menos uma conta.');del('contas',id,true);closeSheet();render();toast('Conta excluída')}};
 }
 function formCat(id){
   const c=id?clone(cat(id)):{nome:'',tipo:'despesa',grupo:'estilo',icone:'tag'};
@@ -1098,11 +1364,192 @@ function apagarExemplo(){
   ['lancamentos','emprestimos','investimentos'].forEach(c=>S[c].filter(x=>x.exemplo).forEach(x=>del(c,x.id,true)));render();toast('Exemplos apagados');
 }
 
+/* ---------- PDF: gerador próprio, sem bibliotecas (fontes padrão Helvetica, codificação WinAnsi) ---------- */
+const HW=[278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584,761,556,556,222,556,333,1000,556,556,333,1000,667,333,1000,556,611,556,556,222,222,333,333,350,556,1000,333,1000,500,333,944,556,500,667,278,333,556,556,556,556,260,556,333,737,370,556,584,333,737,333,400,584,333,333,333,556,537,278,333,333,365,556,834,834,834,611,667,667,667,667,667,667,1000,722,667,667,667,667,278,278,278,278,722,722,778,778,778,778,778,584,778,722,722,722,722,667,667,611,556,556,556,556,556,556,889,500,556,556,556,556,278,278,278,278,556,556,556,556,556,556,556,584,611,556,556,556,556,500,556,500],HWB=[278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584,761,556,556,278,556,500,1000,556,556,333,1000,667,333,1000,556,611,556,556,278,278,500,500,350,556,1000,333,1000,556,333,944,556,500,667,278,333,556,556,556,556,280,556,333,737,370,556,584,333,737,333,400,584,333,333,333,611,556,278,333,333,365,556,834,834,834,611,722,722,722,722,722,722,1000,722,667,667,667,667,278,278,278,278,722,722,778,778,778,778,778,584,778,722,722,722,722,667,667,611,556,556,556,556,556,556,889,556,556,556,556,556,278,278,278,278,611,611,611,611,611,611,611,584,611,611,611,611,611,556,611,556];
+const WIN={8364:128,8218:130,402:131,8222:132,8230:133,8224:134,8225:135,710:136,8240:137,352:138,8249:139,338:140,381:142,8216:145,8217:146,8220:147,8221:148,8226:149,8211:150,8212:151,732:152,8482:153,353:154,8250:155,339:156,382:158,376:159,8722:45,8239:32,8594:62};
+const pdfStr=s=>{let o='';for(const ch of String(s==null?'':s)){const c=ch.codePointAt(0);o+=String.fromCharCode(c<128||(c>=160&&c<=255)?c:(WIN[c]||63))}return o};
+const pdfW=(t,size,bold)=>{const T=bold?HWB:HW;let w=0;for(let i=0;i<t.length;i++){const c=t.charCodeAt(i);if(c>=32)w+=T[c-32]}return w*size/1000};
+/* Coordenadas a partir do canto de cima (y cresce para baixo), em pontos (A4 = 595 x 842) */
+function novoPDF(meta){
+  const W=595.28,H=841.89,pages=[];let cur=null;
+  const n2=x=>String(Math.round(x*100)/100);
+  const rgb=c=>{const h=c.replace('#','');return [0,2,4].map(i=>n2(parseInt(h.substr(i,2),16)/255)).join(' ')};
+  const escP=t=>t.replace(/[\\()]/g,m=>'\\'+m).replace(/[\r\n\t]/g,' ');
+  return {W,H,
+    page(){cur=[];pages.push(cur)},
+    get n(){return pages.length},
+    usar(i){cur=pages[i]},
+    text(x,y,s,o){o=o||{};const size=o.size||9,bold=!!o.bold;let t=pdfStr(s);
+      if(o.max&&pdfW(t,size,bold)>o.max){while(t.length&&pdfW(t+'\x85',size,bold)>o.max)t=t.slice(0,-1);t=t.replace(/\s+$/,'')+'\x85'}
+      const w=pdfW(t,size,bold),xx=o.align==='right'?x-w:o.align==='center'?x-w/2:x;
+      cur.push(`BT /${bold?'F2':'F1'} ${size} Tf ${rgb(o.cor||'#10242E')} rg ${n2(xx)} ${n2(H-y)} Td (${escP(t)}) Tj ET`);return w},
+    rect(x,y,w,h,cor){cur.push(`${rgb(cor)} rg ${n2(x)} ${n2(H-y-h)} ${n2(w)} ${n2(h)} re f`)},
+    linha(x1,y1,x2,y2,cor,lw){cur.push(`${rgb(cor||'#D7E0E1')} RG ${lw||.6} w ${n2(x1)} ${n2(H-y1)} m ${n2(x2)} ${n2(H-y2)} l S`)},
+    bytes(){
+      const objs=[null,null,'<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>','<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'];
+      const d=new Date(),dt='D:'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+pad(d.getHours())+pad(d.getMinutes())+pad(d.getSeconds());
+      objs.push(`<< /Title (${escP(pdfStr(meta.titulo))}) /Subject (${escP(pdfStr(meta.assunto||''))}) /Author (Meu Dinheiro) /Creator (Meu Dinheiro ${VERSAO}) /Producer (Meu Dinheiro) /CreationDate (${dt}) >>`);
+      const kids=[];
+      pages.forEach(c=>{const st=c.join('\n');objs.push(`<< /Length ${st.length} >>\nstream\n${st}\nendstream`);const cid=objs.length;objs.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${cid} 0 R >>`);kids.push(objs.length)});
+      objs[0]='<< /Type /Catalog /Pages 2 0 R >>';objs[1]=`<< /Type /Pages /Kids [${kids.map(k=>k+' 0 R').join(' ')}] /Count ${kids.length} >>`;
+      let out='%PDF-1.4\n%\xE2\xE3\xCF\xD3\n';const offs=[];
+      objs.forEach((o,i)=>{offs.push(out.length);out+=`${i+1} 0 obj\n${o}\nendobj\n`});
+      const xr=out.length;out+=`xref\n0 ${objs.length+1}\n0000000000 65535 f \n${offs.map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')}trailer\n<< /Size ${objs.length+1} /Root 1 0 R /Info 5 0 R >>\nstartxref\n${xr}\n%%EOF\n`;
+      const u=new Uint8Array(out.length);for(let i=0;i<out.length;i++)u[i]=out.charCodeAt(i)&255;return u}
+  };
+}
+
+/* ---------- Extrato (PDF e planilha) ---------- */
+const fimMes=iso=>{const [y,m]=iso.split('-').map(Number);return isoOf(y,m,new Date(y,m,0).getDate())};
+const dataBR=iso=>{const [y,m,d]=iso.split('-');return `${d}/${m}/${y}`};
+const PERIODOS=[['mes','Mês selecionado'],['mesant','Mês anterior'],['3m','Últimos 3 meses'],['6m','Últimos 6 meses'],['12m','Últimos 12 meses'],['ano','Este ano'],['anoant','Ano passado'],['custom','Personalizado']];
+function periodo(k){const m=UI.mes+'-01',h=hoje(),m0=ymOf(h)+'-01',y=Number(h.slice(0,4));
+  switch(k){case 'mesant':{const a=addMonths(m,-1);return [a,fimMes(a)]}
+   case '3m':return [addMonths(m0,-2),fimMes(m0)];case '6m':return [addMonths(m0,-5),fimMes(m0)];case '12m':return [addMonths(m0,-11),fimMes(m0)];
+   case 'ano':return [y+'-01-01',y+'-12-31'];case 'anoant':return [(y-1)+'-01-01',(y-1)+'-12-31'];
+   default:return [m,fimMes(m)]}}
+function saldoContaAte(id,ate){const c=conta(id);let s=c?(c.saldoInicial||0):0;for(const l of S.lancamentos){if(l.status!=='pago'||!l.data||l.data>ate)continue;
+  if(l.tipo==='receita'&&l.contaId===id)s+=l.valor;else if(l.tipo==='despesa'&&l.contaId===id)s-=l.valor;else if(l.tipo==='transferencia'){if(l.contaId===id)s-=l.valor;if(l.contaDestinoId===id)s+=l.valor}}return s}
+function extratoDados(f){
+  let ls=S.lancamentos.filter(l=>l.data&&l.data>=f.de&&l.data<=f.ate);
+  if(f.tipo!=='todos')ls=ls.filter(l=>l.tipo===f.tipo);
+  if(f.situacao==='pago')ls=ls.filter(l=>l.status==='pago');else if(f.situacao==='pendente')ls=ls.filter(l=>l.status!=='pago');
+  if(f.contaId)ls=ls.filter(l=>l.contaId===f.contaId||l.contaDestinoId===f.contaId);
+  if(f.categoriaId)ls=ls.filter(l=>l.categoriaId===f.categoriaId);
+  ls.sort((a,b)=>a.data<b.data?-1:a.data>b.data?1:(a.criadoEm||0)-(b.criadoEm||0));
+  /* com uma conta escolhida, transferências entram ou saem; sem conta, só receitas e despesas contam */
+  const sinal=l=>f.contaId?(l.tipo==='receita'||(l.tipo==='transferencia'&&l.contaDestinoId===f.contaId)?1:-1):(l.tipo==='receita'?1:l.tipo==='despesa'?-1:0);
+  const ent=sum(ls.filter(l=>sinal(l)>0),l=>l.valor), sai=sum(ls.filter(l=>sinal(l)<0),l=>l.valor);
+  const comSaldo=!!f.contaId&&f.tipo==='todos'&&!f.categoriaId&&f.situacao!=='pendente';
+  const pg=ls.filter(l=>l.status==='pago'), pend=ls.filter(l=>l.status!=='pago');
+  return {ls,sinal,ent,sai,comSaldo,pend,entP:sum(pg.filter(l=>sinal(l)>0),l=>l.valor),saiP:sum(pg.filter(l=>sinal(l)<0),l=>l.valor),
+    entPend:sum(pend.filter(l=>sinal(l)>0),l=>l.valor),saiPend:sum(pend.filter(l=>sinal(l)<0),l=>l.valor),ant:f.contaId?saldoContaAte(f.contaId,addDays(f.de,-1)):null,fim:f.contaId?saldoContaAte(f.contaId,f.ate):null};
+}
+function extratoPDF(f){
+  const d=extratoDados(f), per=`${dataBR(f.de)} a ${dataBR(f.ate)}`, pdf=novoPDF({titulo:'Extrato Meu Dinheiro',assunto:per});
+  const M=36,W=pdf.W,H=pdf.H,R=W-M,BR='#0B5D4E',MU='#56676F',LN='#D7E0E1',ZB='#F2F5F5',POS='#127A5A',NEG='#BF3F2B',INK='#10242E';
+  const ct=f.contaId?conta(f.contaId):null, cg=f.categoriaId?cat(f.categoriaId):null;
+  const filtros=[['Tipo',{todos:'Todos',receita:'Receitas',despesa:'Despesas',transferencia:'Transferências'}[f.tipo]],['Situação',{todos:'Todas',pago:'Pagos e recebidos',pendente:'Pendentes'}[f.situacao]],['Conta',ct?ct.nome:'Todas'],['Categoria',cg?cg.nome:'Todas']];
+  const cols=d.comSaldo?[['Data',50],['Descrição',0],['Categoria',100],['Situação',56],['Valor',74,1],['Saldo',74,1]]:[['Data',50],['Descrição',0],['Categoria',96],['Conta',78],['Situação',56],['Valor',74,1]];
+  const livre=(R-M)-sum(cols,c=>c[1]); cols.forEach(c=>{if(!c[1])c[1]=livre});
+  const xs=[];let xx=M;cols.forEach(c=>{xs.push(xx);xx+=c[1]});
+  let y=0;
+  const cab=primeira=>{pdf.page();
+    pdf.rect(0,0,W,primeira?96:54,BR);
+    pdf.text(M,primeira?36:33,'Meu Dinheiro',{size:primeira?18:13,bold:true,cor:'#FFFFFF'});
+    pdf.text(R,primeira?36:33,primeira?'Extrato de lançamentos':'Extrato · '+per,{size:primeira?13:9,bold:primeira,cor:'#FFFFFF',align:'right'});
+    if(primeira){pdf.text(M,56,'Controle financeiro pessoal',{size:9,cor:'#CDE5DF'});pdf.text(R,56,'Período: '+per,{size:10,cor:'#FFFFFF',align:'right'});
+      pdf.text(M,76,ct?ct.nome+(contaSub(ct)?' · '+contaSub(ct):''):'Todas as contas',{size:9,bold:true,cor:'#FFFFFF',max:300});pdf.text(R,76,'Emitido em '+dataHora(Date.now()),{size:8,cor:'#CDE5DF',align:'right'})}
+    y=primeira?118:76};
+  const tabCab=()=>{pdf.rect(M,y,R-M,18,'#E8EEEE');cols.forEach((c,i)=>pdf.text(c[2]?xs[i]+c[1]-4:xs[i]+4,y+12.5,c[0],{size:8,bold:true,cor:MU,align:c[2]?'right':'left'}));y+=18};
+  const quebra=(h,comCab)=>{if(y+h>H-56){cab(false);if(comCab)tabCab()}};
+  cab(true);
+  pdf.text(M,y,'Filtros: '+filtros.map(([k,v])=>k+': '+v).join('  ·  '),{size:8,cor:MU,max:R-M});y+=14;
+  const res=d.ent-d.sai, sres=(res<0?'- ':'+ ')+brl(Math.abs(res));
+  /* com conta: só o que foi pago entra no saldo, então saldo anterior + entradas − saídas = saldo final */
+  const boxes=ct?[['Saldo anterior',brl(d.ant),d.ant<0?NEG:INK],['Entradas pagas',brl(d.entP),POS],['Saídas pagas',brl(d.saiP),NEG],['Saldo final',brl(d.fim),d.fim<0?NEG:INK]]
+    :[['Entradas',brl(d.ent),POS],['Saídas',brl(d.sai),NEG],['Resultado',sres,res<0?NEG:BR],['Lançamentos',String(d.ls.length),INK]];
+  const bw=(R-M-(boxes.length-1)*8)/boxes.length;
+  boxes.forEach(([t,v,c],i)=>{const bx=M+i*(bw+8);pdf.rect(bx,y,bw,44,ZB);pdf.rect(bx,y,3,44,c);pdf.text(bx+11,y+16,t.toUpperCase(),{size:7,bold:true,cor:MU});pdf.text(bx+11,y+33,v,{size:boxes.length>4?10:11.5,bold:true,cor:c,max:bw-15})});
+  y+=56;
+  if(d.pend.length){pdf.text(M,y,`${d.pend.length} pendente(s) no período${d.entPend?' · a receber '+brl(d.entPend):''}${d.saiPend?' · a pagar '+brl(d.saiPend):''}${ct?' · não entram no saldo':''}`,{size:8,cor:'#9A6408',max:R-M});y+=8}
+  y+=10;
+  pdf.text(M,y,'Lançamentos',{size:11,bold:true});y+=8;tabCab();
+  if(!d.ls.length){pdf.text(M+4,y+16,'Nenhum lançamento encontrado com esses filtros.',{size:9,cor:MU});y+=26}
+  const multi=ymOf(f.de)!==ymOf(f.ate), porMes={};
+  if(multi)d.ls.forEach(l=>{const o=porMes[ymOf(l.data)]=porMes[ymOf(l.data)]||{e:0,s:0};const sg=d.sinal(l);if(sg>0)o.e+=l.valor;else if(sg<0)o.s+=l.valor});
+  let saldo=d.ant, mesAtual=null, zebra=false; const h=hoje();
+  d.ls.forEach(l=>{
+    if(multi&&ymOf(l.data)!==mesAtual){mesAtual=ymOf(l.data);quebra(36,true);const o=porMes[mesAtual];pdf.rect(M,y,R-M,17,'#DDEFEA');
+      pdf.text(M+4,y+12,mesNome(mesAtual).replace(/^./,c=>c.toUpperCase()),{size:8.5,bold:true,cor:BR});pdf.text(R-4,y+12,`Entradas ${brl(o.e)}    Saídas ${brl(o.s)}`,{size:8,cor:BR,align:'right'});y+=17;zebra=false}
+    quebra(17,true);
+    if(zebra)pdf.rect(M,y,R-M,17,ZB);zebra=!zebra;
+    const c=cat(l.categoriaId), sg=d.sinal(l), pago=l.status==='pago';
+    if(d.comSaldo&&pago)saldo+=sg*l.valor;
+    const cel={Data:dataBR(l.data),
+      'Descrição':(l.descricao||(l.tipo==='transferencia'?'Transferência':(c?c.nome:'Sem categoria')))+(l.parcela?' ('+l.parcela+')':''),
+      Categoria:l.tipo==='transferencia'?((conta(l.contaId)||{}).nome||'?')+' > '+((conta(l.contaDestinoId)||{}).nome||'?'):(c?c.nome:'Sem categoria'),
+      Conta:(conta(l.contaId)||{}).nome||'',
+      'Situação':pago?(l.tipo==='receita'?'Recebido':l.tipo==='transferencia'?'Feita':'Pago'):(l.data<h?'Atrasado':'Pendente'),
+      Valor:(sg>0?'+ ':sg<0?'- ':'')+brl(l.valor),Saldo:pago?brl(saldo):''};
+    cols.forEach((col,i)=>{const k=col[0];const cor=k==='Valor'?(sg>0?POS:sg<0?NEG:MU):k==='Situação'&&!pago?'#9A6408':k==='Saldo'&&saldo<0?NEG:INK;
+      pdf.text(col[2]?xs[i]+col[1]-4:xs[i]+4,y+11.5,cel[k],{size:8,bold:k==='Valor',cor,max:col[1]-8,align:col[2]?'right':'left'})});
+    y+=17;
+  });
+  quebra(24,false);pdf.linha(M,y,R,y,BR,1);y+=14;
+  pdf.text(M+4,y,`Total · ${d.ls.length} lançamento(s)`,{size:8.5,bold:true});
+  pdf.text(R-4,y,`Entradas ${brl(d.ent)}    Saídas ${brl(d.sai)}    Resultado ${sres}`,{size:8.5,bold:true,align:'right',max:R-M-140});
+  y+=14;pdf.text(M+4,y,'Lançamentos pendentes não alteram o saldo. Documento gerado pelo app Meu Dinheiro, sem valor fiscal.',{size:7,cor:MU,max:R-M});
+  if(f.resumo)['despesa','receita'].forEach(tp=>{
+    const g={};d.ls.filter(l=>l.tipo===tp).forEach(l=>{const k=l.categoriaId||'-';g[k]=g[k]||{v:0,n:0};g[k].v+=l.valor;g[k].n++});
+    const it=Object.entries(g).sort((a,b)=>b[1].v-a[1].v); if(!it.length)return;
+    const tot=sum(it,x=>x[1].v), cx=[M+4,M+190,R-150,R-80,R-4];
+    quebra(64,false);y+=22;
+    pdf.text(M,y,tp==='despesa'?'Despesas por categoria':'Receitas por categoria',{size:11,bold:true});pdf.text(R,y,'Total '+brl(tot),{size:9,bold:true,align:'right',cor:tp==='despesa'?NEG:POS});y+=8;
+    pdf.rect(M,y,R-M,18,'#E8EEEE');
+    [['Categoria',cx[0]],['Participação',cx[1]]].forEach(([t,x])=>pdf.text(x,y+12.5,t,{size:8,bold:true,cor:MU}));
+    [['Qtd.',cx[2]],['%',cx[3]],['Valor',cx[4]]].forEach(([t,x])=>pdf.text(x,y+12.5,t,{size:8,bold:true,cor:MU,align:'right'}));y+=18;
+    it.forEach(([k,o])=>{quebra(17,false);const c=cat(k),pc=tot?o.v/tot:0,bwd=cx[2]-cx[1]-40;
+      pdf.text(cx[0],y+11.5,c?c.nome:'Sem categoria',{size:8,max:cx[1]-cx[0]-10});
+      pdf.rect(cx[1],y+5.5,bwd,6,'#E8EEEE');pdf.rect(cx[1],y+5.5,Math.max(1.5,bwd*pc),6,(c&&c.cor)||BR);
+      pdf.text(cx[2],y+11.5,String(o.n),{size:8,align:'right'});pdf.text(cx[3],y+11.5,(pc*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%',{size:8,align:'right'});pdf.text(cx[4],y+11.5,brl(o.v),{size:8,bold:true,align:'right'});
+      pdf.linha(M,y+17,R,y+17,LN,.4);y+=17});
+  });
+  const n=pdf.n;for(let i=0;i<n;i++){pdf.usar(i);pdf.linha(M,H-38,R,H-38,LN,.6);pdf.text(M,H-24,'Meu Dinheiro '+VERSAO+' · Desenvolvido por Claudinei Nascimento',{size:7.5,cor:MU});pdf.text(R,H-24,`Página ${i+1} de ${n}`,{size:7.5,cor:MU,align:'right'})}
+  return pdf.bytes();
+}
+let EX=null; /* últimos filtros usados, enquanto o app está aberto */
+function formExtrato(pre){
+  const f=Object.assign({per:'mes',tipo:'todos',situacao:'todos',contaId:'',categoriaId:'',resumo:true,modelo:'mensal'},EX||{},pre||{});
+  if(pre&&pre.contaId&&!pre.modelo)f.modelo=null;
+  if(f.per!=='custom')[f.de,f.ate]=periodo(f.per);
+  const cartao=S.contas.find(c=>c.tipo==='cartao'&&c.ativa!==false);
+  const MODELOS=[['mensal','Extrato do mês'],['gastos','Gastos por categoria'],['pagar','Contas a pagar (30 dias)'],['ir','Rendimentos para o IR']].concat(cartao?[['cartao','Fatura do cartão']]:[]);
+  const catOpts=`<option value="">Todas</option><optgroup label="Receitas">${S.categorias.filter(c=>c.tipo==='receita').map(c=>`<option value="${c.id}" ${f.categoriaId===c.id?'selected':''}>${esc(c.nome)}</option>`).join('')}</optgroup>`+['essencial','estilo','financeiro'].map(g=>`<optgroup label="${GRUPOS[g]}">${S.categorias.filter(c=>c.tipo==='despesa'&&c.grupo===g).map(c=>`<option value="${c.id}" ${f.categoriaId===c.id?'selected':''}>${esc(c.nome)}</option>`).join('')}</optgroup>`).join('');
+  const body=()=>`<div class="field"><span class="lbl">Modelos prontos</span><div class="chips" role="group" aria-label="Modelos prontos">${MODELOS.map(([k,t])=>`<button type="button" class="chip" data-act="ex-modelo" data-v="${k}" aria-pressed="${f.modelo===k}">${t}</button>`).join('')}</div></div>
+   <div class="field"><label for="ex-per">Período</label><select class="input" id="ex-per">${PERIODOS.map(([k,t])=>`<option value="${k}" ${f.per===k?'selected':''}>${t}${k==='mes'?' ('+mesNome(UI.mes)+')':''}</option>`).join('')}</select></div>
+   <div class="two"><div class="field"><label for="ex-de">De</label><input class="input" type="date" id="ex-de" value="${f.de}"></div><div class="field"><label for="ex-ate">Até</label><input class="input" type="date" id="ex-ate" value="${f.ate}"></div></div>
+   <div class="field"><span class="lbl">Tipo</span><div class="seg" role="group" aria-label="Tipo">${[['todos','Todos'],['receita','Receitas'],['despesa','Despesas'],['transferencia','Transf.']].map(([k,t])=>`<button type="button" data-act="ex-tipo" data-v="${k}" aria-pressed="${f.tipo===k}">${t}</button>`).join('')}</div></div>
+   <div class="two"><div class="field"><label for="ex-sit">Situação</label><select class="input" id="ex-sit">${[['todos','Todas'],['pago','Pagos e recebidos'],['pendente','Pendentes']].map(([k,t])=>`<option value="${k}" ${f.situacao===k?'selected':''}>${t}</option>`).join('')}</select></div>
+    <div class="field"><label for="ex-conta">Conta ou cartão</label><select class="input" id="ex-conta"><option value="">Todas</option>${S.contas.map(c=>`<option value="${c.id}" ${f.contaId===c.id?'selected':''}>${esc(c.nome)}</option>`).join('')}</select></div></div>
+   <div class="field"><label for="ex-cat">Categoria</label><select class="input" id="ex-cat">${catOpts}</select></div>
+   <label class="toggle" for="ex-resumo"><span>Incluir resumo por categoria</span><input type="checkbox" id="ex-resumo" ${f.resumo?'checked':''}></label>
+   <p class="xs muted" style="margin:-6px 0 0">Escolha uma conta para ter saldo anterior, saldo linha a linha e saldo final, como no extrato do banco.</p>
+   <div class="sim" id="ex-prev" role="status"></div>
+   <div id="ex-err" class="small neg" role="alert"></div>
+   <div class="actions"><button class="btn ghost" data-act="ex-csv">${ic('download','sm')} Planilha</button><button class="btn primary" data-act="ex-pdf">${ic('file','sm')} Gerar PDF</button></div>`;
+  const prev=()=>{const d=extratoDados(f),el=$('#ex-prev');if(!el)return;el.className='sim'+(d.ls.length?'':' muted');
+    el.innerHTML=d.ls.length?`<b>${d.ls.length} lançamento(s)</b> de ${dataBR(f.de)} a ${dataBR(f.ate)} · entradas <b class="pos">${brl(d.ent)}</b> · saídas <b class="neg">${brl(d.sai)}</b>`:'Nenhum lançamento com esses filtros.'};
+  const ler=()=>{f.de=val('ex-de')||f.de;f.ate=val('ex-ate')||f.ate;f.situacao=val('ex-sit');f.contaId=val('ex-conta');f.categoriaId=val('ex-cat');f.resumo=document.getElementById('ex-resumo').checked};
+  const redraw=()=>{$('#sheet-body').innerHTML=body();prev()};
+  const semModelo=()=>{f.modelo=null;document.querySelectorAll('[data-act="ex-modelo"]').forEach(b=>b.setAttribute('aria-pressed','false'))};
+  openSheet('Extrato em PDF',body(),sh=>sh.addEventListener('change',e=>{const t=e.target.id||'';if(!t.startsWith('ex-'))return;ler();
+    if(t==='ex-per'){f.per=e.target.value;if(f.per!=='custom')[f.de,f.ate]=periodo(f.per);semModelo();redraw();return}
+    if(t==='ex-de'||t==='ex-ate'){f.per='custom';$('#ex-per').value='custom'}
+    semModelo();prev()}));
+  prev();
+  const erro=m=>{const e=$('#ex-err');if(e)e.textContent=m};
+  const pronto=()=>{ler();erro('');if(f.de>f.ate){erro('A data inicial está depois da final.');return null}const d=extratoDados(f);if(!d.ls.length){erro('Nenhum lançamento para gerar com esses filtros.');return null}EX=Object.assign({},f);return d};
+  sheetHandlers={
+    'ex-tipo':v=>{ler();f.tipo=v;f.modelo=null;redraw()},
+    'ex-modelo':v=>{ler();const h=hoje();
+      const M={mensal:{per:'mes',tipo:'todos',situacao:'todos',contaId:'',categoriaId:'',resumo:true},gastos:{per:'mes',tipo:'despesa',situacao:'todos',contaId:'',categoriaId:'',resumo:true},
+        pagar:{per:'custom',de:h,ate:addDays(h,30),tipo:'despesa',situacao:'pendente',contaId:'',categoriaId:'',resumo:false},ir:{per:'anoant',tipo:'receita',situacao:'pago',contaId:'',categoriaId:'',resumo:true},
+        cartao:{per:'mes',tipo:'todos',situacao:'todos',contaId:cartao&&cartao.id,categoriaId:'',resumo:true}}[v];
+      Object.assign(f,M,{modelo:v});if(f.per!=='custom')[f.de,f.ate]=periodo(f.per);redraw()},
+    'ex-pdf':async()=>{const d=pronto();if(!d)return;const ok=await salvarArquivo(`extrato-meu-dinheiro-${f.de}-a-${f.ate}.pdf`,extratoPDF(f),'application/pdf');if(ok){closeSheet();toast('Extrato em PDF gerado')}},
+    'ex-csv':async()=>{const d=pronto();if(!d)return;if(await salvarArquivo(`extrato-meu-dinheiro-${f.de}-a-${f.ate}.csv`,csvLanc(d.ls),'text/csv'))closeSheet()}
+  };
+}
+
 /* ---------- Backup ---------- */
+const b64bytes=u=>{let s='';for(let i=0;i<u.length;i+=32768)s+=String.fromCharCode.apply(null,u.subarray(i,i+32768));return btoa(s)};
 async function salvarArquivo(nome,conteudo,tipo){
-  if(NATIVE){pausaLivre();try{const r=await plug('Filesystem').writeFile({path:nome,data:conteudo,directory:'CACHE',encoding:'utf8'});await plug('Share').share({title:nome,dialogTitle:'Salvar ou enviar '+nome,files:[r.uri]});return true}catch(e){if(e&&/cancel/i.test(e.message||''))return false;toast('Não foi possível compartilhar o arquivo.')}}
+  const bin=conteudo instanceof Uint8Array; /* PDF: bytes; backup e planilha: texto */
+  if(NATIVE){pausaLivre();try{const r=await plug('Filesystem').writeFile(bin?{path:nome,data:b64bytes(conteudo),directory:'CACHE'}:{path:nome,data:conteudo,directory:'CACHE',encoding:'utf8'});await plug('Share').share({title:nome,dialogTitle:'Salvar ou enviar '+nome,files:[r.uri]});return true}catch(e){if(e&&/cancel/i.test(e.message||''))return false;toast('Não foi possível compartilhar o arquivo.')}}
   if(downloads){try{const r=await downloads.save({filename:nome,data:new Blob([conteudo],{type:tipo})});if(r!=='cancelled'){toast('Arquivo salvo');return true}return false}catch(e){if(e&&e.code&&e.code!=='unavailable'){toast('Não foi possível salvar o arquivo.');return false}}}
   if(!window.claude){try{const u=URL.createObjectURL(new Blob([conteudo],{type:tipo}));const a=document.createElement('a');a.href=u;a.download=nome;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast('Arquivo salvo em Downloads');return true}catch(e){}}
+  if(bin){toast('Este navegador não permite salvar o PDF aqui. Tente pelo app instalado.');return false}
   if(!$('#exp-box')&&UI.view!=='backup'){closeSheet();UI.view='backup';render()}
   const box=$('#exp-box'); if(!box)return false;
   box.innerHTML=`<section class="card" style="display:flex;flex-direction:column;gap:10px"><b>Copie o conteúdo abaixo</b><p class="small muted" style="margin:0">Este navegador não permite baixar arquivos daqui. Copie e cole num arquivo chamado <b>${esc(nome)}</b>.</p><textarea class="input" id="exp-txt" rows="6" readonly>${esc(conteudo)}</textarea><button class="btn primary" data-act="copiar">Copiar</button></section>`;
@@ -1112,10 +1559,10 @@ async function fazerBackup(){
   const ok=await salvarArquivo('meu-dinheiro-backup-'+hoje()+'.json',JSON.stringify({app:'meu-dinheiro',versao:1,geradoEm:new Date().toISOString(),dados:S},null,1),'application/json');
   if(ok){registrarBackup();if(lockState==='open')render()}
 }
-function csvLanc(){
+function csvLanc(lista){
   const q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
   const linhas=[['Data','Tipo','Descrição','Categoria','Grupo','Conta','Conta destino','Valor','Natureza','Status','Parcela'].map(q).join(';')];
-  S.lancamentos.slice().sort((a,b)=>a.data<b.data?-1:1).forEach(l=>{const c=cat(l.categoriaId);linhas.push([l.data,l.tipo,l.descricao,c&&c.nome,c&&GRUPOS[c.grupo],(conta(l.contaId)||{}).nome,(conta(l.contaDestinoId)||{}).nome,((l.tipo==='despesa'?-1:1)*l.valor/100).toFixed(2).replace('.',','),l.natureza,l.status,l.parcela].map(q).join(';'))});
+  (lista||S.lancamentos).slice().sort((a,b)=>a.data<b.data?-1:1).forEach(l=>{const c=cat(l.categoriaId);linhas.push([l.data,l.tipo,l.descricao,c&&c.nome,c&&GRUPOS[c.grupo],(conta(l.contaId)||{}).nome,(conta(l.contaDestinoId)||{}).nome,((l.tipo==='despesa'?-1:1)*l.valor/100).toFixed(2).replace('.',','),l.natureza,l.status,l.parcela].map(q).join(';'))});
   return '﻿'+linhas.join('\r\n');
 }
 async function importar(txt){
@@ -1181,12 +1628,26 @@ async function bioEntrar(){
 /* Pausa livre: compartilhar um arquivo, escolher um backup ou ler a digital tira o app da frente por instantes.
    Nesses casos, voltar em até 2 minutos não bloqueia. */
 let pausaLivreAte=0;
-const pausaLivre=()=>{pausaLivreAte=Date.now()+120000};
+const pausaLivre=ms=>{pausaLivreAte=Date.now()+(ms||120000)};
 const emPausaLivre=()=>Date.now()<pausaLivreAte;
+/* Volta da leitura da digital: a primeira volta ao app, logo depois de confirmar, não bloqueia */
+let voltaBioAte=0;
+const voltaBio=()=>{if(Date.now()<voltaBioAte){voltaBioAte=0;return true}return false};
 let esqueci=null; /* null = teclado do PIN; 'menu' | 'codigo' | 'pergunta' | 'apagar' = recuperação */
-function bloquear(){if(!temPin())return;closeSheet();lockState='locked';pinBuf='';bioPedido=false;esqueci=null;pausaLivreAte=0;renderLock()}
-function bioTentar(){const m=$('#pin-msg');if(m){m.className='pin-msg muted';m.textContent='Toque no leitor de digital…'}bioEntrar().then(ok=>{if(ok)desbloquear();else{const mm=$('#pin-msg');if(mm){mm.className='pin-msg neg';mm.textContent='Digital não confirmada. Use o PIN.'}}}).catch(err=>{const mm=$('#pin-msg');if(mm){mm.className='pin-msg neg';mm.textContent=bioErro(err)+' Use o PIN.'}})}
-function desbloquear(){lockState='open';pinBuf='';esqueci=null;lsDel('md_tent');lastActivity=Date.now();renderLock()}
+let lockManual=false; /* bloqueado pelo cadeado: não pede a digital sozinho */
+const bioAuto=()=>lsGet('md_bio_auto')!=='0';
+function bloquear(manual){if(!temPin())return;closeSheet();lockState='locked';pinBuf='';bioPedido=false;esqueci=null;pausaLivreAte=0;lockManual=!!manual;renderLock()}
+/* A leitura da digital abre uma tela do sistema por cima do app (no Android, outra Activity).
+   Sem a pausa livre, ao voltar o app achava que tinha saído e bloqueava de novo, pedindo a digital sem parar. */
+let bioLendo=false;
+function bioTentar(auto){
+  if(bioLendo)return; bioLendo=true; pausaLivre();
+  const msg=(c,t)=>{const m=$('#pin-msg');if(m){m.className='pin-msg '+c;m.textContent=t}};
+  msg('muted','Toque no leitor de digital…');
+  bioEntrar().then(ok=>{bioLendo=false;if(ok){voltaBioAte=Date.now()+3000;desbloquear()}else msg('neg','Digital não confirmada. Tente de novo ou use o PIN.')})
+   .catch(err=>{bioLendo=false;if(auto&&!NATIVE&&err&&err.name==='NotAllowedError')msg('muted','Toque em Entrar com a digital ou digite o PIN.');else msg('neg',bioErro(err)+' Use o PIN.')});
+}
+function desbloquear(){lockState='open';pinBuf='';esqueci=null;lockManual=false;lsDel('md_tent');lastActivity=Date.now();pausaLivreAte=0;renderLock()}
 function registrarErro(){const t=tentativas();t.n++;if(t.n>=5)t.ate=Date.now()+Math.min(15*60000,30000*Math.pow(2,t.n-5));lsSet('md_tent',JSON.stringify(t));return t}
 const temCodigo=()=>!!(SEG&&SEG.rec&&SEG.rec.hash), temPergunta=()=>!!(SEG&&SEG.perg&&SEG.perg.hash);
 function telaEsqueci(bio,espera){
@@ -1224,7 +1685,7 @@ function renderLock(){
   const t=tentativas(); const espera=Math.max(0,Math.ceil((t.ate-Date.now())/1000));
   const bio=!!(bioRegistrada()&&bioOk);
   if(esqueci==='codigo'&&!temCodigo()||esqueci==='pergunta'&&!temPergunta())esqueci='menu';
-  const titulo={menu:'Esqueci o PIN',codigo:'Código de recuperação',pergunta:'Pergunta de segurança',apagar:'Apagar e recomeçar'}[esqueci]||'Digite seu PIN';
+  const titulo={menu:'Esqueci o PIN',codigo:'Código de recuperação',pergunta:'Pergunta de segurança',apagar:'Apagar e recomeçar'}[esqueci]||(bio?'Desbloqueie o app':'Digite seu PIN');
   const head=`<div class="lock-head"><span class="brand-mark">${ic('trend')}</span><h1>${titulo}</h1><span class="small muted">Meu Dinheiro está bloqueado</span></div>`;
   if(espera)lockTick=setInterval(()=>{if(Date.now()>=tentativas().ate){renderLock()}else{const m=$('#pin-msg');if(m)m.textContent=`Muitas tentativas. Aguarde ${Math.ceil((tentativas().ate-Date.now())/1000)}s.`}},1000);
   if(esqueci){
@@ -1234,13 +1695,15 @@ function renderLock(){
   const n=SEG.pinLen||4;
   const k=d=>`<button class="key" data-act="pin-key" data-v="${d}" ${espera?'disabled':''} aria-label="${d}">${d}</button>`;
   root.innerHTML=`<div class="lock" role="dialog" aria-modal="true" aria-label="Desbloquear">${head}
+   ${bio?`<button class="bio-btn" data-act="pin-bio" ${espera?'disabled':''}>${ic('finger')}<span>Entrar com a digital</span></button><span class="xs muted" style="margin-top:-10px">ou digite seu PIN</span>`:''}
    <div class="pin-dots" id="pin-dots" aria-label="${pinBuf.length} de ${n} dígitos">${Array.from({length:n},(_,i)=>`<i class="${i<pinBuf.length?'on':''}"></i>`).join('')}</div>
    <div class="pin-msg ${espera?'neg':'muted'}" id="pin-msg" role="status">${espera?`Muitas tentativas. Aguarde ${espera}s.`:(t.n?`PIN incorreto. ${Math.max(0,5-t.n)} tentativa(s) antes de uma pausa.`:'')}</div>
    <div class="keypad">${[1,2,3,4,5,6,7,8,9].map(k).join('')}
-    ${bio?`<button class="key flat" data-act="pin-bio" aria-label="Entrar com digital" ${espera?'disabled':''}>${ic('finger')}</button>`:'<span></span>'}
+    <span></span>
     ${k(0)}<button class="key flat" data-act="pin-back" aria-label="Apagar">${ic('backspace')}</button></div>
    <button class="linkbtn" data-act="pin-esqueci">Esqueci o PIN</button></div>`;
-  if(bio&&NATIVE&&!espera&&!bioPedido){bioPedido=true;setTimeout(bioTentar,250)}
+  /* Digital disponível: pede sozinha ao abrir e ao voltar para o app (não quando você bloqueou pelo cadeado) */
+  if(bio&&!espera&&!bioPedido&&!lockManual&&bioAuto()){bioPedido=true;setTimeout(()=>{if(lockState==='locked'&&!esqueci)bioTentar(true)},250)}
 }
 function pintarDots(err){const d=$('#pin-dots');if(!d)return;[...d.children].forEach((c,i)=>c.classList.toggle('on',i<pinBuf.length));d.setAttribute('aria-label',pinBuf.length+' dígitos');if(err){d.classList.remove('err');void d.offsetWidth;d.classList.add('err')}}
 let verificando=false;
@@ -1278,11 +1741,10 @@ async function rcConfirmar(){
   const m=$('#pin-msg'); if(m&&Date.now()>=t.ate){m.className='pin-msg neg';m.textContent=(via==='codigo'?'Código incorreto.':'Resposta incorreta.')+` ${Math.max(0,5-t.n)} tentativa(s) antes de uma pausa.`}
 }
 function rcBio(){const m=$('#pin-msg');if(m){m.className='pin-msg muted';m.textContent='Toque no leitor de digital…'}pausaLivre();
-  bioEntrar().then(ok=>{if(ok){desbloquear();formNovoPin('bio')}else{const mm=$('#pin-msg');if(mm){mm.className='pin-msg neg';mm.textContent='Digital não confirmada.'}}}).catch(err=>{const mm=$('#pin-msg');if(mm){mm.className='pin-msg neg';mm.textContent=bioErro(err)}})}
+  bioEntrar().then(ok=>{if(ok){voltaBioAte=Date.now()+3000;desbloquear();formNovoPin('bio')}else{const mm=$('#pin-msg');if(mm){mm.className='pin-msg neg';mm.textContent='Digital não confirmada.'}}}).catch(err=>{const mm=$('#pin-msg');if(mm){mm.className='pin-msg neg';mm.textContent=bioErro(err)}})}
 function apagarTudo(){
   if(val('rc-input').trim().toUpperCase()!=='APAGAR'){const e=$('#rc-err');if(e)e.textContent='Digite APAGAR para confirmar.';return}
-  COLS.forEach(c=>S[c].slice().forEach(x=>del(c,x.id,true)));
-  segSalvar(null);lsDel('md_bio');lsDel('md_bk_em');seedIfEmpty();UI.view='inicio';desbloquear();render();
+  restaurarFabrica();desbloquear();render();
   toast('Dados apagados. Para recuperar, restaure um backup em Mais › Backup.');
 }
 
@@ -1323,7 +1785,7 @@ function formSeguranca(){
   :`<div class="banner info">${ic('shield')}<div>PIN ativo. O app pede o PIN ao abrir${bio?' e aceita a digital neste aparelho':''}.</div></div>
    ${!temCodigo()&&!temPergunta()&&!bio?`<div class="banner">${ic('alert')}<div>Configure uma forma de recuperação abaixo. Sem ela, esquecer o PIN obriga a apagar os dados.</div></div>`:''}
    <div class="field"><label for="sg-auto">Bloquear automaticamente</label><select class="input" id="sg-auto">${[[0,'Ao sair do app'],[1,'Após 1 minuto sem uso'],[5,'Após 5 minutos sem uso'],[15,'Após 15 minutos sem uso']].map(([v,l])=>`<option value="${v}" ${Number(SEG.autoLock||0)===v?'selected':''}>${l}</option>`).join('')}</select></div>
-   ${card('Digital',`${bio?`<p class="small muted" style="margin:0">Ativa neste aparelho. Também serve para criar um PIN novo se você esquecer o atual. Em outros aparelhos, ative de novo por lá.</p><button class="btn ghost" data-act="sg-bio-off">Desativar digital neste aparelho</button>`
+   ${card('Digital',`${bio?`<p class="small muted" style="margin:0">Ativa neste aparelho. Também serve para criar um PIN novo se você esquecer o atual. Em outros aparelhos, ative de novo por lá.</p><label class="toggle" for="sg-bio-auto"><span>Pedir a digital assim que o app abrir</span><input type="checkbox" id="sg-bio-auto" ${bioAuto()?'checked':''}></label><button class="btn ghost" data-act="sg-bio-off">Desativar digital neste aparelho</button>`
     :bioOk?`<p class="small muted" style="margin:0">Use a digital ou o reconhecimento facial do aparelho para desbloquear sem digitar o PIN.</p>${pinIn('sg-bio-pin','PIN atual')}<button class="btn primary" data-act="sg-bio-on">${ic('finger')} Ativar digital neste aparelho</button>`
     :`<p class="small muted" style="margin:0">Este aparelho ou navegador não libera a digital para esta página. Continue usando o PIN.</p>`}
     <div id="sg-bio-msg" class="small" role="status"></div>`)}
@@ -1363,7 +1825,7 @@ document.addEventListener('click',e=>{
     if(lockState!=='locked')return;
     if(a==='pin-key')pinTecla(v);
     else if(a==='pin-back')pinApagar();
-    else if(a==='pin-bio')bioTentar();
+    else if(a==='pin-bio')bioTentar(false);
     else if(a==='pin-esqueci'||a==='rc-menu'){esqueci='menu';renderLock()}
     else if(a==='rc-voltar'){esqueci=null;pinBuf='';renderLock()}
     else if(a==='rc-ir-codigo'){esqueci='codigo';renderLock()}
@@ -1385,9 +1847,11 @@ document.addEventListener('click',e=>{
     case 'mes-ant': UI.mes=addMonths(UI.mes+'-01',-1).slice(0,7); render(); break;
     case 'mes-prox': UI.mes=addMonths(UI.mes+'-01',1).slice(0,7); render(); break;
     case 'tema': cycleTheme(); break;
-    case 'bloquear': bloquear(); break;
+    case 'bloquear': bloquear(true); break;
     case 'instalar': {const ev=window.__mdInstall; if(!ev)break; ev.prompt(); (ev.userChoice||Promise.resolve({})).then(r=>{if(r.outcome==='accepted'){window.__mdInstalled=true;toast('App instalado')}window.__mdInstall=null;render()}); break}
     case 'abrir-seg': formSeguranca(); break;
+    case 'fabrica': formFabrica(); break;
+    case 'extrato': formExtrato(); break;
     case 'set-tema': tema=v; lsSet('md_tema',tema); applyTheme(); render(); break;
     case 'filtro': UI.filtro=v; render(); break;
     case 'emp-aba': UI.empAba=v; render(); break;
@@ -1395,7 +1859,7 @@ document.addEventListener('click',e=>{
     case 'abrir-emp': detalheEmp(id); break;
     case 'novo-inv': formInv(); break;
     case 'abrir-inv': detalheInv(id); break;
-    case 'nova-conta': formConta(); break; case 'abrir-conta': formConta(id); break;
+    case 'nova-conta': formConta(); break; case 'abrir-conta': detalheConta(id); break;
     case 'nova-cat': formCat(); break; case 'abrir-cat': formCat(id); break;
     case 'nova-pessoa': formPessoa(); break; case 'abrir-pessoa': formPessoa(id); break;
     case 'fechar': case 'fechar-bg': closeSheet(); break;
@@ -1427,12 +1891,14 @@ document.addEventListener('input',e=>{if(e.target.id==='busca'){UI.busca=e.targe
 document.addEventListener('pointerdown',()=>{lastActivity=Date.now()},true);
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='hidden'){hiddenAt=Date.now();return}
-  if(lockState==='open'&&temPin()&&hiddenAt&&!emPausaLivre()){const min=Number(SEG.autoLock||0);if(Date.now()-hiddenAt>=min*60000)bloquear()}
+  if(lockState==='open'&&temPin()&&hiddenAt&&!emPausaLivre()){const min=Number(SEG.autoLock||0);if(Date.now()-hiddenAt>=min*60000&&!voltaBio())bloquear()}
 });
 setInterval(()=>{if(lockState==='open'&&temPin()){const min=Number(SEG.autoLock||0);if(min>0&&Date.now()-lastActivity>=min*60000)bloquear()}},10000);
 document.addEventListener('change',e=>{
+  if(e.target.id==='lf-rep'){const f=$('#lf-n-f');if(f)f.hidden=e.target.value==='nao';const h=$('#lf-rep-hint');if(h)h.textContent=e.target.value==='parcelar'?'Digite o valor total: o app divide pelo número de parcelas, uma por mês.':e.target.value==='mensal'?'Cria os próximos meses como pendentes, com o mesmo valor.':'Repetir cria os próximos meses como pendentes. Parcelar divide o valor total.';return}
   if(e.target.id==='bk-mostrar'){bkSetPref({mostrar:e.target.checked,adiarAte:0});toast(e.target.checked?'Lembrete de backup ligado':'Lembrete de backup desligado');return}
   if(e.target.id==='bk-dias'){bkSetPref({dias:Number(e.target.value),adiarAte:0});render();toast('Lembrete ajustado');return}
+  if(e.target.id==='sg-bio-auto'){lsSet('md_bio_auto',e.target.checked?'1':'0');toast(e.target.checked?'A digital será pedida ao abrir':'A digital só será pedida quando você tocar no botão');return}
   if(e.target.id==='sg-auto'&&temPin()){segSalvar(Object.assign({},SEG,{autoLock:Number(e.target.value),atualizadoEm:Date.now()}));toast('Bloqueio automático atualizado');return}
   if(e.target.id==='imp-file'&&e.target.files[0]){lastActivity=Date.now();const r=new FileReader();r.onload=()=>{sheetHandlers={};importar(String(r.result))};r.readAsText(e.target.files[0]);e.target.value=''}
 });
