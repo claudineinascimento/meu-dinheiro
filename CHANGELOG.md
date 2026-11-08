@@ -1,5 +1,39 @@
 # Histórico de versões
 
+## 1.2 (novembro de 2026)
+
+### Novidades
+
+- **Digital ou PIN**: com a digital ativa, o app pede a digital sozinho ao abrir e ao voltar para o app, no APK e no PWA. Basta encostar o dedo: o PIN fica como reserva para quando a digital falhar. A tela de bloqueio ganhou o botão **Entrar com a digital** em destaque. Bloqueando pelo cadeado, o app espera você tocar no botão. O pedido automático pode ser desligado em *Segurança*.
+- **Empréstimos com pagamento extra**: pague (ou receba) qualquer valor e escolha **reduzir o prazo** (elimina as últimas parcelas, o que mais economiza juros) ou **reduzir a parcela** (mantém o prazo e diminui cada parcela). **Quitar** paga tudo pelo valor de hoje, com desconto dos juros do tempo que falta (CDC, art. 52, § 2º). O app mostra antes o efeito e a economia, guarda o histórico de pagamentos extras e permite desfazer o último. O topo do empréstimo mostra quanto custa quitar hoje.
+- **Extratos em PDF** na tela Lançamentos: por período (mês, mês anterior, 3, 6 ou 12 meses, este ano, ano passado ou datas livres), tipo, situação, conta e categoria. Modelos prontos: extrato do mês, gastos por categoria, contas a pagar nos próximos 30 dias, rendimentos do ano passado para o IR e fatura do cartão. Com uma conta, o PDF traz saldo anterior, saldo linha a linha e saldo final, como o extrato do banco. Cabeçalho, resumo, subtotais por mês, resumo por categoria, número das páginas e assinatura. O mesmo filtro sai em planilha (CSV). O PDF é gerado no aparelho, sem internet.
+- **Contas e cartões com dados**: banco, agência, número, titular e chave Pix, com *Copiar dados*. Cartão com banco emissor, bandeira, 4 últimos números, limite, dia de fechamento e de vencimento e conta que paga a fatura. A tela mostra o total em contas, as faturas abertas e o limite disponível. **Pagar fatura** preenche a transferência com o valor da fatura. Cada conta tem seu **Extrato**.
+- **Restaurar padrão de fábrica** em *Mais*, confirmando com o seu PIN (sem PIN, digitando `RESTAURAR`). Oferece fazer backup antes.
+- **Tela Sobre** com versão, onde o app está rodando, novidades desta e das versões anteriores, links para versões novas e para o código-fonte e a assinatura *Desenvolvido por Claudinei Nascimento*.
+- **Ajuda revisada**, com extrato, contas e Pix, pagamento extra, digital e restaurar de fábrica.
+
+### Interface
+
+- Menu *Mais* em grupos (*Minhas finanças* e *Aplicativo*), com *Restaurar padrão de fábrica* separado no fim.
+- Contas separadas de cartões, com resumo no topo e detalhe de cada uma.
+- Empréstimo com *Pagar extra* e *Quitar* no topo e parcelas antecipadas identificadas.
+- Lançamentos com botão *Extrato* ao lado da busca. A busca também encontra conta e valor.
+- Novo lançamento: *Quantas vezes* só aparece ao escolher repetir ou parcelar, com dica para cada opção.
+- A versão aparece na assinatura do app.
+
+### Correções
+
+- **Digital no Android em loop**: o leitor de digital abre uma tela do sistema por cima do app. Ao fechar, o app achava que você tinha saído, bloqueava de novo e pedia a digital outra vez. Agora a volta logo após a leitura não bloqueia.
+- No PWA, a digital ativa não era pedida ao abrir: era preciso achar o ícone pequeno no teclado.
+- Ao trocar *Eu devo* / *Me devem* no novo empréstimo, o exemplo do campo não mudava.
+- Uma conta usada só por empréstimos podia ser excluída.
+
+### Publicação e documentação
+
+- Versão 1.2.0 no `package.json` e no app (tela Sobre); cache do PWA `md-v3`.
+- Manual, regras financeiras (fórmulas de valor presente, amortização e extrato), modelo de dados (campos novos de contas e empréstimos), segurança, arquitetura e testes atualizados. Capturas novas: contas, cartão, pagamento extra, extrato, PDF e Sobre.
+- 174 testes automáticos (eram 135), incluindo o loop da digital no Android, pagamento extra, quitação, extrato em PDF, cartões e restaurar de fábrica.
+
 ## 1.1 (novembro de 2026)
 
 ### Novidades

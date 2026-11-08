@@ -4,7 +4,7 @@
 [![Versão](https://img.shields.io/github/v/release/claudineinascimento/meu-dinheiro?label=vers%C3%A3o)](https://github.com/claudineinascimento/meu-dinheiro/releases/latest)
 [![Licença MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-green)](LICENSE)
 
-Aplicativo de controle financeiro pessoal, simples para o dia a dia e com resultado profissional. Registra receitas, despesas fixas e variáveis, compras parceladas, empréstimos que você pegou e que fez para outras pessoas, investimentos e a reserva de emergência. Funciona no celular como app instalado (APK ou PWA), **sem internet e sem cadastro**, com PIN e digital. Os dados ficam só no seu aparelho.
+Aplicativo de controle financeiro pessoal, simples para o dia a dia e com resultado profissional. Registra receitas, despesas fixas e variáveis, compras parceladas, contas e cartões, empréstimos que você pegou e que fez para outras pessoas (com pagamento extra e quitação antecipada), investimentos e a reserva de emergência, e gera **extratos em PDF**. Funciona no celular como app instalado (APK ou PWA), **sem internet e sem cadastro**, com digital ou PIN. Os dados ficam só no seu aparelho.
 
 Desenvolvido por **Claudinei Nascimento**.
 
@@ -46,15 +46,24 @@ O PWA abre sem internet e se atualiza sozinho quando há conexão.
 | Área | O que faz |
 | --- | --- |
 | **Lançamentos** | Receitas, despesas e transferências em menos de 10 segundos, com categoria, conta, data e pago/pendente. Fixas x variáveis, **parcelamento** (divide o valor total) e **repetição mensal** (aluguel, salário, assinaturas). |
+| **Extrato em PDF** | Por período, tipo, situação, conta e categoria, com modelos prontos (extrato do mês, gastos por categoria, contas a pagar, rendimentos para o IR, fatura do cartão). Com uma conta, traz saldo anterior, saldo linha a linha e saldo final. Também em planilha. |
 | **Início** | Saldo em contas, resultado do mês, fixas x variáveis, vencimentos dos próximos 7 dias, quem deve a quem, total investido e os maiores gastos. |
-| **Contas e cartões** | Saldo de cada conta e fatura do cartão de crédito. |
-| **Empréstimos** | Duas listas, *Eu devo* e *Me devem*, com parcelas, juros pela tabela Price, atrasos e saldo de cada pessoa. |
+| **Contas e cartões** | Saldo de cada conta, banco, agência, conta e **chave Pix** (com *Copiar dados*). Cartão com bandeira, 4 últimos números, limite disponível, fechamento, vencimento e **Pagar fatura**. |
+| **Empréstimos** | Duas listas, *Eu devo* e *Me devem*, com parcelas, juros pela tabela Price, atrasos e saldo de cada pessoa. **Pagamento extra** de qualquer valor, reduzindo o prazo ou a parcela, e **quitação antecipada** com desconto dos juros, com simulação antes de confirmar. |
 | **Investimentos** | Aportes, resgates e rendimentos, com painel: distribuição por tipo, rentabilidade, evolução em 12 meses, meta da reserva de emergência (6 meses de despesas essenciais) e liquidez. |
 | **Categorias** | 29 categorias na regra 50/30/20 (essencial, estilo de vida, financeiro), editáveis. |
 | **Privacidade** | Botão de **olho** que esconde o saldo e, separado, o total investido. |
-| **Segurança** | PIN, digital, bloqueio automático e recuperação do PIN. Veja abaixo. |
+| **Segurança** | Digital ou PIN, bloqueio automático, recuperação do PIN e restaurar padrão de fábrica com o PIN. Veja abaixo. |
+| **Sobre e ajuda** | Versão, novidades, ajuda de cada tela e assinatura *Desenvolvido por Claudinei Nascimento*. |
 | **Backup** | Arquivo completo, planilha (CSV), restauração e lembrete quando o backup atrasa. Veja abaixo. |
 | **Tema** | Claro, escuro ou automático num único botão. |
+
+<p>
+  <img src="docs/img/extrato.png" width="200" alt="Filtros do extrato em PDF">
+  <img src="docs/img/extrato-pdf.png" width="283" alt="Extrato em PDF">
+  <img src="docs/img/emprestimo-extra.png" width="200" alt="Pagar valor extra no empréstimo">
+  <img src="docs/img/cartao.png" width="200" alt="Cartão de crédito com limite e fatura">
+</p>
 
 <p>
   <img src="docs/img/novo-lancamento.png" width="200" alt="Novo lançamento">
@@ -66,7 +75,8 @@ O PWA abre sem internet e se atualiza sozinho quando há conexão.
 ## Segurança e PIN
 
 - **PIN** de 4 a 6 números. PINs fáceis como `1234` são recusados. O PIN não é guardado: o app guarda só um resumo PBKDF2‑SHA‑256 com 120.000 iterações e sal aleatório.
-- **Digital** no Android (leitor do aparelho) e no navegador (WebAuthn).
+- **Digital ou PIN**: com a digital ativa, o app pede a digital sozinho ao abrir, sem digitar o PIN. O PIN fica como reserva. Funciona no Android (leitor do aparelho) e no navegador (WebAuthn).
+- **Restaurar padrão de fábrica** apaga tudo e só confirma com o seu PIN.
 - **Bloqueio automático** ao sair do app ou após 1, 5 ou 15 minutos sem uso. O cadeado no topo bloqueia na hora.
 - **5 erros** seguidos pausam as tentativas por 30 segundos, dobrando até 15 minutos.
 - **Esqueci o PIN**: ao criar o PIN, o app mostra um **código de recuperação** que aparece uma única vez. Anote fora do celular. Também dá para cadastrar uma **pergunta de segurança** e usar a **digital**. Sem nenhuma delas, a última saída é **apagar tudo** e restaurar um backup.
@@ -107,7 +117,7 @@ Os dados ficam **só no aparelho**. Desinstalar o app ou limpar os dados do nave
 | [Arquitetura](docs/arquitetura.md) | Quem mantém o código | Como o app é organizado e roda em cada plataforma |
 | [Modelo de dados](docs/modelo-de-dados.md) | Quem mantém o código | Coleções, campos e formato do backup |
 | [Desenvolvimento e publicação](docs/desenvolvimento.md) | Quem mantém o código | Rodar, testar, gerar o APK assinado e publicar versões |
-| [Testes](docs/testes.md) | Quem mantém o código | O que os 135 testes automáticos verificam |
+| [Testes](docs/testes.md) | Quem mantém o código | O que os 174 testes automáticos verificam |
 | [Histórico de versões](CHANGELOG.md) | Todos | O que mudou em cada versão |
 
 ## Estrutura do repositório
@@ -125,7 +135,7 @@ docs/                   documentação e capturas de tela (docs/img)
 ```bash
 npm ci
 npx playwright install chromium
-npm test                 # 135 verificações de ponta a ponta
+npm test                 # 174 verificações de ponta a ponta
 npm run capturas         # refaz as capturas de tela de docs/img
 npx cap sync android     # copia www/ para o projeto Android
 ```

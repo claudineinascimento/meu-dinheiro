@@ -19,6 +19,18 @@ contas ─┐
 | `tipo` | `corrente` \| `poupanca` \| `carteira` \| `cartao` | Tipo da conta |
 | `saldoInicial` | centavos | Saldo no dia em que começou a usar o app (negativo = fatura do cartão) |
 | `ativa` | booleano | `false` = arquivada |
+| `instituicao` | texto | Banco ou emissor do cartão |
+| `agencia`, `numero`, `titular` | texto | Conta corrente e poupança |
+| `pixTipo` | `cpf` \| `cnpj` \| `email` \| `telefone` \| `aleatoria` | Tipo da chave Pix |
+| `pixChave` | texto | Chave Pix |
+| `bandeira` | texto | Cartão: Visa, Mastercard, Elo, American Express, Hipercard ou Outra |
+| `final` | texto | Cartão: só os 4 últimos números |
+| `limite` | centavos | Cartão |
+| `fechamento`, `vencimento` | inteiro 1 a 31 | Cartão: dia de fechamento e de vencimento da fatura |
+| `contaPagamentoId` | id | Cartão: conta usada no *Pagar fatura* |
+| `obs` | texto | Observações |
+
+Todos os campos novos (versão 1.2) são opcionais. O app nunca guarda senha, número completo do cartão nem CVV.
 
 ## categorias
 
@@ -77,6 +89,7 @@ Chaves de sistema: `salario`, `receb_emprestimo`, `emprestimo_recebido`, `resgat
 | `finalidade` | texto | |
 | `lancInicialId` | id ou ausente | Lançamento da entrada/saída do dinheiro |
 | `parcelas` | lista | Ver abaixo |
+| `amortizacoes` | lista ou ausente | Pagamentos extras e quitação. Ver abaixo |
 
 Cada item de `parcelas`:
 
@@ -88,6 +101,23 @@ Cada item de `parcelas`:
 | `pagoEm` | data ou ausente | Preenchido quando paga |
 | `valorPago` | centavos ou ausente | |
 | `lancId` | id ou ausente | Lançamento criado no pagamento |
+| `antecipada` | booleano ou ausente | Paga por um pagamento extra ou quitação |
+| `amortId` | id ou ausente | Pagamento extra que pagou a parcela |
+| `valorOriginal` | centavos ou ausente | Valor antes de um pagamento extra reduzir a parcela |
+
+Cada item de `amortizacoes` (pagamentos extras e quitação, versão 1.2):
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| `id` | id | |
+| `data` | data | Dia do pagamento |
+| `valor` | centavos | Valor pago |
+| `modo` | `prazo` \| `parcela` \| `quitacao` | Como o valor foi aplicado |
+| `contaId` | id | Conta usada |
+| `lancId` | id | Lançamento criado |
+| `economia` | centavos | Juros economizados |
+| `eliminadas` | inteiro | Parcelas antecipadas |
+| `antes` | lista | Cópia das parcelas antes do pagamento, usada no *Desfazer* |
 
 ## investimentos
 
@@ -118,6 +148,7 @@ Cada item de `parcelas`:
 | `md_seg` | Configuração de segurança (modo aparelho) |
 | `md_seg_cache` | Cópia da configuração de segurança para bloquear antes de carregar |
 | `md_bio` | Registro da digital deste aparelho |
+| `md_bio_auto` | `0` quando o app não deve pedir a digital sozinho ao abrir |
 | `md_tent` | Tentativas erradas de PIN e fim da pausa |
 | `md_tema` | `auto`, `claro` ou `escuro` |
 | `md_oc_saldo` | `1` quando o saldo está oculto pelo olho |
@@ -139,8 +170,14 @@ Cada item de `parcelas`:
 }
 ```
 
-A restauração confere o campo `app` e as 6 listas antes de substituir os dados. O PIN não vai no backup.
+A restauração confere o campo `app` e as 6 listas antes de substituir os dados. O PIN não vai no backup. Backups da versão 1.1 restauram na 1.2 sem mudança: os campos novos são opcionais.
+
+**Restaurar padrão de fábrica** apaga as 6 coleções, a configuração de segurança e as chaves `md_bio`, `md_bio_auto`, `md_bk_em`, `md_bk_pref`, `md_oc_saldo`, `md_oc_inv`, `md_tema` e `md_tent`, e cria de novo as categorias e as duas contas padrão.
 
 ## Exportação CSV
 
-Separador `;`, codificação UTF‑8 com BOM (abre direto no Excel). Colunas: Data, Tipo, Descrição, Categoria, Grupo, Conta, Conta destino, Valor (despesas negativas, vírgula decimal), Natureza, Status, Parcela.
+Separador `;`, codificação UTF‑8 com BOM (abre direto no Excel). Colunas: Data, Tipo, Descrição, Categoria, Grupo, Conta, Conta destino, Valor (despesas negativas, vírgula decimal), Natureza, Status, Parcela. O botão **Planilha** do extrato usa o mesmo formato, só com os lançamentos do filtro.
+
+## Extrato em PDF
+
+PDF 1.4 em A4, gerado no próprio aparelho, sem internet e sem biblioteca externa. Usa as fontes padrão Helvetica e Helvetica-Bold com codificação WinAnsi (acentos do português). Nome do arquivo: `extrato-meu-dinheiro-AAAA-MM-DD-a-AAAA-MM-DD.pdf`.

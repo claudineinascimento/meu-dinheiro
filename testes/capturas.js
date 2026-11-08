@@ -15,7 +15,7 @@ const backupFeito=async p=>{await p.evaluate(()=>localStorage.setItem('md_bk_em'
 const topo=p=>p.evaluate(()=>window.scrollTo(0,0));
 const espera=(p,ms=300)=>p.waitForTimeout(ms);
 const foto=async(p,nome)=>{await espera(p,350);await p.screenshot({path:path.join(SAIDA,nome+'.png')});console.log('ok',nome)};
-const ir=async(p,v)=>{if(['investimentos','contas','categorias','pessoas','backup','ajuda','seguranca'].includes(v)){await p.click('[data-act="ir"][data-v="mais"]');await espera(p,150)}await p.click(`[data-act="ir"][data-v="${v}"]`);await espera(p)};
+const ir=async(p,v)=>{if(['investimentos','contas','categorias','pessoas','backup','ajuda','seguranca','sobre'].includes(v)){await p.click('[data-act="ir"][data-v="mais"]');await espera(p,150)}await p.click(`[data-act="ir"][data-v="${v}"]`);await espera(p)};
 const exemplo=async p=>{await p.click('[data-act="carregar-exemplo"]');await espera(p,800);const ok=await p.$('[data-act="confirmar"],.modal .btn.primary');if(ok&&await ok.isVisible()){await ok.click();await espera(p,800)}};
 
 const celular={viewport:{width:390,height:844},deviceScaleFactor:2,hasTouch:true,isMobile:true,colorScheme:'light'};
@@ -32,6 +32,18 @@ const celular={viewport:{width:390,height:844},deviceScaleFactor:2,hasTouch:true
  await ir(p,'emprestimos');await foto(p,'emprestimos');
  await p.click('[data-act="abrir-emp"]');await espera(p);await foto(p,'emprestimo-parcelas');
  await p.click('[data-act="fechar"]').catch(()=>p.keyboard.press('Escape'));await espera(p);
+ await p.click('[data-act="abrir-emp"]');await espera(p);await p.click('[data-act="ed-extra"]');await p.fill('#am-valor','1500');await espera(p);
+ await p.evaluate(()=>document.querySelector('#am-sim').scrollIntoView({block:'end'}));await foto(p,'emprestimo-extra');
+ await p.click('[data-act="fechar"]').catch(()=>p.keyboard.press('Escape'));await espera(p);
+ // contas e cartões com dados
+ await ir(p,'contas');await p.click('[data-act="nova-conta"]');await espera(p);await p.fill('#cf-nome','Nubank');await p.selectOption('#cf-tipo','cartao');await p.fill('#cf-saldo','820,50');
+ await p.selectOption('#cf-band','Mastercard');await p.fill('#cf-final','4321');await p.fill('#cf-lim','3.000');await p.fill('#cf-fech','3');await p.fill('#cf-venc','10');await p.click('[data-act="cf-salvar"]');await espera(p);
+ await p.locator('.row',{hasText:'Conta corrente'}).click();await espera(p);await p.click('[data-act="ct-editar"]');await p.fill('#cf-inst','Banco do Brasil');await p.fill('#cf-ag','1234-5');await p.fill('#cf-num','98765-4');
+ await p.fill('#cf-tit','Maria Silva');await p.selectOption('#cf-pixt','email');await p.fill('#cf-pix','maria@exemplo.com');await p.click('[data-act="cf-salvar"]');await espera(p);await p.click('[data-act="fechar"]');await espera(p);
+ await foto(p,'contas');
+ await p.locator('.row',{hasText:'Nubank'}).click();await espera(p);await foto(p,'cartao');await p.click('[data-act="fechar"]');await espera(p);
+ await ir(p,'lancamentos');await p.click('[data-act="extrato"]');await espera(p);await foto(p,'extrato');await p.click('[data-act="fechar"]');await espera(p);
+ await ir(p,'sobre');await foto(p,'sobre');
  await ir(p,'investimentos');await foto(p,'investimentos');
  await p.evaluate(()=>window.scrollTo(0,document.body.scrollHeight));await foto(p,'investimentos-painel');
  await ir(p,'mais');await foto(p,'mais');

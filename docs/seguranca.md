@@ -19,7 +19,8 @@ Como os dados ficam no aparelho, **o backup é sua responsabilidade**. Desinstal
 - Após 5 erros seguidos, o app pausa as tentativas por 30 segundos, dobrando a cada novo erro até 15 minutos.
 - **Bloqueio automático**: ao sair do app (padrão) ou após 1, 5 ou 15 minutos sem uso. O cadeado no topo bloqueia na hora.
 - Enquanto bloqueado, o conteúdo fica coberto, inacessível ao toque e ao teclado, e os valores nem são desenhados na página.
-- Compartilhar o backup, escolher um arquivo para restaurar ou ler a digital tiram o app da frente por instantes. Voltar em até 2 minutos depois dessas ações não bloqueia o app; voltar depois disso bloqueia normalmente.
+- Compartilhar o backup ou o extrato, escolher um arquivo para restaurar ou ler a digital tiram o app da frente por instantes. Voltar em até 2 minutos depois dessas ações não bloqueia o app; voltar depois disso bloqueia normalmente.
+- Depois de desbloquear com a digital, a **primeira** volta ao app nos 3 segundos seguintes não bloqueia. No Android, o leitor de digital abre uma tela do sistema por cima do app; até a versão 1.1, ao fechar essa tela o app achava que você tinha saído, bloqueava de novo e pedia a digital outra vez, sem parar.
 - Ativar a digital, mudar a recuperação, alterar ou tirar o PIN pedem o PIN atual. Assim, quem pega o app aberto por um instante não consegue cadastrar a própria digital ou trocar a pergunta.
 
 ## Digital
@@ -31,6 +32,10 @@ Como os dados ficam no aparelho, **o backup é sua responsabilidade**. Desinstal
 | Versão no Claude | Depende do navegador liberar o WebAuthn dentro da página. Se não liberar, o app avisa e você usa o PIN. |
 
 A digital é ativada **por aparelho** e fica registrada só nele. O PIN continua valendo como alternativa.
+
+**Digital ou PIN.** Com a digital ativa, o app pede a digital sozinho ao abrir e ao voltar para o app (APK e PWA). Você entra só com a digital, sem digitar o PIN. O PIN fica como reserva: é pedido se a digital falhar, se você cancelar a leitura ou para trocar configurações de segurança. Ele continua obrigatório para ativar a digital, porque a digital do aparelho pode ser de outra pessoa (quem cadastrou a digital no celular). Quando você bloqueia pelo cadeado, a digital não é pedida sozinha. O pedido automático pode ser desligado em **Mais › Segurança › Pedir a digital assim que o app abrir**.
+
+No navegador, alguns aparelhos só abrem a leitura depois de um toque. Nesse caso, toque em **Entrar com a digital**.
 
 ## Esqueci o PIN
 
@@ -56,6 +61,18 @@ Para proteção forte:
 1. Use bloqueio de tela no celular (senha, digital ou rosto).
 2. Mantenha o celular atualizado.
 3. Guarde os arquivos de backup em local protegido. Eles contêm todos os seus dados financeiros, sem criptografia.
+
+## Restaurar padrão de fábrica
+
+Em **Mais › Restaurar padrão de fábrica**, o app apaga dados, PIN, digital, recuperação e preferências deste aparelho (ou da sua conta, na versão no Claude). Com PIN, a confirmação é o **próprio PIN**: quem pega o celular desbloqueado não consegue zerar o app. PIN errado conta nas mesmas tentativas e pausas. Sem PIN, é preciso digitar `RESTAURAR`. Os arquivos de backup que você já salvou não são apagados.
+
+## Dados de contas e cartões
+
+O app guarda banco, agência, número da conta, titular e chave Pix para você consultar e copiar. Do cartão, guarda só bandeira, os **4 últimos números**, limite e datas. **Nunca guarde senhas, o número completo do cartão nem o código de segurança (CVV)**: esses dados ficam sem criptografia no aparelho e no arquivo de backup.
+
+## Extrato em PDF
+
+O PDF é gerado no próprio aparelho, sem enviar nada para servidor. Ele contém seus lançamentos e, com uma conta escolhida, banco, agência e número da conta: guarde e compartilhe com o mesmo cuidado do backup.
 
 ## Ocultar valores
 

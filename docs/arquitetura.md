@@ -36,8 +36,13 @@ Tudo está dentro de uma função anônima em `www/index.html`, nesta ordem:
 | Tema | Botão único automático › claro › escuro, guardado em `md_tema` |
 | Navegação e telas | `renderNav` e uma função por tela (`vInicio`, `vLancamentos`, `vEmprestimos`...) |
 | Folhas (formulários) | `openSheet` e os formulários de lançamento, empréstimo, investimento, conta, categoria, pessoa |
-| Exemplo e backup | Dados de exemplo marcados `exemplo:true`, exportação JSON/CSV, importação |
-| Segurança | PIN (PBKDF2), digital (WebAuthn ou nativa), tela de bloqueio, bloqueio automático |
+| Contas e cartões | `vContas`, `detalheConta`, `formConta`: dados bancários, Pix, cartão (limite, fechamento, vencimento), *Pagar fatura* |
+| Empréstimos | `detalheEmp`, `quitacao`, `simularAmort`: parcelas, pagamento extra (reduzir prazo ou parcela), quitação antecipada e desfazer |
+| PDF | `novoPDF`: gerador de PDF próprio (A4, Helvetica, WinAnsi), sem biblioteca externa |
+| Extrato | `periodo`, `extratoDados`, `extratoPDF`, `formExtrato`: filtros, modelos prontos, PDF e CSV |
+| Sobre e fábrica | `VERSAO`, `NOVIDADES`, `vSobre`, `formFabrica`, `restaurarFabrica` |
+| Exemplo e backup | Dados de exemplo marcados `exemplo:true`, exportação JSON/CSV, importação. `salvarArquivo` grava texto ou bytes (PDF) |
+| Segurança | PIN (PBKDF2), digital (WebAuthn ou nativa) pedida sozinha ao abrir, tela de bloqueio, bloqueio automático, pausa livre (`pausaLivre`, `voltaBio`) |
 | Eventos | Delegação de cliques por `data-act`, teclado, visibilidade, `pause`/`resume` do Android |
 
 ### Fluxo de uma alteração
@@ -74,7 +79,7 @@ No APK, o service worker não é registrado: os arquivos já estão dentro do ap
 - `android/`: projeto Android gerado pelo Capacitor, com ícones adaptativos e tela de abertura do app.
 - Plugins: `@capacitor/filesystem` e `@capacitor/share` (backup), `@aparajita/capacitor-biometric-auth` (digital).
 - O app acessa os plugins por `window.Capacitor.Plugins`, sem bundler.
-- Versão do APK: `versionName` = campo `version` do `package.json` (ex.: `1.1.0`); `versionCode` = número da execução do GitHub Actions, que sempre cresce e permite instalar por cima da versão anterior.
+- Versão do APK: `versionName` = campo `version` do `package.json` (ex.: `1.2.0`); `versionCode` = número da execução do GitHub Actions, que sempre cresce e permite instalar por cima da versão anterior.
 - Assinatura: sempre a mesma chave (`meu-dinheiro.keystore`, alias `meudinheiro`), guardada só nos *Secrets* do GitHub. Trocar a chave obriga quem já instalou a desinstalar, perdendo os dados.
 
 ## Publicação
@@ -82,7 +87,7 @@ No APK, o service worker não é registrado: os arquivos já estão dentro do ap
 O fluxo `.github/workflows/publicar.yml`:
 
 ```
-push na main ─► testes (135 verificações) ─┬─► site no GitHub Pages (pasta www)
+push na main ─► testes (174 verificações) ─┬─► site no GitHub Pages (pasta www)
                                            └─► APK assinado ─► Release "Meu Dinheiro X.Y.Z"
                                                               (só se a tag vX.Y.Z ainda não existe)
 

@@ -51,7 +51,7 @@ Se algum teste falhar, nada é publicado.
 
 1. Altere o app e rode `npm test`.
 2. Troque `VERSAO` em `www/sw.js` (`md-v3`, `md-v4`...) para quem usa o PWA receber a versão nova.
-3. Aumente `"version"` no `package.json` (ex.: `1.1.0` › `1.2.0`) e rode `npm install` para atualizar o `package-lock.json`.
+3. Aumente `"version"` no `package.json` (ex.: `1.2.0` › `1.3.0`) e rode `npm install` para atualizar o `package-lock.json`. Mude também a constante `VERSAO` no começo do script de `www/index.html` (ex.: `1.2.0`) e a lista `NOVIDADES` da tela Sobre. Um teste confere se a tela Sobre mostra a mesma versão do `package.json`.
 4. Escreva a seção `## 1.2 (mês de ano)` no topo do `CHANGELOG.md`. Ela vira o texto do Release.
 5. Abra um pull request. O fluxo testa e gera o APK; baixe e instale no celular para conferir (veja abaixo).
 6. Faça o merge na `main`. O fluxo publica o site e cria o Release `v1.2.0` com `meu-dinheiro.apk`.
@@ -60,9 +60,9 @@ Se algum teste falhar, nada é publicado.
 
 | Campo | De onde vem | Exemplo |
 | --- | --- | --- |
-| `versionName` (o que a pessoa vê) | `"version"` do `package.json` | `1.1.0` |
+| `versionName` (o que a pessoa vê) | `"version"` do `package.json` | `1.2.0` |
 | `versionCode` (o que o Android compara) | Número da execução do GitHub Actions, sempre maior que o anterior | `5` |
-| Tag e Release | `v` + `versionName` | `v1.1.0`, *Meu Dinheiro 1.1.0* |
+| Tag e Release | `v` + `versionName` | `v1.2.0`, *Meu Dinheiro 1.2.0* |
 
 Um push na `main` sem mudar a versão atualiza o site, gera o APK como artefato e avisa que a versão já foi publicada, sem criar outro Release. O primeiro Release, `v1.4`, foi gerado antes desta regra e corresponde à versão 1.0.
 
@@ -114,7 +114,7 @@ npm ci
 npx cap sync android
 cp /caminho/seguro/meu-dinheiro.keystore android/app/
 cd android
-KEYSTORE_PASSWORD='<senha>' VERSION_NAME=1.1.0 VERSION_CODE=1000 ./gradlew assembleRelease
+KEYSTORE_PASSWORD='<senha>' VERSION_NAME=1.2.0 VERSION_CODE=1000 ./gradlew assembleRelease
 ```
 
 A chave copiada para `android/app/` está no `.gitignore`; apague depois de compilar. O APK sai em `android/app/build/outputs/apk/release/app-release.apk`. Sem `VERSION_NAME`, a versão fica `0.0.0-local`. Use um `VERSION_CODE` maior que o do APK instalado, senão o Android recusa a atualização.
