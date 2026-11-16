@@ -151,6 +151,7 @@ Cada item de `amortizacoes` (pagamentos extras e quitação, versão 1.2):
 | `md_bio_auto` | `0` quando o app não deve pedir a digital sozinho ao abrir |
 | `md_tent` | Tentativas erradas de PIN e fim da pausa |
 | `md_tema` | `auto`, `claro` ou `escuro` |
+| `md_secoes` | JSON com as seções ocultas pelo título, ex.: `{"inicio-gastos":1}` |
 | `md_oc_saldo` | `1` quando o saldo está oculto pelo olho |
 | `md_oc_inv` | `1` quando o total investido está oculto pelo olho |
 | `md_bk_em` | Data e hora (milissegundos) do último backup completo feito neste aparelho |
@@ -172,7 +173,7 @@ Cada item de `amortizacoes` (pagamentos extras e quitação, versão 1.2):
 
 A restauração confere o campo `app` e as 6 listas antes de substituir os dados. O PIN não vai no backup. Backups da versão 1.1 restauram na 1.2 sem mudança: os campos novos são opcionais.
 
-**Restaurar padrão de fábrica** apaga as 6 coleções, a configuração de segurança e as chaves `md_bio`, `md_bio_auto`, `md_bk_em`, `md_bk_pref`, `md_oc_saldo`, `md_oc_inv`, `md_tema` e `md_tent`, e cria de novo as categorias e as duas contas padrão.
+**Restaurar padrão de fábrica** apaga as 6 coleções, a configuração de segurança e as chaves `md_bio`, `md_bio_auto`, `md_bk_em`, `md_bk_pref`, `md_oc_saldo`, `md_oc_inv`, `md_tema`, `md_secoes` e `md_tent`, e cria de novo as categorias e as duas contas padrão.
 
 ## Exportação CSV
 

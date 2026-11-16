@@ -4,7 +4,7 @@ Os testes simulam uma pessoa usando o app de verdade num navegador Chromium (Pla
 
 | Arquivo | Verificações | O que cobre |
 | --- | --- | --- |
-| `testes/usuario-final.test.js` | 149 | Jornada completa no celular, com banco simulado da versão Claude e também no modo aparelho |
+| `testes/usuario-final.test.js` | 164 | Jornada completa no celular, com banco simulado da versão Claude e também no modo aparelho |
 | `testes/pwa.test.js` | 15 | Instalação, funcionamento offline, backup em arquivo, atalho, digital por WebAuthn |
 | `testes/android.test.js` | 10 | Caminhos do APK com plugins do Android simulados |
 
@@ -36,7 +36,8 @@ Tela de 390 × 844 px, com toque.
 | Validação | Valor vazio mostra erro |
 | Backup | Aviso de "nunca fez backup" e adiar; data do último backup; "Backup em dia" e ocultar; desligar o lembrete; JSON e CSV gerados; restaurar recupera um lançamento excluído |
 | Extrato em PDF | Modelos prontos; prévia do filtro; gera PDF válido com assinatura; modelo *Gastos por categoria*; extrato de uma conta com saldo anterior, entradas pagas e saldo final; filtro sem lançamentos avisa |
-| Tema | Botão alterna claro, escuro e automático |
+| Tema | Botão flutuante abre o menu com automático, claro e escuro; Esc fecha; a escolha e a cor da barra de status ficam salvas |
+| Seções | Tocar no título ou na seta oculta a seção, a escolha sobrevive a recarregar, *Mostrar todas* devolve tudo |
 | Layout | Nenhuma tela (inclusive Sobre) rola para o lado a 390 px e a 320 px |
 | PIN | Recusa PIN fácil e PINs diferentes; cria PIN e mostra o código de recuperação, que não fica guardado em texto; pergunta de segurança pede o PIN atual; bloqueia pelo cadeado; Esc não fecha; PIN errado avisa; PIN certo libera |
 | Reabrir | Pede PIN ao abrir; conteúdo inacessível e sem valores na página atrás do bloqueio; teclado físico funciona |
