@@ -1,5 +1,22 @@
 # Histórico de versões
 
+## 1.3 (novembro de 2026)
+
+### Novidades
+
+- **Ocultar por título**: toque no título de uma seção (ou na seta ao lado) para esconder o conteúdo e deixar só o título. Vale para o Início (*Despesas do mês*, *A vencer em 7 dias*, *Maiores gastos do mês*), Investimentos (*Distribuição*, *Evolução*, *Reserva de emergência*, *Liquidez*), Contas e cartões, Categorias, Backup e os grupos do menu Mais. A escolha fica salva no aparelho e **Mais › Aparência › Mostrar todas** devolve tudo. O olho continua escondendo só os valores.
+- **Botão flutuante de tema** no canto inferior direito, com menu *Automático* (segue o aparelho e troca sozinho quando ele muda), *Claro* e *Escuro*. A escolha fica salva. Funciona com teclado (setas e Esc).
+
+### Interface
+
+- Fontes padronizadas numa escala única de tamanhos e pesos; títulos de seção iguais em todas as telas.
+- Paleta revisada: cores dos grupos de categoria mais legíveis no tema escuro, filtros selecionados na cor do app, verde do gráfico de investimentos mais visível no escuro.
+- A barra de status do celular segue a cor do tema.
+- No computador, o conteúdo fica centralizado na área ao lado do menu.
+- *Mais › Tema* virou *Mais › Aparência*, com o tema e as seções ocultas.
+- O botão de tema saiu do topo; no topo fica só o cadeado (quando há PIN).
+- Restaurar padrão de fábrica também mostra de novo as seções ocultas.
+
 ## 1.2 (novembro de 2026)
 
 ### Novidades

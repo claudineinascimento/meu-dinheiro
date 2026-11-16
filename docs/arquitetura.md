@@ -33,7 +33,8 @@ Tudo está dentro de uma função anônima em `www/index.html`, nesta ordem:
 | Categorias padrão | As 29 categorias iniciais, com grupo 50/30/20, ícone e chave de sistema |
 | Estado e armazenamento | Objeto `S` com as coleções, `put`/`del`, fila de escrita por documento, `boot`, `localMode` |
 | Cálculos | Saldo de conta, resumo do mês, situação do empréstimo, saldo do investimento, tabela Price |
-| Tema | Botão único automático › claro › escuro, guardado em `md_tema` |
+| Tema | Botão flutuante com menu automático, claro e escuro, guardado em `md_tema`; atualiza a `meta theme-color` |
+| Seções | `data-sec` numa seção liga o título clicável e a seta (`montarSecoes`); as ocultas ficam em `md_secoes` |
 | Navegação e telas | `renderNav` e uma função por tela (`vInicio`, `vLancamentos`, `vEmprestimos`...) |
 | Folhas (formulários) | `openSheet` e os formulários de lançamento, empréstimo, investimento, conta, categoria, pessoa |
 | Contas e cartões | `vContas`, `detalheConta`, `formConta`: dados bancários, Pix, cartão (limite, fechamento, vencimento), *Pagar fatura* |

@@ -159,8 +159,28 @@ sv=await p.evaluate(()=>window.__saved.slice(-1)[0]);ok(sv.text.includes('SALDO 
 await p.click('[data-act="extrato"]');await wait();await p.selectOption('#ex-per','custom');await p.fill('#ex-de','2001-01-01');await p.fill('#ex-ate','2001-01-31');await wait();await p.click('[data-act="ex-pdf"]');await wait(200);
 ok((await p.textContent('#ex-err')).includes('Nenhum'),'Extrato sem lançamentos avisa em vez de gerar');await p.click('[data-act="fechar"]');
 // tema
-const th=[];for(let i=0;i<3;i++){await p.click('#themebtn');th.push(await p.evaluate(()=>document.documentElement.getAttribute('data-theme')))}
-ok(th.join(',')==='light,dark,','Botão único alterna claro, escuro e automático: '+th.join(','));
+const th=[];for(const k of ['claro','escuro','auto']){await p.click('#themebtn');await wait(80);if(k==='claro')ok(await p.locator('#tema-menu [role="menuitemradio"]').count()===3,'Botão flutuante de tema abre o menu com 3 opções');await p.click(`[data-act="tema-set"][data-v="${k}"]`);await wait(80);th.push(await p.evaluate(()=>document.documentElement.getAttribute('data-theme')))}
+ok(th.join(',')==='light,dark,','Botão flutuante escolhe claro, escuro e automático: '+th.join(','));
+ok(await p.isHidden('#tema-menu'),'Menu de tema fecha depois de escolher');
+await p.click('#themebtn');await wait(80);await p.keyboard.press('Escape');await wait(80);ok(await p.isHidden('#tema-menu'),'Esc fecha o menu de tema');
+await p.click('#themebtn');await p.click('[data-act="tema-set"][data-v="escuro"]');await p.reload();await wait(600);
+ok(await p.evaluate(()=>document.documentElement.getAttribute('data-theme'))==='dark','Tema escolhido fica salvo');
+ok(await p.evaluate(()=>document.querySelector('meta[name="theme-color"]').content.toUpperCase())==='#0B1418','Barra de status segue o tema escuro');
+await p.click('#themebtn');await p.click('[data-act="tema-set"][data-v="auto"]');await wait(80);
+const fabBox=await p.locator('#themebtn').boundingBox();ok(fabBox&&fabBox.x+fabBox.width<=390&&fabBox.y+fabBox.height<=844-60,'Botão de tema flutua acima da barra inferior');
+// ocultar seção pelo título
+await go('inicio');
+ok(await p.isVisible('[data-sec="inicio-gastos"] .list, [data-sec="inicio-gastos"] p'),'Seção Maiores gastos começa visível');
+await p.click('[data-sec="inicio-gastos"] h2');await wait();
+ok(await p.isHidden('[data-sec="inicio-gastos"] .list'),'Tocar no título oculta o conteúdo da seção');
+ok(await p.getAttribute('[data-sec="inicio-gastos"] .sec-tg','aria-expanded')==='false','Seta indica a seção oculta');
+ok(await p.isVisible('[data-sec="inicio-vencer"] .list, [data-sec="inicio-vencer"] p'),'As outras seções continuam visíveis');
+await p.reload();await wait(600);ok(await p.isHidden('[data-sec="inicio-gastos"] .list'),'Seção oculta continua oculta ao abrir de novo');
+await p.click('[data-sec="inicio-despesas"] .sec-tg');await wait();ok(await p.isHidden('[data-sec="inicio-despesas"] .bar'),'A seta também oculta a seção');
+await go('mais');ok(await p.isVisible('text=2 seções ocultas'),'Mais › Aparência conta as seções ocultas');
+await p.click('[data-act="sec-todas"]');await wait();await go('inicio');
+ok(await p.isVisible('[data-sec="inicio-gastos"] .list')&&await p.isVisible('[data-sec="inicio-despesas"] .bar'),'Mostrar todas devolve as seções');
+await go('categorias');await p.click('[data-sec="cat-estilo"] .eyebrow');await wait();ok(await p.isHidden('[data-sec="cat-estilo"] .list'),'Grupos de categorias também ocultam pelo título');await p.click('[data-sec="cat-estilo"] .eyebrow');await wait();
 // overflow em todas as telas
 for(const v of ['inicio','lancamentos','emprestimos','investimentos','contas','categorias','pessoas','backup','ajuda','sobre','mais']){await go(v);ok(!(await overflow()),'Sem rolagem lateral em '+v)}
 // ---------- PIN ----------

@@ -52,11 +52,11 @@ O PWA abre sem internet e se atualiza sozinho quando há conexão.
 | **Empréstimos** | Duas listas, *Eu devo* e *Me devem*, com parcelas, juros pela tabela Price, atrasos e saldo de cada pessoa. **Pagamento extra** de qualquer valor, reduzindo o prazo ou a parcela, e **quitação antecipada** com desconto dos juros, com simulação antes de confirmar. |
 | **Investimentos** | Aportes, resgates e rendimentos, com painel: distribuição por tipo, rentabilidade, evolução em 12 meses, meta da reserva de emergência (6 meses de despesas essenciais) e liquidez. |
 | **Categorias** | 29 categorias na regra 50/30/20 (essencial, estilo de vida, financeiro), editáveis. |
-| **Privacidade** | Botão de **olho** que esconde o saldo e, separado, o total investido. |
+| **Privacidade** | Botão de **olho** que esconde o saldo e, separado, o total investido. Cada seção pode ser **ocultada pelo título**. |
 | **Segurança** | Digital ou PIN, bloqueio automático, recuperação do PIN e restaurar padrão de fábrica com o PIN. Veja abaixo. |
 | **Sobre e ajuda** | Versão, novidades, ajuda de cada tela e assinatura *Desenvolvido por Claudinei Nascimento*. |
 | **Backup** | Arquivo completo, planilha (CSV), restauração e lembrete quando o backup atrasa. Veja abaixo. |
-| **Tema** | Claro, escuro ou automático num único botão. |
+| **Tema** | Botão flutuante com claro, escuro ou automático (segue o aparelho). |
 
 <p>
   <img src="docs/img/extrato.png" width="200" alt="Filtros do extrato em PDF">

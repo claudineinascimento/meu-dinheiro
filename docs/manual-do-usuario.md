@@ -36,6 +36,8 @@ Use as setas **‹ ›** no topo para trocar de mês.
 
 O olho fica salvo no aparelho: se você esconder o saldo, ele continua escondido ao abrir o app de novo, até tocar no olho outra vez. O saldo das contas em **Mais › Contas e cartões** segue o olho do saldo; a tela de Investimentos segue o olho do investido.
 
+**Ocultar uma seção pelo título.** Toque no título de qualquer bloco (por exemplo *A vencer em 7 dias* ou *Maiores gastos do mês*), ou na seta **⌄** ao lado dele, para esconder o conteúdo e deixar só o título. Toque de novo para mostrar. Funciona também em Investimentos, Contas e cartões, Categorias, Backup e nos grupos do menu Mais. A escolha fica salva no aparelho; para mostrar tudo de uma vez, use **Mais › Aparência › Mostrar todas**.
+
 ## 3. Lançar uma receita ou despesa
 
 <img src="img/novo-lancamento.png" width="230" alt="Novo lançamento">
@@ -233,9 +235,9 @@ Para trocar de celular ou de versão do app: baixe o backup no aparelho antigo e
 - **Mais › Ajuda**: perguntas e respostas de cada tela.
 - **Mais › Sobre**: versão instalada, onde o app está rodando (APK, PWA, navegador ou Claude), novidades da versão e das anteriores, links para baixar versões novas e para o código-fonte, e a assinatura *Desenvolvido por Claudinei Nascimento*.
 
-## 11. Tema
+## 11. Tema e aparência
 
-O botão no canto superior direito alterna entre **automático** (segue o celular), **claro** e **escuro**. Também dá para escolher em **Mais › Tema**.
+O botão redondo que flutua no canto inferior direito da tela abre a escolha do tema: **Automático** (segue o tema do celular e troca sozinho quando ele muda), **Claro** ou **Escuro**. A escolha fica salva no aparelho, e a barra de status do celular acompanha a cor do tema. Também dá para escolher em **Mais › Aparência**, onde fica ainda o **Mostrar todas** das seções ocultas.
 
 <img src="img/inicio-escuro.png" width="230" alt="Tema escuro">
 
