@@ -57,6 +57,33 @@ As categorias de despesa estão em três grupos, com a meta de cada um sobre a r
 | Estilo de vida | até 30% | Restaurantes, lazer, viagens, compras, assinaturas |
 | Financeiro | pelo menos 20% | Parcelas de empréstimo, juros e tarifas, aportes |
 
+O Início mostra essa conta sobre a receita do mês: *Essencial* e *Estilo de vida* somam as despesas desses grupos; *Poupar e pagar dívidas* é a receita menos essas duas (o que foi para parcelas, aportes e o que sobrou).
+
+## Saúde financeira
+
+Nota de 0 a 100, calculada para o mês escolhido:
+
+| Sinal | Peso | Pontos |
+| --- | --- | --- |
+| Sobra do mês = (receitas − despesas) ÷ receitas | 30 | 30 com 20% ou mais; proporcional abaixo disso; 0 se negativa |
+| Reserva de emergência = saldo das aplicações *Reserva de emergência* (ou, sem elas, das de liquidez diária) ÷ média mensal das despesas essenciais | 30 | 30 com 6 meses; proporcional abaixo |
+| Parcelas = parcelas de *Eu devo* que vencem no mês ÷ receitas | 20 | 20 até 15%; cai até 0 em 50% |
+| Contas em dia = despesas pendentes vencidas + parcelas atrasadas | 20 | 20 sem atrasos; −5 por item |
+
+Faixas: 80 ou mais *Excelente*, 60 a 79 *Boa*, 40 a 59 *Atenção*, abaixo de 40 *Cuidado*. A dica sai do sinal com mais pontos perdidos.
+
+## Previsão do fim do mês
+
+Saldo das contas ativas hoje + receitas pendentes − despesas pendentes até o último dia do mês (transferências entre contas ativas se anulam) − parcelas em aberto de *Eu devo* + parcelas em aberto de *Me devem* que vencem até esse dia.
+
+## Limites por categoria
+
+Gasto do mês na categoria ÷ limite. Até 80% verde, de 80% a 100% amarelo, acima de 100% vermelho.
+
+## Metas
+
+Guardado = soma de *Guardar* − soma de *Retirar*. Meses até o prazo = diferença de meses entre hoje e a data (mínimo 1). Quanto guardar por mês = (objetivo − guardado) ÷ meses, arredondado para cima.
+
 ## Parcelamento
 
 Ao parcelar um valor total `V` em `n` vezes, cada parcela vale `V ÷ n` arredondado para baixo em centavos, e a última recebe a diferença para a soma bater exatamente com `V`. Exemplo: R$ 100,00 em 3 vezes = 33,33 + 33,33 + 33,34.

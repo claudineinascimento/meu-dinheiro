@@ -1,5 +1,36 @@
 # Histórico de versões
 
+## 1.4 (novembro de 2026)
+
+### Novidades
+
+- **Ícone novo**: moeda dourada com gráfico de barras e seta de crescimento sobre um degradê verde. Vale para o PWA (192, 512, *maskable*, iPhone, favicon e SVG), o APK (ícone adaptativo com fundo em degradê, ícone redondo) e a tela de abertura do Android. Fonte em `design/icone.svg`; `node design/gerar-icones.js` gera todos os tamanhos.
+- **Saúde financeira** no Início: nota de 0 a 100 num anel colorido, com quatro sinais (sobra do mês, reserva de emergência, peso das parcelas na renda, contas em dia) e uma dica para o ponto mais fraco.
+- **Previsão do fim do mês** no cartão do saldo: quanto deve sobrar no último dia do mês, contando o que ainda vai entrar e sair.
+- **Metas e sonhos** (*Mais › Metas e sonhos*): valor, prazo e ícone; o app calcula quanto guardar por mês, mostra o progresso em anéis e solta confete quando a meta é atingida. As 3 principais aparecem no Início.
+- **Limite de gasto por categoria**: defina em *Mais › Categorias*. O Início mostra as barras e avisa a partir de 80% e quando estoura.
+- **Regra 50/30/20** sobre a receita do mês, com a linha da meta em cada grupo.
+- **Rosca dos maiores gastos** e **Últimos 6 meses** (receitas x despesas, quanto gastou a mais ou a menos que no mês anterior e sobra média; toque num mês para abri-lo).
+- Confete e vibração curta ao quitar um empréstimo ou atingir uma meta.
+
+### Interface
+
+- Cartão do saldo em degradê com brilho dourado, número maior e animação quando o saldo muda.
+- Saudação (*Bom dia*, *Boa tarde*, *Boa noite*) com a data no topo do Início.
+- Telas entram com um leve deslizar em cascata; anéis, roscas e barras se desenham ao abrir. Botões e o círculo de pago respondem ao toque. Tudo desligado para quem pede menos movimento no aparelho.
+- Estados vazios com ilustração.
+- O botão de tema fica discreto enquanto a tela rola, para não cobrir valores.
+- Áreas de toque de pelo menos 44 px nos botões de ícone.
+
+### Correções
+
+- O botão **+** da barra inferior aparecia branco, parecendo desativado: agora tem a cor do app.
+
+### Publicação e documentação
+
+- Versão 1.4.0; cache do PWA `md-v5`. Backups antigos (sem metas) continuam restaurando.
+- Manual, regras financeiras (saúde financeira, previsão, limites e metas), modelo de dados (`metas` e `limite`), testes e avaliação em `docs/avaliacao.md`.
+
 ## 1.3 (novembro de 2026)
 
 ### Novidades

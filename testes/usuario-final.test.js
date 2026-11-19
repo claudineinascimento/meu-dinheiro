@@ -11,7 +11,7 @@ const p=await ctx.newPage();const errs=[];
 p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});
 const wait=(ms=150)=>p.waitForTimeout(ms);
 const saldo=async()=>{await p.click('[data-act="ir"][data-v="inicio"]');await wait();return money(await p.textContent('.hero .big'))};
-const go=async v=>{if(['investimentos','contas','categorias','pessoas','backup','ajuda','sobre'].includes(v)){await p.click('[data-act="ir"][data-v="mais"]');}await p.click(`[data-act="ir"][data-v="${v}"]`);await wait()};
+const go=async v=>{if(['metas','investimentos','contas','categorias','pessoas','backup','ajuda','sobre'].includes(v)){await p.click('[data-act="ir"][data-v="mais"]');}await p.click(`[data-act="ir"][data-v="${v}"]`);await wait()};
 const overflow=async()=>p.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth);
 const novoLanc=async({tipo='despesa',valor,cat,conta='Conta corrente',dest,pago=true,rep,n,desc,fixo})=>{
   await p.click('.fab');await wait();
@@ -254,7 +254,7 @@ await p.fill('#rc-input','apagar');await p.click('[data-act="rc-apagar"]');await
 s=await saldo();ok(s===0,'Apagar tudo zera os dados: '+s);
 await p.reload();await wait(600);ok(!(await p.$('.lock')),'Sem PIN depois de apagar tudo');
 // telas estreitas e escuro
-await p.setViewportSize({width:320,height:640});for(const v of ['inicio','lancamentos','emprestimos']){await go(v);ok(!(await overflow()),'Sem rolagem lateral a 320px em '+v)}
+await p.setViewportSize({width:320,height:640});for(const v of ['inicio','lancamentos','emprestimos','metas']){await go(v);ok(!(await overflow()),'Sem rolagem lateral a 320px em '+v)}
 // modo local
 const p2=await ctx.newPage();p2.on('pageerror',e=>errs.push('local: '+e.message));await p2.goto(URL+'#local');await wait(600);
 await p2.click('[data-act="ir"][data-v="mais"]');ok(await p2.isVisible('text=salvos só neste aparelho'),'Modo local avisa onde ficam os dados');await p2.click('[data-act="ir"][data-v="inicio"]');
@@ -275,6 +275,26 @@ await p2.locator('.row',{hasText:'Conta corrente'}).click();await wait();await p
 await p2.fill('#cf-inst','Banco do Brasil');await p2.fill('#cf-ag','1234-5');await p2.fill('#cf-num','98765-4');await p2.selectOption('#cf-pixt','email');await p2.fill('#cf-pix','eu@exemplo.com');await p2.click('[data-act="cf-salvar"]');await wait(250);
 ok(await p2.isVisible('.sheet >> text=eu@exemplo.com')&&await p2.isVisible('[data-act="ct-copiar"]'),'Conta guarda banco, agência, conta e Pix');await p2.click('[data-act="fechar"]');
 ok((await p2.locator('.row',{hasText:'Conta corrente'}).textContent()).includes('Ag. 1234-5'),'Lista de contas mostra banco e agência');
+// 1.4: limite por categoria, saúde financeira, previsão e metas
+await p2.click('[data-act="ir"][data-v="mais"]');await p2.click('[data-act="ir"][data-v="categorias"]');await wait();
+await p2.locator('.row',{hasText:'Mercado'}).first().click();await wait();await p2.fill('#cg-limite','100,00');await p2.click('[data-act="cg-salvar"]');await wait(250);
+ok((await p2.locator('.row',{hasText:'Mercado'}).first().textContent()).replace(/\s/g,' ').includes('Limite R$ 100,00/mês'),'Categoria guarda o limite por mês');
+await p2.click('.fab');await wait();await p2.fill('#lf-valor','120,00');await p2.selectOption('#lf-cat',{label:'Mercado'});await p2.click('[data-act="lf-salvar"]');await wait(250);
+await p2.click('[data-act="ir"][data-v="inicio"]');await wait();
+const lim=(await p2.locator('[data-sec="inicio-limites"]').textContent()).replace(/\s+/g,' ');ok(lim.includes('1 estourado')&&lim.includes('passou R$ 20,00')&&lim.includes('120%'),'Limite estourado aparece no Início: '+lim.replace(/\s+/g,' ').slice(0,120));
+const nota=Number(await p2.textContent('#saude-nota'));ok(nota>=0&&nota<=100&&(await p2.textContent('#saude-dica')).length>20,'Saúde financeira mostra nota de 0 a 100 e dica: '+nota);
+ok(await p2.isVisible('#previsao')&&(await p2.textContent('#previsao')).includes('Previsto para'),'Cartão do saldo mostra a previsão do fim do mês');
+ok(await p2.isVisible('[data-sec="inicio-fluxo"]')&&await p2.isVisible('.rosca'),'Início mostra a rosca de gastos e os últimos 6 meses');
+await p2.click('[data-act="ir"][data-v="mais"]');await p2.click('[data-act="ir"][data-v="metas"]');await wait();
+ok(await p2.isVisible('text=Qual é o seu próximo sonho?'),'Metas vazias convidam a criar a primeira');
+await p2.click('[data-act="nova-meta"]');await wait();await p2.click('[data-act="mt-salvar"]');ok((await p2.textContent('#mt-err')).includes('nome'),'Meta sem nome mostra erro');
+await p2.fill('#mt-nome','Viagem');await p2.fill('#mt-alvo','1.000,00');await p2.fill('#mt-ja','400,00');await p2.click('[data-act="mt-salvar"]');await wait(300);
+ok((await p2.locator('.meta',{hasText:'Viagem'}).textContent()).includes('40%'),'Meta criada mostra 40% guardado');
+await p2.click('.meta');await wait();await p2.fill('#mt-valor','500,00');await p2.click('[data-act="mt-retirar"]');await wait();
+ok((await p2.textContent('#mt-err')).includes('maior que o guardado'),'Não deixa retirar mais do que o guardado');
+await p2.fill('#mt-valor','600,00');await p2.click('[data-act="mt-guardar"]');await wait(200);
+ok(await p2.isVisible('.sheet >> text=Meta atingida!')&&(await p2.$('.festa'))!==null,'Atingir a meta comemora com confete');
+ok(JSON.parse(await p2.evaluate(()=>localStorage.getItem('md_dados_v1'))).metas.length===1,'Meta fica salva no aparelho');await p2.click('[data-act="fechar"]');
 // sobre
 await p2.click('[data-act="ir"][data-v="mais"]');await p2.click('[data-act="ir"][data-v="sobre"]');await wait();
 ok((await p2.textContent('#sobre-versao')).includes(require('../package.json').version),'Sobre mostra a versão do package.json');

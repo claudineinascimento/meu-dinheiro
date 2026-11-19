@@ -15,7 +15,7 @@ const backupFeito=async p=>{await p.evaluate(()=>localStorage.setItem('md_bk_em'
 const topo=p=>p.evaluate(()=>window.scrollTo(0,0));
 const espera=(p,ms=300)=>p.waitForTimeout(ms);
 const foto=async(p,nome)=>{await espera(p,350);await p.screenshot({path:path.join(SAIDA,nome+'.png')});console.log('ok',nome)};
-const ir=async(p,v)=>{if(['investimentos','contas','categorias','pessoas','backup','ajuda','seguranca','sobre'].includes(v)){await p.click('[data-act="ir"][data-v="mais"]');await espera(p,150)}await p.click(`[data-act="ir"][data-v="${v}"]`);await espera(p)};
+const ir=async(p,v)=>{if(['metas','investimentos','contas','categorias','pessoas','backup','ajuda','seguranca','sobre'].includes(v)){await p.click('[data-act="ir"][data-v="mais"]');await espera(p,150)}await p.click(`[data-act="ir"][data-v="${v}"]`);await espera(p)};
 const exemplo=async p=>{await p.click('[data-act="carregar-exemplo"]');await espera(p,800);const ok=await p.$('[data-act="confirmar"],.modal .btn.primary');if(ok&&await ok.isVisible()){await ok.click();await espera(p,800)}};
 
 const celular={viewport:{width:390,height:844},deviceScaleFactor:2,hasTouch:true,isMobile:true,colorScheme:'light'};
@@ -23,9 +23,15 @@ const celular={viewport:{width:390,height:844},deviceScaleFactor:2,hasTouch:true
 // Celular, tema claro
 {const {ctx,p}=await novo(celular);await exemplo(p);
  await ir(p,'inicio');await topo(p);await foto(p,'aviso-backup');
- await backupFeito(p);await ir(p,'inicio');await topo(p);await foto(p,'inicio');
+ await backupFeito(p);await ir(p,'inicio');await topo(p);await espera(p,1200);await foto(p,'inicio');
  await p.click('[data-act="olho"][data-v="saldo"]');await espera(p);await topo(p);await foto(p,'olho');
  await p.click('[data-act="olho"][data-v="saldo"]');await espera(p);
+ const ate=async sel=>{await p.evaluate(s=>{const e=document.querySelector(s);window.scrollTo(0,e.getBoundingClientRect().top+window.scrollY-70)},sel);await espera(p,500)};
+ await ate('[data-sec="inicio-saude"]');await foto(p,'saude');
+ await ate('[data-sec="inicio-metas"]');await foto(p,'regra-503020');
+ await ate('[data-sec="inicio-gastos"]');await foto(p,'graficos');
+ await ir(p,'metas');await espera(p,1200);await foto(p,'metas');
+ await p.click('[data-act="abrir-meta"]');await espera(p);await foto(p,'meta-detalhe');await p.click('[data-act="fechar"]');await espera(p);
  await ir(p,'lancamentos');await foto(p,'lancamentos');
  await p.click('.fab');await espera(p);await p.fill('#lf-valor','45,90');await p.fill('#lf-desc','Mercado da semana');await foto(p,'novo-lancamento');
  await p.click('[data-act="fechar"]').catch(()=>p.keyboard.press('Escape'));await espera(p);

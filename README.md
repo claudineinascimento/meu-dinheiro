@@ -9,7 +9,13 @@ Aplicativo de controle financeiro pessoal, simples para o dia a dia e com result
 Desenvolvido por **Claudinei Nascimento**.
 
 <p>
+  <img src="www/icons/icon-512.png" width="96" alt="Ícone do Meu Dinheiro: moeda dourada com gráfico de crescimento">
+</p>
+
+<p>
   <img src="docs/img/inicio.png" width="200" alt="Tela Início com saldo, resultado do mês e vencimentos">
+  <img src="docs/img/saude.png" width="200" alt="Saúde financeira com nota de 0 a 100 e dica">
+  <img src="docs/img/metas.png" width="200" alt="Metas e sonhos com anéis de progresso">
   <img src="docs/img/investimentos-painel.png" width="200" alt="Painel de investimentos com evolução, reserva de emergência e liquidez">
   <img src="docs/img/emprestimos.png" width="200" alt="Empréstimos Eu devo e Me devem">
   <img src="docs/img/bloqueio.png" width="200" alt="Tela de bloqueio com PIN">
@@ -47,11 +53,12 @@ O PWA abre sem internet e se atualiza sozinho quando há conexão.
 | --- | --- |
 | **Lançamentos** | Receitas, despesas e transferências em menos de 10 segundos, com categoria, conta, data e pago/pendente. Fixas x variáveis, **parcelamento** (divide o valor total) e **repetição mensal** (aluguel, salário, assinaturas). |
 | **Extrato em PDF** | Por período, tipo, situação, conta e categoria, com modelos prontos (extrato do mês, gastos por categoria, contas a pagar, rendimentos para o IR, fatura do cartão). Com uma conta, traz saldo anterior, saldo linha a linha e saldo final. Também em planilha. |
-| **Início** | Saldo em contas, resultado do mês, fixas x variáveis, vencimentos dos próximos 7 dias, quem deve a quem, total investido e os maiores gastos. |
+| **Início** | Saldo em contas com **previsão para o fim do mês**, nota de **saúde financeira** (0 a 100) com dica personalizada, fixas x variáveis, **limites por categoria**, vencimentos dos próximos 7 dias, **regra 50/30/20**, metas, quem deve a quem, total investido, **rosca dos gastos** e **comparativo de 6 meses**. |
+| **Metas e sonhos** | Viagem, carro, casa, reserva: valor e prazo. O app calcula quanto guardar por mês, mostra o progresso num anel e comemora quando você chega lá. |
 | **Contas e cartões** | Saldo de cada conta, banco, agência, conta e **chave Pix** (com *Copiar dados*). Cartão com bandeira, 4 últimos números, limite disponível, fechamento, vencimento e **Pagar fatura**. |
 | **Empréstimos** | Duas listas, *Eu devo* e *Me devem*, com parcelas, juros pela tabela Price, atrasos e saldo de cada pessoa. **Pagamento extra** de qualquer valor, reduzindo o prazo ou a parcela, e **quitação antecipada** com desconto dos juros, com simulação antes de confirmar. |
 | **Investimentos** | Aportes, resgates e rendimentos, com painel: distribuição por tipo, rentabilidade, evolução em 12 meses, meta da reserva de emergência (6 meses de despesas essenciais) e liquidez. |
-| **Categorias** | 29 categorias na regra 50/30/20 (essencial, estilo de vida, financeiro), editáveis. |
+| **Categorias** | 29 categorias na regra 50/30/20 (essencial, estilo de vida, financeiro), editáveis, com **limite de gasto por mês** opcional. |
 | **Privacidade** | Botão de **olho** que esconde o saldo e, separado, o total investido. Cada seção pode ser **ocultada pelo título**. |
 | **Segurança** | Digital ou PIN, bloqueio automático, recuperação do PIN e restaurar padrão de fábrica com o PIN. Veja abaixo. |
 | **Sobre e ajuda** | Versão, novidades, ajuda de cada tela e assinatura *Desenvolvido por Claudinei Nascimento*. |
@@ -117,7 +124,7 @@ Os dados ficam **só no aparelho**. Desinstalar o app ou limpar os dados do nave
 | [Arquitetura](docs/arquitetura.md) | Quem mantém o código | Como o app é organizado e roda em cada plataforma |
 | [Modelo de dados](docs/modelo-de-dados.md) | Quem mantém o código | Coleções, campos e formato do backup |
 | [Desenvolvimento e publicação](docs/desenvolvimento.md) | Quem mantém o código | Rodar, testar, gerar o APK assinado e publicar versões |
-| [Testes](docs/testes.md) | Quem mantém o código | O que os 174 testes automáticos verificam |
+| [Testes](docs/testes.md) | Quem mantém o código | O que os 201 testes automáticos verificam |
 | [Histórico de versões](CHANGELOG.md) | Todos | O que mudou em cada versão |
 
 ## Estrutura do repositório
@@ -135,7 +142,7 @@ docs/                   documentação e capturas de tela (docs/img)
 ```bash
 npm ci
 npx playwright install chromium
-npm test                 # 174 verificações de ponta a ponta
+npm test                 # 201 verificações de ponta a ponta
 npm run capturas         # refaz as capturas de tela de docs/img
 npx cap sync android     # copia www/ para o projeto Android
 ```
