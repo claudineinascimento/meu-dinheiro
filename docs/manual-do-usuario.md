@@ -19,18 +19,25 @@ Quer ver o app funcionando antes? Na tela Início, toque em **Ver exemplo**. Os 
 
 ## 2. Início
 
-<img src="img/inicio.png" width="230" alt="Tela Início"> <img src="img/olho.png" width="230" alt="Saldo oculto pelo olho"> <img src="img/aviso-backup.png" width="230" alt="Aviso de backup atrasado">
+<img src="img/inicio.png" width="230" alt="Tela Início"> <img src="img/saude.png" width="230" alt="Saúde financeira"> <img src="img/graficos.png" width="230" alt="Rosca de gastos e últimos 6 meses"> <img src="img/olho.png" width="230" alt="Saldo oculto pelo olho"> <img src="img/aviso-backup.png" width="230" alt="Aviso de backup atrasado">
 
 | Bloco | O que mostra |
 | --- | --- |
 | Aviso de backup | Quando foi o último backup. Fica amarelo se passar do prazo (7 dias por padrão). Toque no **×** ou em **Lembrar em 3 dias** para esconder. |
+| Saudação | *Bom dia*, *Boa tarde* ou *Boa noite* e a data de hoje. |
 | Saldo em contas | Soma dos saldos de todas as contas ativas, contando só o que já foi pago ou recebido. O **olho** esconde o saldo e os totais do mês. |
+| Previsto para o fim do mês | Saldo de hoje mais o que ainda vai entrar e menos o que ainda vai sair até o último dia do mês (lançamentos pendentes e parcelas de empréstimos). Aparece no mês atual e nos próximos. |
+| Saúde financeira | Nota de 0 a 100 com quatro sinais (sobra do mês, reserva de emergência, peso das parcelas na renda e contas em dia) e uma dica para o ponto mais fraco. Veja [regras financeiras](regras-financeiras.md#saúde-financeira). |
 | Receitas, Despesas, Resultado | Totais do mês escolhido no topo, pagos e pendentes. Resultado = receitas − despesas. |
 | Despesas do mês | Fixas x variáveis, quanto já foi pago e quanto as fixas comprometem da receita. |
+| Limites do mês | Só aparece se alguma categoria tem limite. Barra verde até 80%, amarela de 80% a 100% e vermelha quando passa. Toque para mudar o limite. |
 | A vencer em 7 dias | Lançamentos pendentes e parcelas de empréstimo que vencem até 7 dias à frente, incluindo os atrasados. |
 | Eu devo / Me devem | Saldo em aberto dos empréstimos e quanto está atrasado. |
 | Investido | Total aplicado em investimentos e os rendimentos. Tem o seu próprio **olho** para esconder o valor. |
-| Maiores gastos do mês | As 5 categorias com mais despesa. |
+| Metas | As 3 metas mais adiantadas, com anel de progresso e quanto guardar por mês. |
+| Regra 50/30/20 | Quanto da receita foi para o essencial, para o estilo de vida e quanto sobrou para guardar e pagar dívidas, com a linha da meta. |
+| Maiores gastos do mês | Rosca com a parte de cada categoria e as 5 categorias com mais despesa. |
+| Últimos 6 meses | Receitas e despesas lado a lado, quanto você gastou a mais ou a menos que no mês anterior e a sobra média. Toque num mês para abrir. |
 
 Use as setas **‹ ›** no topo para trocar de mês.
 
@@ -162,6 +169,12 @@ Aportes não contam como gasto do mês. É dinheiro guardado. O resgate não pod
 | Reserva de emergência | Compara as aplicações do tipo *Reserva de emergência* com 6 meses das suas despesas essenciais (média dos últimos 3 meses). |
 | Liquidez | Quanto dá para resgatar a qualquer dia e quanto só no vencimento. |
 | Lista | Cada aplicação com saldo, peso no total e rendimentos. |
+
+## 6.1 Metas e sonhos
+
+<img src="img/metas.png" width="230" alt="Metas"> <img src="img/meta-detalhe.png" width="230" alt="Guardar numa meta">
+
+Em **Mais › Metas e sonhos**, toque em **Nova meta**, dê um nome (ex.: *Viagem de férias*), o valor e, se quiser, a data. Toque na meta para **Guardar** ou **Retirar** valores. O app mostra quanto falta, quanto guardar por mês até a data e solta confete quando a meta é atingida. A meta é um controle: o dinheiro continua na conta ou na aplicação onde você guardou.
 
 ## 7. Contas, cartões, categorias e pessoas
 

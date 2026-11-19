@@ -1,10 +1,10 @@
 # Testes
 
-Os testes simulam uma pessoa usando o app de verdade num navegador Chromium (Playwright), conferindo os valores na tela a cada passo. São **174 verificações** em três conjuntos. Rodam com `npm test` e, no GitHub, antes de cada publicação.
+Os testes simulam uma pessoa usando o app de verdade num navegador Chromium (Playwright), conferindo os valores na tela a cada passo. São **201 verificações** em três conjuntos. Rodam com `npm test` e, no GitHub, antes de cada publicação.
 
 | Arquivo | Verificações | O que cobre |
 | --- | --- | --- |
-| `testes/usuario-final.test.js` | 164 | Jornada completa no celular, com banco simulado da versão Claude e também no modo aparelho |
+| `testes/usuario-final.test.js` | 176 | Jornada completa no celular, com banco simulado da versão Claude e também no modo aparelho |
 | `testes/pwa.test.js` | 15 | Instalação, funcionamento offline, backup em arquivo, atalho, digital por WebAuthn |
 | `testes/android.test.js` | 10 | Caminhos do APK com plugins do Android simulados |
 
@@ -38,7 +38,7 @@ Tela de 390 × 844 px, com toque.
 | Extrato em PDF | Modelos prontos; prévia do filtro; gera PDF válido com assinatura; modelo *Gastos por categoria*; extrato de uma conta com saldo anterior, entradas pagas e saldo final; filtro sem lançamentos avisa |
 | Tema | Botão flutuante abre o menu com automático, claro e escuro; Esc fecha; a escolha e a cor da barra de status ficam salvas |
 | Seções | Tocar no título ou na seta oculta a seção, a escolha sobrevive a recarregar, *Mostrar todas* devolve tudo |
-| Layout | Nenhuma tela (inclusive Sobre) rola para o lado a 390 px e a 320 px |
+| Layout | Nenhuma tela (inclusive Sobre e Metas) rola para o lado a 390 px e a 320 px |
 | PIN | Recusa PIN fácil e PINs diferentes; cria PIN e mostra o código de recuperação, que não fica guardado em texto; pergunta de segurança pede o PIN atual; bloqueia pelo cadeado; Esc não fecha; PIN errado avisa; PIN certo libera |
 | Reabrir | Pede PIN ao abrir; conteúdo inacessível e sem valores na página atrás do bloqueio; teclado físico funciona |
 | Tentativas | 5 erros pausam e travam o teclado; após a pausa o PIN certo funciona |
@@ -48,6 +48,7 @@ Tela de 390 × 844 px, com toque.
 | Apagar tudo | Exige `APAGAR`; zera os dados e tira o PIN |
 | Modo aparelho | Aviso de onde ficam os dados; carregar e apagar exemplos |
 | Contas e cartões | Final do cartão só com 4 números; cartão mostra final e limite disponível; fatura e *Pagar fatura* com o valor certo; pagar libera o limite; conta guarda banco, agência, conta e Pix |
+| Limites, saúde e metas (1.4) | Categoria guarda o limite; Início mostra o limite estourado com o valor que passou; nota de saúde de 0 a 100 com dica; previsão do fim do mês; rosca e últimos 6 meses; metas vazias convidam; meta sem nome dá erro; meta criada com 40%; não retira mais que o guardado; atingir a meta mostra confete; meta salva no aparelho |
 | Sobre | Mostra a versão do `package.json`, novidades e assinatura |
 | Restaurar de fábrica | PIN errado não apaga nada; PIN certo apaga tudo, volta às contas padrão e tira o PIN |
 | Console | Nenhum erro de JavaScript |
@@ -67,6 +68,6 @@ Simula `window.Capacitor` com os plugins do Android. O leitor de digital simulad
 
 ## Último resultado
 
-174 de 174 verificações passaram em 08/11/2026.
+201 de 201 verificações passaram em 19/11/2026.
 
 No GitHub, os testes rodam em cada pull request e em cada push na `main`, antes de publicar o site e gerar o APK.

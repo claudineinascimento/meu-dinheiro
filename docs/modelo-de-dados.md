@@ -44,6 +44,7 @@ Todos os campos novos (versão 1.2) são opcionais. O app nunca guarda senha, n�
 | `chave` | texto ou `null` | Chave fixa das categorias usadas pelo app |
 | `sistema` | booleano | `true` = não pode ser excluída nem ocultada |
 | `oculta` | booleano | Some das listas de escolha |
+| `limite` | centavos (opcional) | Limite de gasto por mês (só despesas) |
 
 Chaves de sistema: `salario`, `receb_emprestimo`, `emprestimo_recebido`, `resgate`, `parcela_emprestimo`, `emprestimo_terceiros`, `aporte`.
 
@@ -129,6 +130,16 @@ Cada item de `amortizacoes` (pagamentos extras e quitação, versão 1.2):
 | `liquidez` | `diaria` \| `vencimento` | |
 | `movimentos` | lista | `{id, tipo: inicial \| aporte \| resgate \| rendimento, valor, data, contaId?, lancId?}` |
 
+## metas
+
+| Campo | Tipo | Descrição |
+| --- | --- | --- |
+| `nome` | texto | Ex.: *Viagem de férias* |
+| `icone` | texto | Ícone da meta (`globe`, `car`, `home`...) |
+| `alvo` | centavos | Quanto juntar |
+| `prazo` | data ISO ou vazio | Até quando |
+| `movimentos` | lista | `{id, tipo: guardar \| retirar, valor, data}` |
+
 ## Segurança (`config/seguranca`)
 
 | Campo | Tipo | Descrição |
@@ -166,14 +177,14 @@ Cada item de `amortizacoes` (pagamentos extras e quitação, versão 1.2):
   "geradoEm": "2026-11-03T15:00:00.000Z",
   "dados": {
     "contas": [], "categorias": [], "lancamentos": [],
-    "pessoas": [], "emprestimos": [], "investimentos": []
+    "pessoas": [], "emprestimos": [], "investimentos": [], "metas": []
   }
 }
 ```
 
-A restauração confere o campo `app` e as 6 listas antes de substituir os dados. O PIN não vai no backup. Backups da versão 1.1 restauram na 1.2 sem mudança: os campos novos são opcionais.
+A restauração confere o campo `app` e as 6 listas antes de substituir os dados. A lista `metas` (1.4) é opcional: backups antigos restauram sem ela. O PIN não vai no backup. Backups da versão 1.1 restauram na 1.2 sem mudança: os campos novos são opcionais.
 
-**Restaurar padrão de fábrica** apaga as 6 coleções, a configuração de segurança e as chaves `md_bio`, `md_bio_auto`, `md_bk_em`, `md_bk_pref`, `md_oc_saldo`, `md_oc_inv`, `md_tema`, `md_secoes` e `md_tent`, e cria de novo as categorias e as duas contas padrão.
+**Restaurar padrão de fábrica** apaga as 7 coleções, a configuração de segurança e as chaves `md_bio`, `md_bio_auto`, `md_bk_em`, `md_bk_pref`, `md_oc_saldo`, `md_oc_inv`, `md_tema`, `md_secoes` e `md_tent`, e cria de novo as categorias e as duas contas padrão.
 
 ## Exportação CSV
 
